@@ -6,7 +6,7 @@ import config from './config'
 
 class App {
     constructor () {
-        this.html = document.querySelector('html')
+        this.html = document.querySelector('html');
         this.body = document.querySelector('body');
 
         this.dashboard = new Dashboard();
@@ -21,19 +21,21 @@ class App {
         });
         
         this.wrapper = document.createElement('div');
-        this.sidenav = new SideNav([
+        this.sidenav = new SideNav({
+            "tab": [
                 {"name": "Dashboard", "icon": null, "function": ()=>{this.loadContent(this.dashboard)}},
-                {"name": "Transações", "icon": null, "function": ()=>{this.loadContent(this.transaction)}},
                 {"name": "Categorias", "icon": null, "function": ()=>{this.loadContent(this.category)}},
+                {"name": "Transações", "icon": null, "function": ()=>{this.loadContent(this.transaction)}},
             ],
-            [
+            "footer": [
                 "© 2026 TargetFinance", 
                 "Todos os direitos reservados.",
-            ]);
-        this.content = document.createElement('main');
+            ]
+        });
+        this.page = document.createElement('main');
     }
 
-    start() {
+    load() {
         this.body.innerHTML = "";
 
         this.sidenav_content_wrapper.appendChild(this.sidenav);
@@ -43,9 +45,9 @@ class App {
         this.body.appendChild(this.sidenav_content_wrapper);
     }
 
-    loadContent(page) {
-        this.content.innerHTML = "";
-        this.content.appendChild(page);
+    loadPage(page) {
+        this.page.innerHTML = "";
+        this.page.appendChild(page);
     }
 
     style() {

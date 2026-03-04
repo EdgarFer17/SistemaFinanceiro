@@ -2,21 +2,22 @@
 import ComponentTab from './components/tab'
 
 export default class SideNav {
-    constructor(tab_config, footer_config) {
+    constructor(config) {
         this.aside = document.createElement('aside');
         this.tab_wrapper = document.createElement('div')
         this.footer = document.createElement('footer');
         
-        this.footer_content = footer_config;
-        this.tabs = tab_config;
+        this.footer_content = [];
+        this.tabs = [];
 
+        this.construct(config);
         this.loadContent();
     }
 
-    loadFooterContent() {
-        const content_list = [];
-        for (const text of this.footer_content) {
-            const element = document.createElement('small')
+    construct(config) {
+        // Footer
+        for (const text of config.footer) {
+            const element = document.createElement('small');
             element.textContent = text;
             
             element.className = "";
@@ -24,27 +25,23 @@ export default class SideNav {
 
             ]);
 
-            content_list.push(element)
+            this.footer_content.push(element);
         }
-        return content_list;
+
+        // Tabs
+        for (const tab in config.tab) {
+            this.tabs.push(new ComponentTab(tab["name"], tab["icon"], tab["function"]));
+        }
     }
 
-    loadTabs() {
-        const tab_list = [];
-        for (const tab in this.tabs) {
-            tab_list.push(new ComponentTab(tab["name"], tab["function"]));
-        }
-        return tab_list;
-    }
-
-    loadContent() {
+    load() {
         this.tab_wrapper.innerHTML = "";
         this.tabs.forEach((tab) => {
-            this.tab_wrapper.appendChild(tab)
+            this.tab_wrapper.appendChild(tab);
         });
         this.footer.innerHTML = "";
         this.footer_texts.forEach((small) => {
-            this.footer.appendChild(small)
+            this.footer.appendChild(small);
         });
 
         this.aside.innerHTML = "";
@@ -55,6 +52,8 @@ export default class SideNav {
     }
 
     style() {
+        // BOOTSTRAP
+
         this.aside.className = "";
         this.aside.classList.add([
 

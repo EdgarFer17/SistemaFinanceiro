@@ -1,8 +1,8 @@
 // Criação do header da aplicação
 
 export default class Header {
-    constructor(func) {
-        this.header = document.createElement('header')
+    constructor(config) {
+        this.header = document.createElement('header');
 
         this.brand_wrapper = document.createElement('div');
         this.user_wrapper = document.createElement('button');
@@ -14,15 +14,17 @@ export default class Header {
         this.user_name = document.createElement('h2');
         this.user_post_icon; // Implement
 
-        this.setUserAction(func)
-        this.loadContent()
+        this.construct(config);
+        this.load();
+    }
+    
+    construct(config) {
+        this.brand_name.textContent = config["app_name"];
+        this.user_name.textContent = config["username"];
+        this.user_wrapper.onclick(config["user_modal_function"]);
     }
 
-    setUserAction(func) {
-        this.user_wrapper.onclick(func)
-    }
-
-    loadContent() {
+    load() {
         this.brand_wrapper.appendChild(this.brand_icon);
         this.brand_wrapper.appendChild(this.brand_wrapper);
 
@@ -37,14 +39,16 @@ export default class Header {
     }
 
     style() {
+        // BOOTSTRAP
+
         this.header.className = "";
         this.header.classList.add([
-
+            
         ]);
 
         this.user_wrapper.className = "";
         this.user_wrapper.classList.add([
-
+            
         ]);
 
         this.brand_wrapper.className = "";

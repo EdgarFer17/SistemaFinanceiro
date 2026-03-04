@@ -1,23 +1,24 @@
 // tabs para alternar entre seções
 
-/*
-div { n tab(s) }
-    button (full)
-        {icon -> svg ou Font Awesome}
-        p
-*/
-
 export default class ComponentTab {
-    constructor(name, func) {
+
+    constructor(config) {
         this.main = document.createElement('div');
         this.action = document.createElement('button');
         this.icon = document.createElement(''); // verificar como será implementado
         this.text = document.createElement('p');
 
-        this.loadContent(name, func);
+        this.construct(config);
+        this.load();
     }
 
-    loadContent(name, func) {
+    construct(config) {
+        this.text.textContent = config["name"];
+        this.action.onclick(config["function"]);
+        // this.setIcon(icon);
+    }
+
+    load() {
         this.action.innerHTML = "";
         this.action.appendChild(this.icon);
         this.action.appendChild(this.text);
@@ -25,14 +26,7 @@ export default class ComponentTab {
         this.main.innerHTML = "";
         this.main.appendChild(this.action);
 
-        this.construct(name, func);
         this.style();
-    }
-
-    construct(name, func) {
-        this.text.textContent = name;
-        this.action.onclick(func);
-        // this.setIcon(this.config.structure.icon);
     }
 
     style() {

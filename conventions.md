@@ -35,3 +35,25 @@ calls é qualquer chamada, seja função ou classe
 Sempre terminar operações com ;
 - let name = "x";
 - startGame();
+
+## Component Pattern
+cada componente tem que ser uma classe com os seguintes requisitos obrigatórios:
+
+1. constructor(config):
+    - construtor deve receber um objeto chamado config.
+    - construtor deve ter a criação de todos os elementos necessários, usando document.createElement();
+    - deve chamar o construct e o load.
+
+2. construct(config):
+    - método construct deve receber o objeto chamado config.
+    - ele vai alterar os atributos e texto interno de elementos, exemplo:
+        - textContent
+        - onClick
+
+3. load():
+    - vai juntar os elementos com elemento.appendChild(elemento)
+    - chamar o style()
+
+4. style():
+    - vai resetar as classes de cada elemento com: elemento.className = "";
+    - vai adicionar as classes para cada elemento com: elemento.classList.add(["classes"])
