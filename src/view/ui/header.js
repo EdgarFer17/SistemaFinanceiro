@@ -29,28 +29,20 @@ export default class Header extends BaseComponent {
     style() {
         // BOOTSTRAP
 
-        this.header.className = '';
         this.header.classList.add(...[]);
 
-        this.user_wrapper.className = '';
         this.user_wrapper.classList.add(...[]);
 
-        this.brand_wrapper.className = '';
         this.brand_wrapper.classList.add(...[]);
 
-        this.brand_icon.className = '';
         this.brand_icon.classList.add(...[]);
 
-        this.brand_name.className = '';
         this.brand_name.classList.add(...[]);
 
-        this.user_icon.className = '';
         this.user_icon.classList.add(...[]);
 
-        this.user_name.className = '';
         this.user_name.classList.add(...[]);
 
-        this.user_post_icon.className = '';
         this.user_post_icon.classList.add(...[]);
     }
 

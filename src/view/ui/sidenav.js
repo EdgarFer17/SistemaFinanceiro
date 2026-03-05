@@ -21,7 +21,6 @@ export default class SideNav extends BaseComponent {
             const ELEMENT = document.createElement('small');
             ELEMENT.textContent = TEXT;
 
-            ELEMENT.className = '';
             ELEMENT.classList.add(
                 ...[
                     // BOOTSTRAP
@@ -42,13 +41,10 @@ export default class SideNav extends BaseComponent {
     style() {
         // BOOTSTRAP
 
-        this.aside.className = '';
         this.aside.classList.add(...[]);
 
-        this.tab_wrapper.className = '';
         this.tab_wrapper.classList.add(...[]);
 
-        this.footer.className = '';
         this.footer.classList.add(...[]);
     }
 

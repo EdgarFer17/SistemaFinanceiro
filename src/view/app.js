@@ -2,7 +2,6 @@
 
 import Header from './ui/header';
 import SideNav from './ui/sidenav';
-import config from './config';
 
 class App {
     constructor() {
@@ -32,21 +31,21 @@ class App {
                     name: 'Dashboard',
                     icon: null,
                     function: () => {
-                        this.loadContent(this.dashboard);
+                        this.buildPage(this.dashboard);
                     },
                 },
                 {
                     name: 'Categorias',
                     icon: null,
                     function: () => {
-                        this.loadContent(this.category);
+                        this.buildPage(this.category);
                     },
                 },
                 {
                     name: 'Transações',
                     icon: null,
                     function: () => {
-                        this.loadContent(this.transaction);
+                        this.buildPage(this.transaction);
                     },
                 },
             ],
@@ -70,18 +69,14 @@ class App {
     style() {
         // BOOTSTRAP
 
-        this.body.className = '';
         this.body.classList.add(...[]);
 
-        this.html.className = '';
         this.html.classList.add(...[]);
 
-        this.page.className = '';
         this.page.classList.add(...[]);
 
-        this.wrapper.className = '';
         this.wrapper.classList.add(...[]);
     }
 }
 
-export default new App(config);
+export default new App();

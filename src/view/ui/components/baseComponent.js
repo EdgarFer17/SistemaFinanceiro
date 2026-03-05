@@ -9,19 +9,19 @@ export default class BaseComponent {
     }
 
     spawn() {
-        throw new Error('Implemente o método!');
+        throw new Error('Implemente o método spawn()!');
     }
     // eslint-disable-next-line
     setup(config) {
-        throw new Error('Implemente o método!');
+        throw new Error('Implemente o método setup(config)!');
     }
 
     style() {
-        throw new Error('Implemente o método!');
+        throw new Error('Implemente o método style()!');
     }
 
     build() {
-        throw new Error('Implemente o método!');
+        throw new Error('Implemente o método build()!');
     }
 }
 

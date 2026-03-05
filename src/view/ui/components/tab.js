@@ -21,16 +21,12 @@ export default class ComponentTab extends BaseComponent {
     style() {
         // BOOTSTRAP
 
-        this.main.className = '';
         this.main.classList.add(...[]);
 
-        this.button.className = '';
         this.button.classList.add(...[]);
 
-        this.icon.className = '';
         this.icon.classList.add(...[]);
 
-        this.text.className = '';
         this.text.classList.add(...[]);
     }
 
