@@ -9,6 +9,7 @@ export default class ComponentTab {
         this.text = document.createElement('p');
 
         this.construct(config);
+        this.style();
         this.load();
     }
 
@@ -19,14 +20,8 @@ export default class ComponentTab {
     }
 
     load() {
-        this.action.innerHTML = "";
-        this.action.appendChild(this.icon);
-        this.action.appendChild(this.text);
-
-        this.main.innerHTML = "";
-        this.main.appendChild(this.action);
-
-        this.style();
+        this.action.replaceChildren(this.icon, this.text);
+        this.main.replaceChildren(this.action);
     }
 
     style() {

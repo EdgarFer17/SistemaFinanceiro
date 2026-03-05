@@ -42,7 +42,7 @@ cada componente tem que ser uma classe com os seguintes requisitos obrigatórios
 1. constructor(config):
     - construtor deve receber um objeto chamado config.
     - construtor deve ter a criação de todos os elementos necessários, usando document.createElement();
-    - deve chamar o construct e o load.
+    - deve chamar o construct, style e o load em ordem.
 
 2. construct(config):
     - método construct deve receber o objeto chamado config.
@@ -51,8 +51,7 @@ cada componente tem que ser uma classe com os seguintes requisitos obrigatórios
         - onClick
 
 3. load():
-    - vai juntar os elementos com elemento.appendChild(elemento)
-    - chamar o style()
+    - vai juntar os elementos com elemento.replaceChildren(elemento) em ordem
 
 4. style():
     - vai resetar as classes de cada elemento com: elemento.className = "";

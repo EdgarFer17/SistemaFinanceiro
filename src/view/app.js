@@ -33,16 +33,13 @@ class App {
             ]
         });
         this.page = document.createElement('main');
+
+        this.style();
     }
 
     load() {
-        this.body.innerHTML = "";
-
-        this.sidenav_content_wrapper.appendChild(this.sidenav);
-        this.sidenav_content_wrapper.appendChild(this.content);
-        
-        this.body.appendChild(this.header);
-        this.body.appendChild(this.sidenav_content_wrapper);
+        this.wrapper.replaceChildren(this.sidenav, this.content);
+        this.body.replaceChildren(this.header, this.wrapper);
     }
 
     loadPage(page) {
@@ -63,8 +60,8 @@ class App {
 
         ]);
 
-        this.content.className = "";
-        this.content.classList.add([
+        this.page.className = "";
+        this.page.classList.add([
 
         ]);
 

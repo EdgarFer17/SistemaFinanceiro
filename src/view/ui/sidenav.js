@@ -11,7 +11,8 @@ export default class SideNav {
         this.tabs = [];
 
         this.construct(config);
-        this.loadContent();
+        this.style();
+        this.load();
     }
 
     construct(config) {
@@ -35,20 +36,11 @@ export default class SideNav {
     }
 
     load() {
-        this.tab_wrapper.innerHTML = "";
-        this.tabs.forEach((tab) => {
-            this.tab_wrapper.appendChild(tab);
-        });
-        this.footer.innerHTML = "";
-        this.footer_texts.forEach((small) => {
-            this.footer.appendChild(small);
-        });
-
-        this.aside.innerHTML = "";
-        this.aside.appendChild(this.tab_wrapper);
-        this.aside.appendChild(this.footer);
-
-        this.style();
+        if (this.tabs.length > 0) {
+            this.tab_wrapper.replaceChildren(...this.tabs.map((component) => component.main));
+        }
+        this.footer.replaceChildren(...this.footer_texts);
+        this.aside.replaceChildren(this.tab_wrapper, this.footer);
     }
 
     style() {

@@ -15,6 +15,7 @@ export default class Header {
         this.user_post_icon; // Implement
 
         this.construct(config);
+        this.style();
         this.load();
     }
     
@@ -25,17 +26,9 @@ export default class Header {
     }
 
     load() {
-        this.brand_wrapper.appendChild(this.brand_icon);
-        this.brand_wrapper.appendChild(this.brand_wrapper);
-
-        this.user_wrapper.appendChild(this.user_icon);
-        this.user_wrapper.appendChild(this.user_name);
-        this.user_wrapper.appendChild(this.user_post_icon);
-
-        this.header.appendChild(this.brand_wrapper);
-        this.header.appendChild(this.user_wrapper);
-
-        this.style();
+        this.brand_wrapper.replaceChildren(this.brand_icon, this.brand_name);
+        this.user_wrapper.replaceChildren(this.user_icon, this.user_name, user_post_icon);
+        this.header.replaceChildren(this.brand_wrapper, this.user_wrapper);
     }
 
     style() {
