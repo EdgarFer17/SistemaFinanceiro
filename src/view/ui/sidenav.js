@@ -1,9 +1,9 @@
 // Criação da barra de navegação lateral
-import ComponentTab from './components/tab';
-import BaseComponent from './components/baseComponent';
+import ComponentTab from './components/tab.js';
+import BaseComponent from './components/baseComponent.js';
 export default class SideNav extends BaseComponent {
-    constructor(config) {
-        super(config);
+    constructor(config, style_config) {
+        super(config, style_config);
     }
 
     spawn() {
@@ -21,7 +21,6 @@ export default class SideNav extends BaseComponent {
             const ELEMENT = document.createElement('small');
             ELEMENT.textContent = TEXT;
 
-            ELEMENT.className = '';
             ELEMENT.classList.add(
                 ...[
                     // BOOTSTRAP
@@ -32,24 +31,19 @@ export default class SideNav extends BaseComponent {
         }
 
         // Tabs
-        for (const TAB in config.tab) {
-            this.tabs.push(
-                new ComponentTab(TAB['name'], TAB['icon'], TAB['function'])
-            );
+        for (const TAB of config.tab) {
+            this.tabs.push(new ComponentTab(TAB));
         }
     }
 
-    style() {
+    style(style_config = { aside: [], tab_wrapper: [], footer: [] }) {
         // BOOTSTRAP
 
-        this.aside.className = '';
-        this.aside.classList.add(...[]);
+        this.aside.classList.add(...[], ...style_config.aside);
 
-        this.tab_wrapper.className = '';
-        this.tab_wrapper.classList.add(...[]);
+        this.tab_wrapper.classList.add(...[], ...style_config.tab_wrapper);
 
-        this.footer.className = '';
-        this.footer.classList.add(...[]);
+        this.footer.classList.add(...[], ...style_config.footer);
     }
 
     build() {
@@ -58,7 +52,7 @@ export default class SideNav extends BaseComponent {
                 ...this.tabs.map((component) => component.main)
             );
         }
-        this.footer.replaceChildren(...this.footer_texts);
+        this.footer.replaceChildren(...this.footer_content);
         this.aside.replaceChildren(this.tab_wrapper, this.footer);
     }
 }
