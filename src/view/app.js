@@ -6,74 +6,74 @@ import PageState from '../repository/pageState.js';
 
 class App {
     constructor() {
-        this.header_config = {
-            brand_icon: null,
-            app_name: 'TargetFinance',
-            username: 'Novo Usuário',
-            user_modal_function: () => {
-                'funcão que ativa o modal do usuario';
-            },
-        }
-        this.sidenav_config = {
-            tab: [
-                {
-                    name: 'Dashboard',
-                    icon: null,
-                    function: () => {
-                        this.buildPage(0);
-                        PageState.save(0);
-                    },
-                },
-                {
-                    name: 'Categorias',
-                    icon: null,
-                    function: () => {
-                        this.buildPage(1);
-                        PageState.save(1);
-                    },
-                },
-                {
-                    name: 'Transações',
-                    icon: null,
-                    function: () => {
-                        this.buildPage(2);
-                        PageState.save(2);
-                    },
-                },
-            ],
-            footer: ['© 2026 TargetFinance', 'Todos os direitos reservados.'],
-        }
-
-        this.spawn()
-        this.build()
-        this.style()
+        this.spawn();
+        this.setup();
+        this.build();
+        this.style();
     }
 
     spawn() {
         this.html = document.querySelector('html');
         this.body = document.querySelector('body');
-        this.wrapper = document.createElement('div');
         this.page = document.createElement('main');
-
+        this.wrapper = document.createElement('div');
+        this.header = new Header();
+        this.sidenav = new SideNav(this.sidenav_config);
         this.pages = [
             // new Dashboard(),
             // new Transaction(),
             // new Category(),
-        ]
-        
-        this.header = new Header(this.header_config);
-        this.sidenav = new SideNav(this.sidenav_config);
+        ];
+    }
+
+    setup() {
+        this.sidenav.addFooterText('© 2026 TargetFinance');
+        this.sidenav.addFooterText('Todos os direitos reservados.');
+        this.sidenav.addTab(
+            {
+                name: 'Dashboard',
+                function: () => {
+                    this.buildPage(0);
+                    PageState.save(0);
+                },
+            },
+            { icon: ['fa-solid', 'fa-crown'] }
+        );
+        this.sidenav.addTab(
+            {
+                name: 'Categorias',
+                function: () => {
+                    this.buildPage(1);
+                    PageState.save(1);
+                },
+            },
+            { icon: [] }
+        );
+        this.sidenav.addTab(
+            {
+                name: 'Transações',
+                function: () => {
+                    this.buildPage(2);
+                    PageState.save(2);
+                },
+            },
+            { icon: [] }
+        );
+
+        this.header.updateBrandName();
+        this.header.updateUsername();
+        this.header.setModalFunction();
     }
 
     build() {
-        this.buildPage(PageState.load())
-        this.wrapper.replaceChildren(this.sidenav.aside, this.content);
-        this.body.replaceChildren(this.header.header, this.wrapper);
+        this.buildPage(PageState.load());
+        this.wrapper.replaceChildren(this.sidenav.main, this.page);
+        this.body.replaceChildren(this.header.main, this.wrapper);
     }
 
     buildPage(page_index) {
         if (page_index >= 0 && page_index < this.pages.length)
-        this.page.replaceChildren(this.pages.at(page_index));
+            this.page.replaceChildren(this.pages.at(page_index));
     }
 
     style() {
@@ -89,5 +89,5 @@ class App {
     }
 }
 
-const APP = new App()
-export default APP
+const APP = new App();
+export default APP;

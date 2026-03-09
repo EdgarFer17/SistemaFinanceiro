@@ -1,36 +1,53 @@
 // tabs para alternar entre seções
 import BaseComponent from './baseComponent.js';
 export default class ComponentTab extends BaseComponent {
-    constructor(config, style_config) {
-        super(config, style_config);
+    constructor(style_config = {}) {
+        const STYLE_CONFIG_FINAL = {
+            main: style_config.main || [],
+            button: style_config.button || [],
+            icon: style_config.icon || [],
+            text: style_config.text || [],
+        };
+
+        super(STYLE_CONFIG_FINAL);
     }
 
     spawn() {
         this.main = document.createElement('div');
-        this.action = document.createElement('button');
-        this.icon = document.createElement('teste'); // verificar como será implementado
-        this.text = document.createElement('p');
+
+        this.elements = {
+            button: document.createElement('button'),
+            icon: document.createElement('i'),
+            text: document.createElement('p'),
+        };
     }
 
-    setup(config) {
-        this.text.textContent = config['name'];
-        this.action.onclick = config['function'];
-        // this.setIcon(icon);
-    }
-
-    style(style_config = { main: [], button: [], icon: [], text: [] }) {
-
+    style(style_config) {
         this.main.classList.add(...[], ...style_config.main);
-
-        this.action.classList.add(...[], ...style_config.button);
-
-        this.icon.classList.add(...[], ...style_config.icon);
-
-        this.text.classList.add(...[], ...style_config.text);
+        this.elements.button.classList.add(...[], ...style_config.button);
+        this.elements.icon.classList.add(...[], ...style_config.icon);
+        this.elements.text.classList.add(...[], ...style_config.text);
     }
 
     build() {
-        this.action.replaceChildren(this.icon, this.text);
-        this.main.replaceChildren(this.action);
+        this.elements.button.replaceChildren(
+            this.elements.icon,
+            this.elements.text
+        );
+        this.main.replaceChildren(this.elements.button);
+    }
+
+    updateName(_name = 'default') {
+        this.elements.text.textContent = _name;
+    }
+
+    setFunction(
+        _event = 'click',
+        _function = () => {
+            alert('Não foi implementado');
+        }
+    ) {
+        const signal = this.signal;
+        this.elements.button.addEventListener(_event, _function, { signal });
     }
 }

@@ -2,57 +2,64 @@
 import ComponentTab from './components/tab.js';
 import BaseComponent from './components/baseComponent.js';
 export default class SideNav extends BaseComponent {
-    constructor(config, style_config) {
-        super(config, style_config);
+    constructor(style_config = {}) {
+        const STYLE_CONFIG_FINAL = {
+            main: style_config.main || [],
+            tab_wrapper: style_config.tab_wrapper || [],
+            footer: style_config.footer || [],
+        };
+
+        super(STYLE_CONFIG_FINAL);
     }
 
     spawn() {
-        this.aside = document.createElement('aside');
-        this.tab_wrapper = document.createElement('div');
-        this.footer = document.createElement('footer');
+        this.main = document.createElement('aside');
 
-        this.footer_content = [];
-        this.tabs = [];
+        this.elements = {
+            tab_wrapper: document.createElement('div'),
+            footer: document.createElement('footer'),
+            footer_content: [],
+            tabs: [],
+        };
     }
 
-    setup(config) {
-        // Footer
-        for (const TEXT of config.footer) {
-            const ELEMENT = document.createElement('small');
-            ELEMENT.textContent = TEXT;
-
-            ELEMENT.classList.add(
-                ...[
-                    // BOOTSTRAP
-                ]
-            );
-
-            this.footer_content.push(ELEMENT);
-        }
-
-        // Tabs
-        for (const TAB of config.tab) {
-            this.tabs.push(new ComponentTab(TAB));
-        }
-    }
-
-    style(style_config = { aside: [], tab_wrapper: [], footer: [] }) {
+    style(style_config) {
         // BOOTSTRAP
 
-        this.aside.classList.add(...[], ...style_config.aside);
-
-        this.tab_wrapper.classList.add(...[], ...style_config.tab_wrapper);
-
-        this.footer.classList.add(...[], ...style_config.footer);
+        this.main.classList.add(...[], ...style_config.main);
+        this.elements.tab_wrapper.classList.add(
+            ...[],
+            ...style_config.tab_wrapper
+        );
+        this.elements.footer.classList.add(...[], ...style_config.footer);
     }
 
     build() {
-        if (this.tabs.length > 0) {
-            this.tab_wrapper.replaceChildren(
-                ...this.tabs.map((component) => component.main)
+        if (this.elements.tabs.length > 0) {
+            this.elements.tab_wrapper.replaceChildren(
+                ...this.elements.tabs.map((component) => component.main)
             );
         }
-        this.footer.replaceChildren(...this.footer_content);
-        this.aside.replaceChildren(this.tab_wrapper, this.footer);
+        this.elements.footer.replaceChildren(...this.elements.footer_content);
+        this.main.replaceChildren(
+            this.elements.tab_wrapper,
+            this.elements.footer
+        );
+    }
+
+    addTab(config, style_config) {
+        const TAB = new ComponentTab(style_config);
+        TAB.setFunction('click', config.function);
+        TAB.updateName(config.name);
+        this.elements.tabs.push(TAB);
+        this.elements.tab_wrapper.appendChild(TAB.main);
+    }
+
+    addFooterText(_text, style_config = []) {
+        const SMALL = document.createElement('small');
+        SMALL.textContent = _text || 'default';
+        SMALL.classList.add(...style_config);
+        this.elements.footer_content.push(SMALL);
+        this.elements.footer.appendChild(SMALL);
     }
 }
