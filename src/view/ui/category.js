@@ -1,6 +1,6 @@
-import BaseComponent from "./components/baseComponent";
+import BaseComponent from "./components/baseComponent.js";
 
-class Category extends BaseComponent {
+export default class Category extends BaseComponent {
     constructor(config, style_config) {
         super(config, style_config);
     }
@@ -63,7 +63,5 @@ class Category extends BaseComponent {
         
         this.main.appendChild(this.header_wrapper);
         this.main.appendChild(this.cards_container);
-
-        return this.main;
     }
 }

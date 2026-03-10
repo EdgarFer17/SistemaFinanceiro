@@ -3,6 +3,8 @@
 import Header from './ui/header.js';
 import SideNav from './ui/sidenav.js';
 import PageState from '../repository/pageState.js';
+import Category from './ui/category.js'
+import Transaction from './ui/transaction.js';
 
 class App {
     constructor() {
@@ -56,10 +58,11 @@ class App {
         this.page = document.createElement('main');
 
         this.pages = [
-            // new Dashboard(),
-            // new Transaction(),
-            // new Category(),
+            // new Dashboard()
+            new Transaction({}),
+            new Category({}),
         ]
+        this.pages[0].main
         
         this.header = new Header(this.header_config);
         this.sidenav = new SideNav(this.sidenav_config);
@@ -67,13 +70,13 @@ class App {
 
     build() {
         this.buildPage(PageState.load())
-        this.wrapper.replaceChildren(this.sidenav.aside, this.content);
+        this.wrapper.replaceChildren(this.sidenav.aside, this.page);
         this.body.replaceChildren(this.header.header, this.wrapper);
     }
 
     buildPage(page_index) {
         if (page_index >= 0 && page_index < this.pages.length)
-        this.page.replaceChildren(this.pages.at(page_index));
+        this.page.replaceChildren(this.pages.at(page_index).main);
     }
 
     style() {
