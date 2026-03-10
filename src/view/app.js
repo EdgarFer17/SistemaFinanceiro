@@ -3,9 +3,11 @@
 import Header from './ui/header.js';
 import SideNav from './ui/sidenav.js';
 import PageState from '../repository/pageState.js';
+import Dashboard from './ui/dashboard.js';
 
 class App {
     constructor() {
+        this.user_config = {"username": "Henry"}
         this.spawn();
         this.setup();
         this.build();
@@ -20,7 +22,7 @@ class App {
         this.header = new Header();
         this.sidenav = new SideNav(this.sidenav_config);
         this.pages = [
-            // new Dashboard(),
+            new Dashboard(),
             // new Transaction(),
             // new Category(),
         ];
@@ -63,6 +65,13 @@ class App {
         this.header.updateBrandName();
         this.header.updateUsername();
         this.header.setModalFunction();
+
+        const DASHBOARD = this.pages.at(0);
+        DASHBOARD.updateTitle(`Bem Vindo, ${user_config.username}`)
+        DASHBOARD.updateShowIcon('./assets/showIcon.svg', 'alternar a visibilidade dos dados')
+        DASHBOARD.updateReportIcon('./assets/showIcon.svg', 'abrir modal contendo o relatório mensla')
+        DASHBOARD.updateBarTitle("Evolução Mensal")
+        DASHBOARD.updateTransactionTitle("Últimas 5 Transações")
     }
 
     build() {
@@ -80,11 +89,8 @@ class App {
         // BOOTSTRAP
 
         this.body.classList.add(...[]);
-
         this.html.classList.add(...[]);
-
         this.page.classList.add(...[]);
-
         this.wrapper.classList.add(...[]);
     }
 }

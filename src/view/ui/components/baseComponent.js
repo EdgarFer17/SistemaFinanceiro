@@ -5,10 +5,12 @@ export default class BaseComponent {
 
         this.controller = new AbortController();
         this.signal = this.controller.signal;
-        this.main;
+        
+        this.elements = {};
+        this.style_config = style_config;
 
         this.spawn();
-        this.style(style_config);
+        this.style();
         this.build();
     }
 
@@ -26,9 +28,22 @@ export default class BaseComponent {
 
     destroy() {
         if (this.main) {
+            this.controller.abort()
             this.main.remove();
         } else {
             throw new Error('Implemente um elemento pai, dentro de this.main!');
         }
+    }
+
+    static updateImg(_path, _alt, _element) {
+        if (typeof _path !== "string" || typeof _alt !== "string") {return false}
+        this.elements._element.src = _path;
+        this.elements._element.alt = _alt;
+    }
+
+    static updateText(_text, _element) {
+        if (typeof _text !== "string") {return false}
+        this.elements._element.textContent = _text;
+        return true;
     }
 }
