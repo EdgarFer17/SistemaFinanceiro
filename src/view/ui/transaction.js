@@ -1,5 +1,5 @@
 import BaseComponent from "./components/baseComponent.js";
-
+//Transação
 export default class Transaction extends BaseComponent{
     constructor(config, style_config) {
         super(config, style_config);
@@ -28,6 +28,7 @@ export default class Transaction extends BaseComponent{
             th.textContent = header
             this.tr_table.appendChild(th)
         })
+    
         
         
     }
