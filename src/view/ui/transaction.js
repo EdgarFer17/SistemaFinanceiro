@@ -35,8 +35,14 @@ export default class Transaction extends BaseComponent{
             th.textContent = header
             this.tr_table.appendChild(th)
         })
+<<<<<<< HEAD
         this.button.addEventListener ('click', () => this.modalTransactionEvent())
         this.editButton.addEventListener('click', () => this.modalEditTransactionEvent())
+=======
+    
+        
+        
+>>>>>>> d6c26c8 (Atualização do Transaction.js)
     }
 
 
