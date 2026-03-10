@@ -20,6 +20,7 @@ export default class Transaction extends BaseComponent{
         this.title.textContent = config['title'] || "Transações"
         this.button.textContent = config['button_title'] || "Adicionar Transação"
         this.button.addEventListener = config['click_add_transaction']
+        this.transactionList = []
         this.table_header.textContent = ""
         const headers = ['Descrição', 'Valor', 'Categoria', 'Data']
         headers.forEach(header => {
@@ -29,22 +30,6 @@ export default class Transaction extends BaseComponent{
         })
         
         
-    }
-    createCategoryCard(categoryData) {
-        const card = document.createElement('div');
-        card.className = 'category-card';
-        
-        const name = document.createElement('span');
-        name.textContent = categoryData.name;
-
-        const actions = document.createElement('div');
-        actions.innerHTML = `
-            <i class="edit-icon">✎</i>
-            <i class="delete-icon">🗑</i>
-        `;
-
-        card.append(name, actions);
-        return card;
     }
     style(style_config){
         this.title.style.color = "#6ca09d"
@@ -61,11 +46,12 @@ export default class Transaction extends BaseComponent{
         this.button.style.border = "none";
         this.button.style.padding = "10px 20px";
         this.button.style.borderRadius = "5px";
+        this.button.style.cursor = "pointer";
     }
     build() {
         this.header_wrapper.appendChild(this.title);
         this.header_wrapper.appendChild(this.button);
-        
+
         this.main.appendChild(this.header_wrapper);
         this.main.appendChild(this.cards_container);
         this.thead_table.appendChild(this.tr_table)

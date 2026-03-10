@@ -58,7 +58,7 @@ class App {
         this.page = document.createElement('main');
 
         this.pages = [
-            //new Dashboard(),
+            // new Dashboard()
             new Transaction({}),
             new Category({}),
         ]
