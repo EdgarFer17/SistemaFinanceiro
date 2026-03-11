@@ -1,8 +1,8 @@
-import BaseComponent from "./baseComponent";
-const { Chart } = await import("chart.js");
+import BaseComponent from "./baseComponent.js";
+// import Chart from "chart.js";
 
 export default class DonutChart extends BaseComponent {
-    constructor(style_config) {
+    constructor(style_config = {}) {
         const STYLE_CONFIG_FINAL = {
             "main": style_config.main || [],
             "title": style_config.title || [],
@@ -14,30 +14,30 @@ export default class DonutChart extends BaseComponent {
     }
 
     spawn() {
-        this.main = document.createElement('div');
+        this.main = document.createElement("div");
         this.elements = {
             "title": document.createElement("h3"),
             "subtitle": document.createElement("h4"),
             "canvas": document.createElement("canvas"),
         }
-        this.chart = new Chart(this.elements.canvas, {
-            'type': 'doughnut',
-            'data': {
-                'labels': [],
-                'datasets': [{
-                    'data': [],
-                    'label': 'Meu Primeiro Dataset'
-                }]
-            }
-        });
+        // this.chart = new Chart(this.elements.canvas, {
+        //     'type': 'doughnut',
+        //     'data': {
+        //         'labels': [],
+        //         'datasets': [{
+        //             'data': [],
+        //             'label': 'Meu Primeiro Dataset'
+        //         }]
+        //     }
+        // });
     }
 
 
-    style(style_config) {
-        this.main.classList.add(...[], ...style_config.main);
-        this.title.classList.add(...[], ...style_config.title);
-        this.subtitle.classList.add(...[], ...style_config.subtitle);
-        this.canvas.classList.add(...[], ...style_config.canvas);
+    style() {
+        this.main.classList.add(...[], ...this.style_config.main);
+        this.elements.title.classList.add(...[], ...this.style_config.title);
+        this.elements.subtitle.classList.add(...[], ...this.style_config.subtitle);
+        this.elements.canvas.classList.add(...[], ...this.style_config.canvas);
     }
 
     build() {

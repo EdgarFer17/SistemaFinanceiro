@@ -20,7 +20,7 @@ class App {
         this.page = document.createElement('main');
         this.wrapper = document.createElement('div');
         this.header = new Header();
-        this.sidenav = new SideNav(this.sidenav_config);
+        this.sidenav = new SideNav();
         this.pages = [
             new Dashboard(),
             // new Transaction(),

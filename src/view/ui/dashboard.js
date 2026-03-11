@@ -1,159 +1,99 @@
-import BaseComponent from './components/baseComponent';
+import BaseComponent from './components/baseComponent.js';
+import DonutChart from './components/donutChart.js';
+import Report from './modal/report.js'
 
 export default class Dashboard extends BaseComponent {
-  constructor(style_config) {
-
-    const STYLE_CONFIG_FINAL = {
-      "title_wrapper": style_config.title_wrapper || [],
-      "title": style_config.ope_title || [],
-      "ope_wrapper": style_config.ope_wrapper || [],
-      "ope_report": style_config.ope_report || [],
-      "ope_show": style_config.ope_show || [],
-
-      "status_wrapper": style_config.status_wrapper || [],
-      "status_balance_wrapper": style_config.status_balance_wrapper || [],
-      "status_balance_title": style_config.status_balance_title || [],
-      "status_balance_currency": style_config.status_balance_currency || [],
-
-      "status_health_wrapper": style_config.status_health_wrapper || [],
-      "status_health_title": style_config.status_health_title || [],
-      "status_health_type": style_config.status_health_type || [],
-
-      "donut_wrapper": style_config.donut_wrapper || [],
-      "donut_first_component": style_config.donut_first_component || [],
-      "donut_second_wrapper": style_config.donut_second_wrapper || [],
-      "donut_second_component": style_config.donut_second_component || [],
-      "donut_filter": style_config.donut_filter || [],
-
-      "bar_wrapper": style_config.bar_wrapper || [],
-      "bar_title": style_config.bar_title || [],
-      "bar_component": style_config.bar_component || [],
-
-      "transaction_wrapper": style_config.transaction_wrapper || [],
-      "transaction_title": style_config.transaction_title || [],
-      "transaction_component": style_config.transaction_component || [],
-
-      "report_component": style_config.report_component || [],
-    }
-
-    super(STYLE_CONFIG_FINAL)
+  constructor(style_config = {}) {
+    super(style_config)
   }
 
   spawn() {
     this.main = document.createElement('main');
-    this.elements = {
-      "title_wrapper": document.createElement("div"),
-      "title": document.createElement("h2"),
-      "ope_wrapper": document.createElement("div"),
-      "ope_report": document.createElement("img"),
-      "ope_show": document.createElement("img"),
+    const SCHEMA = {
+      "title_wrapper": "div",
+      "title": "h2",
+      "ope_wrapper": "div",
+      "ope_report": "img",
+      "ope_show": "img",
 
-      "status_wrapper": document.createElement("section"),
-      "status_balance_wrapper": document.createElement("div"),
-      "status_balance_title": document.createElement("h3"),
-      "status_balance_currency": document.createElement("p"), 
+      "status_wrapper": "section",
+      "status_balance_wrapper": "div",
+      "status_balance_title": "h3",
+      "status_balance_currency": "p", 
 
-      "status_health_wrapper": document.createElement("div"),
-      "status_health_title": document.createElement("h3"),
-      "status_health_type": document.createElement("p"),
+      "status_health_wrapper": "div",
+      "status_health_title": "h3",
+      "status_health_type": "p",
 
-      "donut_wrapper": document.createElement("section"),
-      "donut_first_component": "new donutChart()",
-      "donut_second_wrapper": document.createElement("div"),
-      "donut_second_component": "new donutChart()",
-      "donut_filter": "new Filter()",
+      "donut_wrapper": "section",
+      "donut_first_wrapper": "div",
+      "donut_first_title": "h3",
+      "donut_first_component": new DonutChart(),
+      "donut_second_wrapper1": "div",
+      "donut_second_title": "h3",
+      "donut_second_wrapper2": "div",
+      "donut_second_component": new DonutChart(),
+      "donut_filter": "div" || new Filter(),
 
-      "bar_wrapper": document.createElement("section"),
-      "bar_title": document.createElement("h3"),
-      "bar_component": "new BarChart()",
+      // "bar_wrapper": "section",
+      // "bar_title": "h3",
+      // "bar_component": new BarChart(),
 
-      "transaction_wrapper": document.createElement("section"),
-      "transaction_title": document.createElement("h3"),
-      "transaction_component": "new TransactionTable() limitar a 5",
+      // "transaction_wrapper": "section",
+      // "transaction_title": "h3",
+      // "transaction_component": new TransactionTable(limit=5),
 
-      "report_component": "new Report()",
+      // "report_component": new Report(),
+    }
+
+    for (const [key, value] of Object.entries(SCHEMA)) {
+      if (typeof value === "string") {
+        this.elements[key] = document.createElement(value);
+      } else {
+        this.elements[key] = value;
+      }
     }
   }
 
   build() {
-    this.elements.ope_wrapper.replaceChildren(
-      this.elements.ope_report, this.elements.ope_show
-    )
-    this.elements.title_wrapper.replaceChildren(
-      this.elements.title, this.elements.ope_wrapper
-    )
-    this.elements.status_balance_wrapper.replaceChildren(
-      this.elements.status_balance_title, this.elements.status_balance_currency
-    )
-    this.elements.status_health_wrapper.replaceChildren(
-      this.elements.status_health_title, this.elements.status_health_type
-    )
-    this.elements.status_wrapper.replaceChildren(
-      this.elements.status_balance_wrapper, this.elements.status_health_wrapper
-    )
-    this.elements.donut_second_wrapper.replaceChildren(
-      this.elements.donut_filter, this.elements.donut_second_component
-    )
-    this.elements.donut_wrapper.replaceChildren(
-      this.elements.donut_first_component.main,
-      this.elements.donut_second_component.main
-    )
-    this.elements.bar_wrapper.replaceChildren(
-      this.elements.bar_title, this.elements.bar_component.main
-    )
-    this.elements.transaction_wrapper.replaceChildren(
-      this.elements.transaction_title,
-      this.elements.transaction_component.main
-    )
+    const el = this.elements;
+    el.ope_wrapper.replaceChildren(el.ope_report, el.ope_show)
+    el.title_wrapper.replaceChildren(el.title, el.ope_wrapper)
+
+    el.status_balance_wrapper.replaceChildren(el.status_balance_title, el.status_balance_currency)
+    el.status_health_wrapper.replaceChildren(el.status_health_title, el.status_health_type)
+    el.status_wrapper.replaceChildren(el.status_balance_wrapper, el.status_health_wrapper)
+
+    el.donut_first_wrapper.replaceChildren(el.donut_first_title, el.donut_first_component.main)
+    el.donut_second_wrapper2.replaceChildren(el.donut_filter, el.donut_second_component.main)
+    el.donut_second_wrapper1.replaceChildren(el.donut_second_title, el.donut_second_wrapper2)
+    el.donut_wrapper.replaceChildren(el.donut_first_wrapper, el.donut_second_wrapper1)
+
+    // el.bar_wrapper.replaceChildren(el.bar_title, el.bar_component.main)
+
+    // el.transaction_wrapper.replaceChildren(el.transaction_title, el.transaction_component.main)
 
     this.main.replaceChildren(
-      this.elements.title_wrapper,
-      this.elements.status_wrapper,
-      this.elements.donut_wrapper,
-      this.elements.bar_wrapper,
-      this.elements.transaction_wrapper,
-      this.elements.report_component.main
+      el.title_wrapper,
+      el.status_wrapper,
+      el.donut_wrapper,
+      // el.bar_wrapper,
+      // el.transaction_wrapper,
+      // el.report_component.main
     )
   }
 
-  style(style_config) {
-    // bootstrap
-    
-    this.main.classList.add(...style_config["main"]);
+  style() {
+    if (this.style_config["main"] && this.style_config["main"].length > 0) {
+      this.main.classList.add(...this.style_config["main"]);
+    }
 
-    this.elements.title_wrapper.classList.add(...[], ...style_config["title_wrapper"]);
-    this.elements.title.classList.add(...[], ...style_config["title"]);
-    this.elements.ope_wraoper.classList.add(...[], ...style_config["ope_wrapper"]);
-    this.elements.ope_report.classList.add(...[], ...style_config["ope_report"]);
-    this.elements.ope_show.classList.add(...[], ...style_config["ope_show"]);
-  
-    this.elements.status_wrapper.classList.add(...[], ...style_config["status_wrapper"]),
-    this.elements.status_balance_wrapper.classList.add(...[], ...style_config["status_balance_wrapper"]),
-    this.elements.status_balance_title.classList.add(...[], ...style_config["status_balance_title"]),
-    this.elements.status_balance_currency.classList.add(...[], ...style_config["status_balance_currency"]),
-
-    this.elements.status_health_wrapper.classList.add(...[], ...style_config["status_health_wrapper"]),
-    this.elements.status_health_title.classList.add(...[], ...style_config["status_health_title"]),
-    this.elements.status_health_type.classList.add(...[], ...style_config["status_health_type"]),
-
-    this.elements.donut_wrapper.classList.add(...[], ...style_config["donut_wrapper"]);
-    this.elements.donut_first_title.classList.add(...[], ...style_config["donut_first_title"]);
-    this.elements.donut_first_component.classList.add(...[], ...style_config["donut_first_component"]);
-    this.elements.donut_wrapper.classList.add(...[], ...style_config["donut_first_component"]);
-    this.elements.donut_second_title.classList.add(...[], ...style_config["donut_first_second"]);
-    this.elements.donut_second_component.classList.add(...[], ...style_config["donut_second_component"]);
-    this.elements.donut_filter.classList.add(...[], ...style_config["donut_filter"])
-
-    this.elements.bar_wrapper.classList.add(...[], ...style_config["bar_wrapper"]);
-    this.elements.bar_title.classList.add(...[], ...style_config["bar_title"]);
-    this.elements.bar_component.classList.add(...[], ...style_config["bar_component"]);
-
-    this.elements.transaction_wrapper.classList.add(...[], ...style_config["transaction_wrapper"]);
-    this.elements.transaction_title.classList.add(...[], ...style_config["transaction_title"]);
-    this.elements.transaction_component.classList.add(...[], ...style_config["transaction_component"]);
-
-    this.elements.report_modal.classList.add(...[], ...style_config["report_modal"]);
-    this.elements.report_component.classList.add(...[], ...style_config["report_component"]);
+    for (const [key, value] of Object.entries(this.elements)) {
+      const CLASSES = this.style_config[key];
+      if (value instanceof HTMLElement && CLASSES && CLASSES.length > 0) {
+        value.classList.add(...CLASSES);
+      }
+    }
   }
 
   updateReportIcon(_path, _alt) {
@@ -176,3 +116,5 @@ export default class Dashboard extends BaseComponent {
     BaseComponent.updateText(_text, this.elements.transaction_title);
   }
 }
+const DASHBOARD = new Dashboard()
+document.body.replaceChildren(DASHBOARD.main)

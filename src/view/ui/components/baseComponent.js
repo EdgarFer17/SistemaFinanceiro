@@ -1,8 +1,6 @@
 export default class BaseComponent {
     constructor(style_config) {
-        if (!style_config)
-            throw new Error('Um objeto style_config é obrigatório');
-
+        
         this.controller = new AbortController();
         this.signal = this.controller.signal;
         
