@@ -40,7 +40,8 @@ class App {
                     this.buildPage(0);
                     PageState.save(0);
                 },
-                src: './assets/Dashboard.svg',
+                src_inactive: './assets/Dashboard.svg',
+                src_active: './assets/DashboardActive.svg',
                 alt: 'Dashboard Icon',
             }
         );
@@ -51,7 +52,8 @@ class App {
                     this.buildPage(1);
                     PageState.save(1);
                 },
-                src: './assets/Category.svg',
+                src_inactive: './assets/Category.svg',
+                src_active: './assets/CategoryActive.svg',
                 alt: 'Category Icon',
             }
         );
@@ -62,7 +64,8 @@ class App {
                     this.buildPage(2);
                     PageState.save(2);
                 },
-                src: './assets/Transaction.svg',
+                src_inactive: './assets/Transaction.svg',
+                src_active: './assets/TransactionActive.svg', 
                 alt: 'Transaction Icon',
             }
         );

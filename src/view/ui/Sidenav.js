@@ -22,8 +22,10 @@ export default class SideNav extends BaseComponent {
     addTab(_config) {
         const TAB = new ComponentTab();
         TAB.setFunction('click', _config.function);
-        TAB.updateIcon(_config.src, _config.alt)
+        TAB.updateIcon(_config.src_inactive, _config.alt)
         TAB.updateName(_config.name);
+        TAB.icons.push(_config.src_inactive);
+        TAB.icons.push(_config.src_active);
         this.tabs.push(TAB);
         this.elements.tab_wrapper.appendChild(TAB.main);
     }

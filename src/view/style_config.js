@@ -9,30 +9,30 @@ export const HEADER = {
     header_wrapper: ["container-fluid", "d-flex", "justify-content-between", "align-items-center"],
     brand_wrapper: ["d-flex", "align-items-center", "gap-2"],
     brand_icon: ["rounded-circle", "brandIcon"],
-    brand_name: ["h5", "mb-0", "fw-bold", "text-dark"],
-    user_wrapper: ["btn", "btn-light", "border-0", "d-flex", "align-items-center", "gap-2", "px-3", "py-1", "rounded-pill"],
+    brand_name: ["h5", "mb-0", "fw-bold", "text-primary"],
+    user_wrapper: ["btn", "border-0", "d-flex", "align-items-center", "gap-2", "px-3", "py-1", "rounded-pill", "bg-transparent"],
     user_name: ["fs-6", "mb-0", "text-secondary", "fw-medium"],
     user_icon: ["rounded-circle", "border"],
     user_post_icon: ["ms-1"],
 }
 export const SIDENAV = {
-    main: ["bg-primary", "vh-100", "d-flex", "flex-column", "p-0", "navbar"], 
-    toggle_wrapper: ["btn", "border-0", "bg-transparent", "align-self-end", "w-25", "text-end"],
+    main: ["vh-100", "d-flex", "flex-column", "p-0", "navbar", "bg-primary"],
+    toggle_wrapper: ["btn", "border-0", "bg-transparent", "align-self-end", "w-25", "text-end", "pt-2"],
     toggle_icon: ["img-fluid"],
-    tab_wrapper: ["nav", "flex-column", "w-100", "mt-4", "px-3", "gap-2", "fs-5"],
-    footer: ["d-flex", "flex-column", "mt-auto", "text-white", "text-center", "mb-4", "w-100"],
+    tab_wrapper: ["nav", "flex-column", "w-100", "mt-3", "px-3", "gap-1"],
+    footer: ["d-flex", "flex-column", "mt-auto", "text-white-50", "text-center", "mb-3", "w-100", "px-2", "small"],
 }
 export const TAB_ACTIVE = {
-    main: ["nav-link", "bg-light", "d-flex", "align-items-center", "rounded-3", "p-2", "shadow-sm"],
-    button: ["d-flex", "bg-light" ,"align-items-center", "border-0", "text-primary", "w-100"],
+    main: ["nav-link", "bg-white", "d-flex", "align-items-center", "rounded-3", "py-2", "px-3", "shadow-sm"],
+    button: ["d-flex", "bg-white", "align-items-center", "border-0", "text-primary", "w-100"],
     icon: ["tabIcon", "me-3"],
-    text: ["fw-bold"],
+    text: ["fw-bold", "mb-0"],
 }
 export const TAB_INACTIVE = {
-    main: ["nav-link", "d-flex", "p-2", "hover-opacity-100", "bg-primary"],
-    button: ["btn", "w-100", "border-0", "bg-primary", "text-white", "d-flex", "align-items-center"],
+    main: ["nav-link", "d-flex", "py-2", "px-3", "rounded-3"],
+    button: ["btn", "w-100", "border-0", "bg-transparent", "text-white", "d-flex", "align-items-center"],
     icon: ["tabIcon", "me-3"],
-    text: ["fw-medium"],
+    text: ["fw-medium", "mb-0"],
 }
 export const DASHBOARD = {
     main: [],

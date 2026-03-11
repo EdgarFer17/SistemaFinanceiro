@@ -15,6 +15,7 @@ export default class ComponentTab extends BaseComponent {
 
         super(SCHEMA, TAB_INACTIVE);
         this.is_active = false;
+        this.icons = []
     }
 
     updateName(_name = 'default') {
@@ -27,6 +28,8 @@ export default class ComponentTab extends BaseComponent {
 
     changeStatus(_status) {
         this.is_active = _status;
+        this.updateIcon(this.icons[this.is_active?1:0], this.elements.icon.alt);
+        console.log(this.elements.icon)
         this.style(this.is_active ? TAB_ACTIVE : TAB_INACTIVE);
     }
 
