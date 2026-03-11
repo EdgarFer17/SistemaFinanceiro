@@ -1,4 +1,4 @@
-export default class Category {
+export default class CategoryModel {
 
     static idIncrementer = 1;
 
@@ -13,7 +13,7 @@ export default class Category {
             throw new Error("O limit deve ser um Number!")
         }
 
-        this.id = Category.idIncrementer++;
+        this.id = CategoryModel.idIncrementer++;
         this.categoryName = categoryName;
         this.limit = limit;
     }

@@ -1,14 +1,14 @@
-import Category from './category.js';
-import TRANSACTION_TYPE from './transactionType.js'
+import CategoryModel from './categoryModel.js';
+import TRANSACTION_TYPE_MODEL from './transactionTypeModel.js'
 
-export default class Transaction {
+export default class TransactionModel {
 
     static idIncrementer = 1;
 
     // o atributo date de ser um objeto contendo day, month e year;
     // o atributo type deve ser um TRANSACTION_TYPE;
     constructor(date, category, type, value) {
-        if (!Object.values(TRANSACTION_TYPE).includes(type)) {
+        if (!Object.values(TRANSACTION_TYPE_MODEL).includes(type)) {
             throw new Error("O type deve estar contido em TRANSACTION_TYPE!");
         }
 
@@ -20,11 +20,11 @@ export default class Transaction {
             throw new Error("O value deve ser um Number!")
         }
         
-        if (!(category instanceof Category)) {
+        if (!(category instanceof CategoryModel)) {
             throw new Error("O category deve ser uma instância String!")
         }
 
-        this.id = Transaction.idIncrementer++;
+        this.id = TransactionModel.idIncrementer++;
         this.date = date;
         this.category = category;
         this.type = type;
