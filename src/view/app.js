@@ -1,10 +1,10 @@
 // will be used to centralize the build of the entire application
 
-import Header from './ui/header.js';
-import SideNav from './ui/sidenav.js';
-import PageState from '../repository/pageState.js';
-import Dashboard from './ui/dashboard.js';
-
+import Header from './ui/Header.js';
+import SideNav from './ui/Sidenav.js';
+import PageState from '../repository/PageState.js';
+import Dashboard from './ui/Dashboard.js';
+import { APP } from './style_config.js';
 class App {
     constructor() {
         this.user_config = {"username": "Henry"}
@@ -38,8 +38,7 @@ class App {
                     this.buildPage(0);
                     PageState.save(0);
                 },
-            },
-            { icon: ['fa-solid', 'fa-crown'] }
+            }
         );
         this.sidenav.addTab(
             {
@@ -48,8 +47,7 @@ class App {
                     this.buildPage(1);
                     PageState.save(1);
                 },
-            },
-            { icon: [] }
+            }
         );
         this.sidenav.addTab(
             {
@@ -58,8 +56,7 @@ class App {
                     this.buildPage(2);
                     PageState.save(2);
                 },
-            },
-            { icon: [] }
+            }
         );
 
         this.header.updateBrandName();
@@ -67,9 +64,9 @@ class App {
         this.header.setModalFunction();
 
         const DASHBOARD = this.pages.at(0);
-        DASHBOARD.updateTitle(`Bem Vindo, ${user_config.username}`)
-        DASHBOARD.updateShowIcon('./assets/showIcon.svg', 'alternar a visibilidade dos dados')
-        DASHBOARD.updateReportIcon('./assets/showIcon.svg', 'abrir modal contendo o relatório mensla')
+        DASHBOARD.updateTitle(`Bem Vindo, ${this.user_config.username}`)
+        DASHBOARD.updateShowIcon('./assets/Eye.svg', 'alternar a visibilidade dos dados')
+        DASHBOARD.updateReportIcon('./assets/DashboardGauge.svg', 'abrir modal contendo o relatório mensla')
         DASHBOARD.updateBarTitle("Evolução Mensal")
         DASHBOARD.updateTransactionTitle("Últimas 5 Transações")
     }
@@ -81,19 +78,20 @@ class App {
     }
 
     buildPage(page_index) {
-        if (page_index >= 0 && page_index < this.pages.length)
-            this.page.replaceChildren(this.pages.at(page_index));
+        if (page_index >= 0 && page_index < this.pages.length) {
+            this.page.replaceChildren(this.pages.at(page_index).main);
+        }
     }
 
     style() {
         // BOOTSTRAP
 
-        this.body.classList.add(...[]);
-        this.html.classList.add(...[]);
-        this.page.classList.add(...[]);
-        this.wrapper.classList.add(...[]);
+        this.body.classList.add(...APP.body);
+        this.html.classList.add(...APP.html);
+        this.page.classList.add(...APP.page);
+        this.wrapper.classList.add(...APP.wrapper);
     }
 }
 
-const APP = new App();
-export default APP;
+const Application = new App();
+export default Application;

@@ -1,25 +1,17 @@
-import BaseComponent from "./baseComponent.js";
+import BaseComponent from "./BaseComponent.js";
+import { DONUT } from '../../style_config.js';
 // import Chart from "chart.js";
 
 export default class DonutChart extends BaseComponent {
-    constructor(style_config = {}) {
-        const STYLE_CONFIG_FINAL = {
-            "main": style_config.main || [],
-            "title": style_config.title || [],
-            "subtitle": style_config.subtitle || [],
-            "canvas": style_config.canvas || [],
+    constructor() {
+        const SCHEMA = {
+            _tag: "div",
+            title: "h3",
+            subtitle: "h4",
+            canvas: "canvas"
         }
+        super(SCHEMA, DONUT);
 
-        super(STYLE_CONFIG_FINAL);
-    }
-
-    spawn() {
-        this.main = document.createElement("div");
-        this.elements = {
-            "title": document.createElement("h3"),
-            "subtitle": document.createElement("h4"),
-            "canvas": document.createElement("canvas"),
-        }
         // this.chart = new Chart(this.elements.canvas, {
         //     'type': 'doughnut',
         //     'data': {
@@ -30,22 +22,6 @@ export default class DonutChart extends BaseComponent {
         //         }]
         //     }
         // });
-    }
-
-
-    style() {
-        this.main.classList.add(...[], ...this.style_config.main);
-        this.elements.title.classList.add(...[], ...this.style_config.title);
-        this.elements.subtitle.classList.add(...[], ...this.style_config.subtitle);
-        this.elements.canvas.classList.add(...[], ...this.style_config.canvas);
-    }
-
-    build() {
-        this.main.replaceChildren(
-            this.elements.title,
-            this.elements.subtitle,
-            this.elements.canvas
-        )
     }
 
     updateChartData(labels = this.chart.data.labels , dataset_data = this.chart.data.datasets[0].data, dataset_label = this.chart.data.datasets[0].label) {
