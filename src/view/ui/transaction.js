@@ -23,7 +23,9 @@ export default class Transaction extends BaseComponent{
     setup(config){
         this.title.textContent = config['title'] || "Transações"
         this.csvButton.innerHTML = '<img src="./assets/csv.png" alt="CSV">';
-        this.csvButton.href = "https://www.youtube.com/watch?v=xvFZjo5PgG0"
+        this.csvButton.addEventListener('click', () => {
+            alert("Função de exportação CSV ainda não implementada!");
+        });
         this.button.textContent = config['button_title'] || "Adicionar Transação"
         this.table_header.textContent = ""
         const headers = ['Data', 'Categoria', 'Tipo', 'Valor']
@@ -131,13 +133,13 @@ export default class Transaction extends BaseComponent{
             const color = item.value.includes('-') ? "#e74c3c" : "#2ecc71";
             
             tr.innerHTML = `
-                <td style="padding: 20px; border-radius: 10px 0 0 10px; font-weight: bold;">${item.date}</td>
-                <td style="padding: 20px; font-style: italic; color: #666;">${item.description}</td>
-                <td style="padding: 20px; font-weight: bold; text-transform: uppercase; font-size: 0.8rem;">${item.value.includes('-') ? 'Despesa' : 'Entrada'}</td>
-                <td style="padding: 20px; font-weight: bold; font-size: 1.1rem; color: ${color}">${item.value}</td>
+                <td style="padding: 20px; border-radius: 10px 0 0 10px; font-weight: bold; font-size: 24px; color: #000000;">${item.date}</td>
+                <td style="padding: 20px; font-style: italic; font-weight: bold; font-size: 24px; color: #000000;">${item.description}</td>
+                <td style="padding: 20px; font-weight: bold; color: #000000; text-transform: uppercase; font-size: 24px;">${item.value.includes('-') ? 'Despesa' : 'Entrada'}</td>
+                <td style="padding: 20px; font-weight: bold; font-size: 24px; color: ${color}">${item.value}</td>
                 <td style="padding: 20px; border-radius: 0 10px 10px 0; text-align: right;">
-                    <button style="background:none; border:none; cursor:pointer; margin-right: 10px;">✏️</button>
-                    <button class="delete-btn" style="background:none; border:none; cursor:pointer; color: #6ca09d;">🗑️</button>
+                    <button style="background:none; border:none; cursor:pointer; margin-right: 10px;"><img src="./assets/green-edit-icon.png" alt="Edit" style="width: 30px; height: 30px;"></button>
+                    <button class="delete-btn" style="background:none; border:none; cursor:pointer; color: #6ca09d;"><img src="./assets/green-delete-icon.png" alt="Delete" style="width: 30px; height: 30px;"></button>
                 </td>
             `;
 
