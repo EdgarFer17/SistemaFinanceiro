@@ -7,30 +7,33 @@ export default class Transaction extends BaseComponent{
     
     spawn(){
         this.main = document.createElement('main')
+        this.transactionList = []
         this.header_wrapper = document.createElement('div')
         this.title = document.createElement('h1')
+        this.csvButton = document.createElement('a')
         this.button =  document.createElement('button')
         this.cards_container = document.createElement('section')
         this.table_header = document.createElement('table')
         this.thead_table = document.createElement('thead')
         this.tr_table = document.createElement('tr')
         this.modalTransaction = document.createElement('div')
+        this.tbody_table = document.createElement('tbody')
 
     }
     setup(config){
         this.title.textContent = config['title'] || "Transações"
+        this.csvButton.innerHTML = '<img src="./assets/csv.png" alt="CSV">';
+        this.csvButton.href = "https://www.youtube.com/watch?v=xvFZjo5PgG0"
         this.button.textContent = config['button_title'] || "Adicionar Transação"
-        this.transactionList = []
         this.table_header.textContent = ""
-        const headers = ['Descrição', 'Valor', 'Categoria', 'Data']
+        const headers = ['Data', 'Categoria', 'Tipo', 'Valor']
         headers.forEach(header => {
             const th = document.createElement('th')
             th.textContent = header
             this.tr_table.appendChild(th)
         })
         this.button.addEventListener ('click', () => this.modalTransactionEvent())
-            
-                
+        
     }
 
 
@@ -80,11 +83,85 @@ export default class Transaction extends BaseComponent{
             const modalEl = this.modalTransaction.querySelector('#exampleModal');
             const modalBootstrap = new bootstrap.Modal(modalEl);
             modalBootstrap.show();
+            const btnSave = this.modalTransaction.querySelector('#btnSave');
+            btnSave.addEventListener('click', () => {
+
+                const valueEl = this.modalTransaction.querySelector('#transactionValue');
+                const typeEl = this.modalTransaction.querySelector('#transactionType');
+                const categoryEl = this.modalTransaction.querySelector('#transactionCategory');
+
+
+                const val = valueEl.value;
+                const type = typeEl.value;
+                const cat = categoryEl.value;
+
+
+                if(!val || !type || !cat) {
+                    alert("Preencha todos os campos!");
+                    return;
+                }
+
+  
+                const newTransaction = {
+                    description: cat,
+                    value: type === "Saída" ? `- R$ ${val}` : `R$ ${val}`,
+                    category: cat,
+                    date: new Date().toLocaleDateString('pt-BR')
+                };
+
+                this.TransactionListUpdate(newTransaction);
+                modalBootstrap.hide();
+            });
     }
 
+    TransactionListUpdate(transaction){
+        if (transaction) {
+            this.transactionList.push(transaction);
+        }
+
+        this.tbody_table.innerHTML = "";
+
+        this.transactionList.forEach((item, index) => { 
+            const tr = document.createElement('tr');
+            
+            tr.style.backgroundColor = "white";
+            tr.style.borderRadius = "10px";
+            tr.style.boxShadow = "0 4px 6px rgba(0,0,0,0.05)";
+            
+            const color = item.value.includes('-') ? "#e74c3c" : "#2ecc71";
+            
+            tr.innerHTML = `
+                <td style="padding: 20px; border-radius: 10px 0 0 10px; font-weight: bold;">${item.date}</td>
+                <td style="padding: 20px; font-style: italic; color: #666;">${item.description}</td>
+                <td style="padding: 20px; font-weight: bold; text-transform: uppercase; font-size: 0.8rem;">${item.value.includes('-') ? 'Despesa' : 'Entrada'}</td>
+                <td style="padding: 20px; font-weight: bold; font-size: 1.1rem; color: ${color}">${item.value}</td>
+                <td style="padding: 20px; border-radius: 0 10px 10px 0; text-align: right;">
+                    <button style="background:none; border:none; cursor:pointer; margin-right: 10px;">✏️</button>
+                    <button class="delete-btn" style="background:none; border:none; cursor:pointer; color: #6ca09d;">🗑️</button>
+                </td>
+            `;
+
+            const btnDelete = tr.querySelector('.delete-btn');
+            btnDelete.addEventListener('click', () => {
+                this.destroy(index);
+            });
+
+            this.tbody_table.appendChild(tr);
+        });
+    }
+
+    destroy(index) {
+        if (confirm("Deseja realmente excluir esta transação?")) {
+            this.transactionList.splice(index, 1); 
+            this.TransactionListUpdate(); 
+        }
+    }
 
     style(style_config){
+        this.title.style.fontSize = "32px"
         this.title.style.color = "#6ca09d"
+        this.title.style.marginBottom = "10%"
+        this.title.style.paddingLeft = "45%"
         this.table_header.style.width = "100%"
         this.table_header.style.fontSize = "18px"
         this.table_header.style.color = "#6ca09d"
@@ -99,8 +176,24 @@ export default class Transaction extends BaseComponent{
         this.button.style.padding = "10px 20px";
         this.button.style.borderRadius = "5px";
         this.button.style.cursor = "pointer";
+        this.button.style.marginLeft = "80%"
+        this.table_header.style.width = "100%";
+        this.table_header.style.borderCollapse = "separate";
+        this.table_header.style.borderSpacing = "0 12px";
+        this.cards_container.style.display = "grid";
+        this.cards_container.style.gridTemplateColumns = "repeat(3, 1fr)";
+        this.cards_container.style.gap = "20px";
+        this.cards_container.style.marginBottom = "30px";
+        this.csvButton.style.backgroundColor = "transparent";
+        this.csvButton.style.border = "none";
+        this.csvButton.style.cursor = "pointer";
+        this.csvButton.style.position = "absolute";
+        this.csvButton.style.marginLeft = "90%";
+        this.csvButton.style.width = "1px";
+        this.csvButton.style.height = "1px";
     }
     build() {
+        this.main.appendChild(this.csvButton);
         this.header_wrapper.appendChild(this.title);
         this.header_wrapper.appendChild(this.button);
         this.main.appendChild(this.header_wrapper);
@@ -109,5 +202,7 @@ export default class Transaction extends BaseComponent{
         this.table_header.appendChild(this.thead_table)
         this.main.appendChild(this.table_header)
         this.main.appendChild(this.modalTransaction);
+        this.table_header.appendChild(this.tbody_table)
     }
+    
 }
