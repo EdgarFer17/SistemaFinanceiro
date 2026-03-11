@@ -1,6 +1,6 @@
 // tabs para alternar entre seções
 import BaseComponent from './BaseComponent.js';
-import { TAB } from '../../style_config.js';
+import { TAB_ACTIVE, TAB_INACTIVE } from '../../style_config.js';
 
 export default class ComponentTab extends BaseComponent {
     constructor() {
@@ -13,11 +13,21 @@ export default class ComponentTab extends BaseComponent {
             }
         }
 
-        super(SCHEMA, TAB);
+        super(SCHEMA, TAB_INACTIVE);
+        this.is_active = false;
     }
 
     updateName(_name = 'default') {
         BaseComponent.updateText(_name, this.elements.text);
+    }
+
+    updateIcon(_src, _alt) {
+        BaseComponent.updateImg(_src, _alt, this.elements.icon);
+    }
+
+    changeStatus(_status) {
+        this.is_active = _status;
+        this.style(this.is_active ? TAB_ACTIVE : TAB_INACTIVE);
     }
 
     setFunction(

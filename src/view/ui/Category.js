@@ -1,8 +1,8 @@
-import BaseComponent from "./components/baseComponent";
+import BaseComponent from "./components/BaseComponent.js";
 
-class Category extends BaseComponent {
-    constructor(config, style_config) {
-        super(config, style_config);
+export default class Category extends BaseComponent {
+    constructor() {
+        super({_tag: "main"}, {});
     }
 
     spawn() {
@@ -43,18 +43,6 @@ class Category extends BaseComponent {
 
         card.append(name, actions);
         return card;
-    }
-
-    style(style_config) {
-        this.main.style.padding = "20px";
-        this.cards_container.style.display = "grid";
-        this.cards_container.style.gridTemplateColumns = "repeat(3, 1fr)";
-        this.cards_container.style.gap = "20px";
-        this.button.style.backgroundColor = "#6ca09d";
-        this.button.style.color = "white";
-        this.button.style.border = "none";
-        this.button.style.padding = "10px 20px";
-        this.button.style.borderRadius = "5px";
     }
 
     build() {

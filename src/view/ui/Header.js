@@ -6,16 +6,19 @@ export default class Header extends BaseComponent {
     constructor() {
         const SCHEMA = {
             _tag: "header",
-            brand_wrapper: {
+            header_wrapper: {
                 _tag: "div",
-                brand_icon: "img",
-                brand_name: "h1"
-            },
-            user_wrapper: {
-                _tag: "button",
-                user_icon: "img",
-                user_name: "h2",
-                user_post_icon: "img"
+                brand_wrapper: {
+                    _tag: "div",
+                    brand_icon: "img",
+                    brand_name: "h1"
+                },
+                user_wrapper: {
+                    _tag: "button",
+                    user_icon: "img",
+                    user_name: "h2",
+                    user_post_icon: "img"
+                }
             }
         }
         super(SCHEMA, HEADER);
@@ -27,6 +30,18 @@ export default class Header extends BaseComponent {
 
     updateUsername(_username = 'New User') {
         BaseComponent.updateText(_username, this.elements.user_name);
+    }
+
+    updateBrandIcon(_src, _alt) {
+        BaseComponent.updateImg(_src, _alt, this.elements.brand_icon);
+    }
+
+    updateUserIcon(_src, _alt) {
+        BaseComponent.updateImg(_src, _alt, this.elements.user_icon);
+    }
+
+    updateUserPostIcon(_src, _alt) {
+        BaseComponent.updateImg(_src, _alt, this.elements.user_post_icon);
     }
 
     setModalFunction(

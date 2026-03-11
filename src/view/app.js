@@ -4,6 +4,8 @@ import Header from './ui/Header.js';
 import SideNav from './ui/Sidenav.js';
 import PageState from '../repository/PageState.js';
 import Dashboard from './ui/Dashboard.js';
+import Transaction from './ui/Transaction.js'
+import Category from './ui/Category.js'
 import { APP } from './style_config.js';
 class App {
     constructor() {
@@ -23,8 +25,8 @@ class App {
         this.sidenav = new SideNav();
         this.pages = [
             new Dashboard(),
-            // new Transaction(),
-            // new Category(),
+            new Transaction(),
+            new Category(),
         ];
     }
 
@@ -38,6 +40,8 @@ class App {
                     this.buildPage(0);
                     PageState.save(0);
                 },
+                src: './assets/Dashboard.svg',
+                alt: 'Dashboard Icon',
             }
         );
         this.sidenav.addTab(
@@ -47,6 +51,8 @@ class App {
                     this.buildPage(1);
                     PageState.save(1);
                 },
+                src: './assets/Category.svg',
+                alt: 'Category Icon',
             }
         );
         this.sidenav.addTab(
@@ -56,10 +62,17 @@ class App {
                     this.buildPage(2);
                     PageState.save(2);
                 },
+                src: './assets/Transaction.svg',
+                alt: 'Transaction Icon',
             }
         );
+        this.sidenav.updateToggleIcon('./assets/Menu.svg', "Navbar Toggle")
+        this.sidenav.tabs.at(PageState.load()).changeStatus();
 
         this.header.updateBrandName();
+        this.header.updateBrandIcon("./assets/brandIcon.svg", "icone da marca");
+        this.header.updateUserIcon("./assets/Profile.svg", "icone da marca");
+        this.header.updateUserPostIcon("./assets/Back.svg", "icone da marca");
         this.header.updateUsername();
         this.header.setModalFunction();
 
@@ -79,6 +92,10 @@ class App {
 
     buildPage(page_index) {
         if (page_index >= 0 && page_index < this.pages.length) {
+            for (const TAB of this.sidenav.tabs) {
+                TAB.changeStatus(false);
+            }
+            this.sidenav.tabs.at(page_index).changeStatus(true);
             this.page.replaceChildren(this.pages.at(page_index).main);
         }
     }

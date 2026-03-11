@@ -8,7 +8,7 @@ export default class BaseComponent {
 
         this.main = this.#parseSchema("main", schema);
         // delete this.elements.main;
-        this.#style(style_config);
+        this.style(style_config);
     }
 
     destroy() {
@@ -45,19 +45,23 @@ export default class BaseComponent {
         return EL;
     }
     
-    #style(style_config) {
+    style(style_config) {
         const MAIN_CLASSES = style_config["main"];
         if (MAIN_CLASSES !== undefined) {
+            this.main.className = "";
             this.main.classList.add(...MAIN_CLASSES);
         }
         
         for (const [NAME, CLASSES] of Object.entries(style_config)) {
             const EL = this.elements[NAME];
             if (!(EL instanceof HTMLElement)) {
+                console.log(EL)
                 console.error(`Há uma estilização errada, ajuste para evitar erros: ${NAME}. retire para funcionar!`)
+                console.error(NAME, CLASSES)
             }
             
             if (EL && Array.isArray(CLASSES)) {
+                EL.className = "";
                 EL.classList.add(...CLASSES);
             }
         }
