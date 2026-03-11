@@ -18,6 +18,7 @@ export default class Transaction extends BaseComponent{
         this.tr_table = document.createElement('tr')
         this.modalTransaction = document.createElement('div')
         this.tbody_table = document.createElement('tbody')
+        this.editButton = document.createElement('button')
 
     }
     setup(config){
@@ -35,9 +36,11 @@ export default class Transaction extends BaseComponent{
             this.tr_table.appendChild(th)
         })
         this.button.addEventListener ('click', () => this.modalTransactionEvent())
-        
+        this.editButton.addEventListener('click', () => this.modalEditTransactionEvent())
     }
 
+
+    
 
     modalTransactionEvent(){
         this.modalTransaction.innerHTML = `
@@ -114,7 +117,85 @@ export default class Transaction extends BaseComponent{
                 this.TransactionListUpdate(newTransaction);
                 modalBootstrap.hide();
             });
-    }
+        }
+
+
+
+
+
+
+    modalEditTransactionEvent(transaction, index){
+        this.modalTransaction.innerHTML = `
+            <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered"> 
+                    <div class="modal-content" style="padding: 20px; border-radius: 15px;">
+                        <div class="modal-header" style="border: none;">
+                            <h2 class="modal-title" style="color: #6ca09d; font-weight: bold;">Editar Transação</h2>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div> 
+                        <div class="modal-body>
+                            <div class="mb-3">
+                                <label class="form-label" style="color: #6ca09d; font-size: 1.2rem;">Valor</label>
+                                <input type="number" class="form-control" id="editTransactionValue" value="${transaction.value.replace(/[^0-9.-]+/g,"")}" placeholder="Digite o valor">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label
+                                " style="color: #6ca09d; font-size: 1.2rem;">Tipo</label>
+                                <select class="form-select" id="editTransactionType">
+                                    <option value="" disabled>Selecione o tipo</option>
+                                    <option value="Entrada" ${!transaction.value.includes('-') ? 'selected' : ''}>Entrada</option>
+                                    <option value="Saída" ${transaction.value.includes('-') ? 'selected' : ''}>Saída</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" style="color: #6ca09d; font-size: 1.2rem;">Categoria</label>
+                                <select class="form-select" id="editTransactionCategory">
+                                    <option value="" disabled>Selecione a categoria</option>
+                                    <option value="Alimentação" ${transaction.category === "Alimentação" ? 'selected' : ''}>Alimentação</option>
+                                    <option value="Transporte" ${transaction.category === "Transporte" ? 'selected' : ''}>Transporte</option>
+                                    <option value="Lazer" ${transaction.category === "Lazer" ? 'selected' : ''}>Lazer</option>
+                                </select>
+                            </div>
+                            <button id="btnSaveEdit" class="btn w-100 mt-4" style="background-color: #6ca09d; color: white; padding: 12px; font-size: 1.1rem;">
+                                Salvar Alterações
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>`
+            const modalEl = this.modalTransaction.querySelector('#editModal');
+            const modalBootstrap = new bootstrap.Modal(modalEl);
+            modalBootstrap.show();
+            const btnSaveEdit = this.modalTransaction.querySelector('#btnSaveEdit');
+            btnSaveEdit.addEventListener('click', () => {
+
+                const valueEl = this.modalTransaction.querySelector('#editTransactionValue');
+                const typeEl = this.modalTransaction.querySelector('#editTransactionType');
+                const categoryEl = this.modalTransaction.querySelector('#editTransactionCategory');
+                const val = valueEl.value;
+                const type = typeEl.value;
+                const cat = categoryEl.value;
+
+                if(!val || !type || !cat) {
+                    alert("Preencha todos os campos!");
+                    return;
+                }
+                const updatedTransaction = {
+                    description: cat,
+                    value: type === "Saída" ? `- R$ ${val}` : `R$ ${val}`,
+                    category: cat,
+                    date: transaction.date
+                };
+                this.transactionList[index] = updatedTransaction;
+                this.TransactionListUpdate();
+                modalBootstrap.hide();
+            });
+        };
+
+    
+
+    
+    
 
     TransactionListUpdate(transaction){
         if (transaction) {
@@ -138,7 +219,7 @@ export default class Transaction extends BaseComponent{
                 <td style="padding: 20px; font-weight: bold; color: #000000; text-transform: uppercase; font-size: 24px;">${item.value.includes('-') ? 'Despesa' : 'Entrada'}</td>
                 <td style="padding: 20px; font-weight: bold; font-size: 24px; color: ${color}">${item.value}</td>
                 <td style="padding: 20px; border-radius: 0 10px 10px 0; text-align: right;">
-                    <button style="background:none; border:none; cursor:pointer; margin-right: 10px;"><img src="./assets/green-edit-icon.png" alt="Edit" style="width: 30px; height: 30px;"></button>
+                    <button class="edit-btn" style="background:none; border:none; cursor:pointer; margin-right: 10px;"><img src="./assets/green-edit-icon.png" alt="Edit" style="width: 30px; height: 30px;"></button>
                     <button class="delete-btn" style="background:none; border:none; cursor:pointer; color: #6ca09d;"><img src="./assets/green-delete-icon.png" alt="Delete" style="width: 30px; height: 30px;"></button>
                 </td>
             `;
@@ -148,9 +229,18 @@ export default class Transaction extends BaseComponent{
                 this.destroy(index);
             });
 
+            const btnEdit = tr.querySelector('.edit-btn');
+            btnEdit.addEventListener('click', () => {
+                this.modalEditTransactionEvent(item, index); 
+            });
+
             this.tbody_table.appendChild(tr);
         });
     }
+
+
+
+
 
     destroy(index) {
         if (confirm("Deseja realmente excluir esta transação?")) {
@@ -158,6 +248,10 @@ export default class Transaction extends BaseComponent{
             this.TransactionListUpdate(); 
         }
     }
+
+
+
+
 
     style(style_config){
         this.title.style.fontSize = "32px"
@@ -194,6 +288,10 @@ export default class Transaction extends BaseComponent{
         this.csvButton.style.width = "1px";
         this.csvButton.style.height = "1px";
     }
+
+
+
+
     build() {
         this.main.appendChild(this.csvButton);
         this.header_wrapper.appendChild(this.title);
