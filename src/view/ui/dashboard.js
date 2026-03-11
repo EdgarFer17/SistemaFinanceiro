@@ -3,6 +3,9 @@ import BaseComponent from "./components/baseComponent.js";
 export default class Dashboard extends BaseComponent {
     constructor(config = {}, style_config = {}) {
         super(config, style_config)
+        this.currency = 0;
+        this.health_status = "a";
+        this.hide_backup = [];
     }
 
     spawn() {
@@ -14,11 +17,11 @@ export default class Dashboard extends BaseComponent {
                 ope_div: {
                     _tag: "div",
                     ope_report_div: {
-                        _tag:"div",
+                        _tag:"button",
                         ope_report_icon: "img",
                     },
                     ope_show_div: {
-                        _tag: "div",
+                        _tag: "button",
                         ope_show_icon: "img",
                     },
                 },
@@ -73,6 +76,7 @@ export default class Dashboard extends BaseComponent {
 
             transaction_section: {
                 _tag: "section",
+                transaction_title: "h3",
                 transaction_table: {
                     _tag: "table",
                     transaction_th: {
@@ -87,9 +91,11 @@ export default class Dashboard extends BaseComponent {
         this.main = this.parseSchema("main", SCHEMA_FINAL);
         delete this.elements.main;
     }
-    setup() {
 
+    setup() {
+        this.setFunction('click', ()=>{this.toggleShow()}, this.elements.ope_show_div)
     }
+
     style(style_config) {
         const MAIN_CLASSES = style_config.main;
         if (MAIN_CLASSES !== undefined) {
@@ -120,6 +126,64 @@ export default class Dashboard extends BaseComponent {
             }
         }
         return EL;
+    }
+
+    updateTitle(_text){
+        this.elements.title.textContet = _text;
+    };
+    updateCurrency(_currency){
+        if (typeof _currency === "number") {
+            this.currency = _currency;
+            this.elements.balance_currency.textContent = `R$: ${this.currency}`;
+        }
+    };
+    updateHealthStatus(_status){
+        this.elements.health_status.textContent = _status;
+        // if (_status === ) PRECISO DO REPOSITORY, ou do FIGMA
+        this.elements.health_status.classList.toggle("text-danger");
+    };
+
+    toggleShow(){
+        if (this.hide_backup.length > 0) {
+            const TO_SHOW = [
+                this.elements.donut_1_chart_div,
+                this.elements.donut_2_div_2,
+                this.elements.bar_component,
+                this.elements.transaction_table,
+            ]
+            for (const i in this.hide_backup) {
+                TO_SHOW[i].replaceChildren(...this.hide_backup[i]);
+            }
+            this.hide_backup = [];
+            this.elements.balance_currency.textContent = `R$: ${this.currency}`;
+            this.elements.health_status.textContent = this.health_status;
+        } else {
+            this.hide_backup = [];
+            const TO_HIDE = [
+                this.elements.donut_1_chart_div,
+                this.elements.donut_2_div_2,
+                this.elements.bar_component,
+                this.elements.transaction_table,
+            ]
+            const HIDE_ELEMENTS = [];
+            for (let i = 0; i < 4; i++) {
+                this.hide_backup.push([...TO_HIDE.at(i).children]);
+                HIDE_ELEMENTS.push(document.createElement("img"));
+                HIDE_ELEMENTS.at(i).src = "./assets/Hide.svg";
+                HIDE_ELEMENTS.at(i).alt = "Elemento Escondido Pelo Usuário!";
+                TO_HIDE.at(i).replaceChildren(HIDE_ELEMENTS.at(i));
+            }
+    
+            this.elements.balance_currency.textContent = `R$: ${"*".repeat(this.currency.toString().length)}`;
+            this.elements.health_status.textContent = "*".repeat(this.health_status.length);
+        }
+    };
+
+    setFunction(_event, _function, _element) {
+        const SIGNAL = this.controller.signal;
+        if (_element instanceof HTMLElement) {
+            _element.addEventListener(_event, _function, { SIGNAL });
+        }
     }
 }
 

@@ -2,6 +2,8 @@ export default class BaseComponent {
     constructor(config, style_config) {
         if (!config) throw new Error('Um objeto config é obrigatório');
 
+        this.controller = new AbortController();
+
         this.elements = {};
 
         this.spawn();
