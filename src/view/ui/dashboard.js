@@ -96,7 +96,7 @@ export default class Dashboard extends BaseComponent {
             this.main.classList.add(...MAIN_CLASSES);
         }
         for (const [NAME, CLASSES] of Object.entries(style_config)) {
-            const EL = this.elements.name;
+            const EL = this.elements[NAME];
             if (EL && Array.isArray(CLASSES)) {
                 EL.classList.add(...CLASSES);
             }
@@ -123,6 +123,6 @@ export default class Dashboard extends BaseComponent {
     }
 }
 
-const A = new Dashboard({}, {main:["teste"]});
+const A = new Dashboard({}, {main:["teste", "opa"], donut_section:["tituloAQUIEm"]});
 document.body.appendChild(A.main)
 console.log(A)
