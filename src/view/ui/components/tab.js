@@ -8,24 +8,23 @@ export default class ComponentTab extends BaseComponent {
     spawn() {
         this.main = document.createElement('div');
         this.action = document.createElement('button');
-        this.icon = document.createElement('teste'); // verificar como será implementado
+        this.icon = document.createElement('img'); // verificar como será implementado
         this.text = document.createElement('p');
     }
 
     setup(config) {
+        const SIGNAL = this.controller.signal;
         this.text.textContent = config['name'];
-        this.action.onclick = config['function'];
-        // this.setIcon(icon);
+        this.action.addEventListener('click', config['function'], { SIGNAL });
+        this.icon.src = config.icon_src;
+        this.icon.alt = config.icon_alt;
     }
 
     style(style_config = { main: [], button: [], icon: [], text: [] }) {
 
         this.main.classList.add(...[], ...style_config.main);
-
         this.action.classList.add(...[], ...style_config.button);
-
         this.icon.classList.add(...[], ...style_config.icon);
-
         this.text.classList.add(...[], ...style_config.text);
     }
 

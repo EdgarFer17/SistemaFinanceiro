@@ -8,6 +8,8 @@ export default class SideNav extends BaseComponent {
 
     spawn() {
         this.aside = document.createElement('aside');
+        this.toggle_wrapper = document.createElement('button');
+        this.toggle_icon = document.createElement('img');
         this.tab_wrapper = document.createElement('div');
         this.footer = document.createElement('footer');
 
@@ -31,18 +33,24 @@ export default class SideNav extends BaseComponent {
         }
 
         // Tabs
-        for (const TAB of config.tab) {
-            this.tabs.push(new ComponentTab(TAB));
+        for (const TAB of config.tab.config) {
+            this.tabs.push(new ComponentTab(TAB, config.tab.style_config));
         }
+
+        const SIGNAL = this.controller.signal;
+
+        this.toggle_wrapper.addEventListener('click', ()=>{this.collapse()}, { SIGNAL });
+        this.toggle_icon.src = './assets/Menu.png';
+        this.toggle_icon.alt = 'Botão para minimizar/expandir o sidenav';
     }
 
-    style(style_config = { aside: [], tab_wrapper: [], footer: [] }) {
+    style(style_config = { aside: [], tab_wrapper: [], footer: [], toggle_icon: [], toggle_wrapper: []}) {
         // BOOTSTRAP
 
         this.aside.classList.add(...[], ...style_config.aside);
-
+        this.toggle_wrapper.classList.add(...[], ...style_config.toggle_wrapper);
+        this.toggle_icon.classList.add(...[], ...style_config.toggle_icon);
         this.tab_wrapper.classList.add(...[], ...style_config.tab_wrapper);
-
         this.footer.classList.add(...[], ...style_config.footer);
     }
 
@@ -52,7 +60,18 @@ export default class SideNav extends BaseComponent {
                 ...this.tabs.map((component) => component.main)
             );
         }
+        this.toggle_wrapper.replaceChildren(this.toggle_icon);
         this.footer.replaceChildren(...this.footer_content);
-        this.aside.replaceChildren(this.tab_wrapper, this.footer);
+        this.aside.replaceChildren(this.toggle_wrapper, this.tab_wrapper, this.footer);
+    }
+
+    collapse() {
+        if (this.is_collapsed) {
+            this.main.classList.remove("navbarCollapsed")
+            this.is_collapsed = false;
+        } else {
+            this.main.classList.add("navbarCollapsed")
+            this.is_collapsed = true;
+        }
     }
 }
