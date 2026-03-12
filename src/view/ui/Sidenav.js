@@ -17,6 +17,8 @@ export default class SideNav extends BaseComponent {
         super(SCHEMA, SIDENAV);
         this.footer_content = [];
         this.tabs = [];
+        this.is_collapsed = false;
+        this.setEvent('click', ()=>{this.collapse()}, this.elements.toggle_wrapper)
     }
 
     addTab(_config) {
@@ -36,6 +38,16 @@ export default class SideNav extends BaseComponent {
         SMALL.classList.add(..._style_config);
         this.footer_content.push(SMALL);
         this.elements.footer.appendChild(SMALL);
+    }
+
+    collapse() {
+        if (this.is_collapsed) {
+            this.main.classList.remove("navbarCollapsed")
+            this.is_collapsed = false;
+        } else {
+            this.main.classList.add("navbarCollapsed")
+            this.is_collapsed = true;
+        }
     }
 
     updateToggleIcon(_src, _alt){

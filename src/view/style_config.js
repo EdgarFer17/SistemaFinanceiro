@@ -16,26 +16,26 @@ export const HEADER = {
     user_post_icon: ["ms-1"],
 }
 export const SIDENAV = {
-    main: ["vh-100", "d-flex", "flex-column", "p-0", "navbar", "bg-primary"],
-    toggle_wrapper: ["btn", "border-0", "bg-transparent", "align-self-end", "w-25", "text-end", "pt-2"],
+    main: ["navbar", "vh-100", "d-flex", "flex-column", "p-0", "bg-primary"],
+    toggle_wrapper: ["toggleWrapper", "btn", "border-0", "bg-transparent", "align-self-end", "w-25", "text-end", "pt-2"],
     toggle_icon: ["img-fluid"],
     tab_wrapper: ["nav", "flex-column", "w-100", "mt-3", "px-3", "gap-1"],
-    footer: ["d-flex", "flex-column", "mt-auto", "text-white-50", "text-center", "mb-3", "w-100", "px-2", "small"],
+    footer: ["navbarFooter", "d-flex", "flex-column", "mt-auto", "text-white-50", "text-center", "mb-3", "w-100", "px-2", "small"],
 }
 export const TAB_ACTIVE = {
-    main: ["nav-link", "bg-white", "d-flex", "align-items-center", "rounded-3", "py-2", "px-3", "shadow-sm"],
+    main: ["tabMain", "nav-link", "bg-white", "d-flex", "align-items-center", "rounded-3", "py-2", "px-3", "shadow-sm"],
     button: ["d-flex", "bg-white", "align-items-center", "border-0", "text-primary", "w-100"],
-    icon: ["tabIcon", "me-3"],
-    text: ["fw-bold", "mb-0"],
+    icon: ["tabIcon", "tabIcon", "me-3"],
+    text: ["tabText", "fw-bold", "mb-0"],
 }
 export const TAB_INACTIVE = {
-    main: ["nav-link", "d-flex", "py-2", "px-3", "rounded-3"],
+    main: ["tabMain", "nav-link", "d-flex", "py-2", "px-3", "rounded-3"],
     button: ["btn", "w-100", "border-0", "bg-transparent", "text-white", "d-flex", "align-items-center"],
     icon: ["tabIcon", "me-3"],
-    text: ["fw-medium", "mb-0"],
+    text: ["tabText", "fw-medium", "mb-0"],
 }
 export const DASHBOARD = {
-    main: [],
+    main: ["d-flex", "flex-column"],
     title_wrapper: [],
     title: [],
     ope_wrapper: [],
