@@ -1,8 +1,9 @@
 import CategoryModel from '../model/categoryModel.js';
-import TransactionModel from '../model/transactionModel.js'
-import TRANSACTION_TYPE_MODEL from '../model/transactionTypeModel.js';
+import CATEGORY_TYPE_MODEL from '../model/categoryTypeModel.js';
+import TransationModel from '../model/transationModel.js'
+import TRANSATION_TYPE_MODEL from '../model/transationTypeModel.js';
 
-export default class TransactionRepository {
+export default class TransationRepository {
 
     // método utilitário para pegar as transações do localStorage
     static _getTransactionsList() {
@@ -13,14 +14,18 @@ export default class TransactionRepository {
     static _saveTransactionsList(transactionsList) {
         localStorage.setItem('transactions', JSON.stringify(transactionsList));
     }
+
+    // método utilitário que gera id auto incrementado
+    static _generateId(transactionsList) {
+        if (transactionsList.length === 0) return 1;
+        return Math.max(...transactionsList.map(c => c.id)) + 1;
+    }
     
     // receber um TransactionModel e insere no localStorage
     static createTransaction(transaction) {
-        if (!(transaction instanceof TransactionModel)) {
-            throw new Error("O parâmetro passado precisa ser um TransactionModel!")
-        }
-
         const transactionsList = this._getTransactionsList();
+
+        transaction.id = this._generateId(transactionsList);
 
         transactionsList.push(transaction);
 
@@ -34,15 +39,18 @@ export default class TransactionRepository {
         return transactionsList.map(t => {
             const category = new CategoryModel(
                 t.category.categoryName,
-                t.category.limit
+                t.category.limit,
+                t.category.type === "PADRÃO"
+                    ? CATEGORY_TYPE_MODEL.DEFAULT
+                    : CATEGORY_TYPE_MODEL.CUSTOM
             );
 
             category.id = t.category.id;
 
-            const transaction = new TransactionModel(
+            const transaction = new TransationModel(
                 new Date(t.date), 
                 category, 
-                t.type === 'DESPESA' ? TRANSACTION_TYPE_MODEL.EXPENSE : TRANSACTION_TYPE_MODEL.INCOME, 
+                t.type === 'DESPESA' ? TRANSATION_TYPE_MODEL.EXPENSE : TRANSATION_TYPE_MODEL.INCOME, 
                 t.value
             );
             transaction.id = t.id;
@@ -50,16 +58,8 @@ export default class TransactionRepository {
         });
     }
 
-    // recebe o id da transação que deseja remover e a transação para modificação
+    // recebe o id da transação que deseja editar e a transação para modificação
     static editTransaction(id, newTransaction) {
-        if (typeof id !== "number" || id < 0) {
-            throw new Error("O id deve ser um número maior do que zero!")
-        }
-
-        if (!(newTransaction instanceof TransactionModel)) {
-            throw new Error("O parâmetro passado precisa ser um TransactionModel!")
-        }
-
         const transactionsList = this._getTransactionsList();
 
         transactionsList.forEach(t => {
@@ -89,4 +89,38 @@ export default class TransactionRepository {
             this._saveTransactionsList(transactionsList);
         }
     }
+
+    // recebe um id e retorna a transação
+        static getTransactionById(id) {
+            if (typeof id !== "number" || id < 0) {
+                throw new Error("O id deve ser um número maior do que zero!")
+            }
+    
+            const transactionsList =  this._getTransactionsList();
+    
+            const transactionStorage = transactionsList.find(c => c.id === id);
+    
+            if (!transactionStorage) {
+                return null;
+            }
+
+            const category = new CategoryModel(
+                transactionStorage.category.categoryName,
+                transactionStorage.category.limit,
+                transactionStorage.category.type === "PADRÃO" ? CATEGORY_TYPE_MODEL.DEFAULT : CATEGORY_TYPE_MODEL.CUSTOM
+            );
+
+            category.id = transactionStorage.category.id;
+    
+            const transaction = new TransationModel(
+                new Date(transactionStorage.date),
+                category,
+                transactionStorage.type === 'DESPESA' ? TRANSATION_TYPE_MODEL.EXPENSE :TRANSATION_TYPE_MODEL.INCOME,
+                transactionStorage.value
+            );
+
+            transaction.id = transactionStorage.id;
+    
+            return transaction;
+        }
 }

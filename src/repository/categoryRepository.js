@@ -1,4 +1,5 @@
 import CategoryModel from '../model/categoryModel.js'
+import CATEGORY_TYPE_MODEL from '../model/categoryTypeModel.js';
 
 export default class CategoryRepository {
 
@@ -11,14 +12,18 @@ export default class CategoryRepository {
     static _saveCategoriesList(categoriesList) {
         localStorage.setItem('categories', JSON.stringify(categoriesList));
     }
+
+    // método utilitário que gera id auto incrementado
+    static _generateId(categoriesList) {
+        if (categoriesList.length === 0) return 1;
+        return Math.max(...categoriesList.map(c => c.id)) + 1;
+    }
     
     // receber um CategoryModel e insere no localStorage
     static createCategory(category) {
-        if (!(category instanceof CategoryModel)) {
-            throw new Error("O parâmetro passado precisa ser um CategoryModel!")
-        }
-
         const categoriesList = this._getCategoriesList();
+
+        category.id = this._generateId(categoriesList);
 
         categoriesList.push(category);
 
@@ -30,28 +35,21 @@ export default class CategoryRepository {
         const categoriesList = this._getCategoriesList();
 
         return categoriesList.map(c => {
-            const category = new CategoryModel(c.categoryName, c.limit);
+            const category = new CategoryModel(c.categoryName, c.limit, c.type === "PADRÃO" ? CATEGORY_TYPE_MODEL.DEFAULT : CATEGORY_TYPE_MODEL.CUSTOM);
             category.id = c.id;
             return category;
         });
     }
 
-    // recebe o id da categoria que deseja remover e a categoria para modificação
+    // recebe o id da categoria que deseja editar e a categoria para modificação
     static editCategory(id, newCategory) {
-        if (typeof id !== "number" || id < 0) {
-            throw new Error("O id deve ser um número maior do que zero!")
-        }
-
-        if (!(newCategory instanceof CategoryModel)) {
-            throw new Error("O parâmetro passado precisa ser um CategoryModel!")
-        }
-
         const categoriesList = this._getCategoriesList();
 
         categoriesList.forEach(c => {
             if (c.id === id) {
                 c.categoryName = newCategory.categoryName;
                 c.limit = newCategory.limit;
+                c.type = newCategory.type;
             }
         })
 
@@ -60,10 +58,6 @@ export default class CategoryRepository {
     
     // recebe um id da categoria e apaga a categoria do localStorage
     static deleteCategory(id) {
-        if (typeof id !== "number" || id < 0) {
-            throw new Error("O id deve ser um número maior do que zero!")
-        }
-
         const categoriesList =  this._getCategoriesList();
 
         const index = categoriesList.findIndex(c => c.id === id);
@@ -72,5 +66,26 @@ export default class CategoryRepository {
             categoriesList.splice(index, 1);
             this._saveCategoriesList(categoriesList);
         }
+    }
+    
+    // recebe um id e retorna a categoria
+    static getCategoryById(id) {
+        const categoriesList =  this._getCategoriesList();
+
+        const categoryStorage = categoriesList.find(c => c.id === id);
+
+        if (!categoryStorage) {
+            return null;
+        }
+
+        const category = new CategoryModel(
+            categoryStorage.categoryName, 
+            categoryStorage.limit,
+            categoryStorage.type === "PADRÃO" ? CATEGORY_TYPE_MODEL.DEFAULT : CATEGORY_TYPE_MODEL.CUSTOM
+        );
+
+        category.id = categoryStorage.id;
+
+        return category;
     }
 }
