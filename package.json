@@ -5,7 +5,8 @@
     "main": "index.js",
     "scripts": {
         "lint": "npx eslint src",
-        "bonito": "npx prettier src --write"
+        "bonito": "npx prettier src --write",
+        "watch:css": "sass --watch public/scss/style.scss public/style/style_bootstrap.css"
     },
     "repository": {
         "type": "git",
