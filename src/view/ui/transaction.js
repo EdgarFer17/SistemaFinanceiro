@@ -1,7 +1,7 @@
 import BaseComponent from "./components/baseComponent.js";
 
 export default class Transaction extends BaseComponent{
-    constructor(config, style_config) {
+    constructor(config = {}, style_config = {}) {
         super(config, style_config);
     }
     

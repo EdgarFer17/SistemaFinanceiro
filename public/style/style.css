@@ -1,0 +1,46 @@
+.brandIcon {
+    height: 3rem;
+}
+
+.tabIcon {
+    height: 2.5rem;
+}
+
+.navbar {
+    width: 250px; 
+    transition: width 0.3s ease-in-out;
+    overflow-x: hidden;
+}
+
+.navbar.navbarCollapsed {
+    width: 80px;
+    justify-content: start;
+}
+
+.navbar.navbarCollapsed .toggleWrapper {
+    align-self: center !important;
+    width: 90% !important;
+    max-width: 50px;
+    text-align: center !important;
+}
+
+.navbar.navbarCollapsed .tabText,
+.navbar.navbarCollapsed .navbarFooter {
+    display: none !important;
+}
+
+.navbar.navbarCollapsed * {
+    padding: 0px !important;
+    margin: 5% !important;
+    width: 90% !important;
+    max-width: 80px;
+    justify-content: center !important;
+}
+
+.modal-1 {
+    display: none;
+}
+
+.show-modal {
+    display: block;
+}
