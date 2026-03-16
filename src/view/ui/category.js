@@ -14,17 +14,17 @@ export default class Category extends BaseComponent {
     }
 
     setup(config) {
-        
         const defaultCategories = [
-            { name: 'Alimentação' }, { name: 'Transporte' }, { name: 'Moradia' },
-            { name: 'Saúde' }, { name: 'Lazer' }, { name: 'Salário' },
-            { name: 'Outros' }, { name: 'Caridade' }, { name: 'Investimentos' }
+            { categoryName: 'Alimentação' }, { categoryName: 'Transporte' }, { categoryName: 'Moradia' },
+            { categoryName: 'Saúde' }, { categoryName: 'Lazer' }, { categoryName: 'Salário' },
+            { categoryName: 'Outros' }, { categoryName: 'Caridade' }, { categoryName: 'Investimentos' }
         ];
 
         this.title.textContent = config['title'] || "Categorias Cadastradas";
         this.button.textContent = config['button_title'] || "Adicionar Categoria";
+        this.button.onclick = config['click_add_category'];
         
-        const categories = config.categories || defaultCategories;
+        const categories = (config.categories && config.categories.length > 0) ? config.categories : defaultCategories;
         
         this.cards_container.innerHTML = ''; 
         categories.forEach(cat => {
@@ -34,69 +34,66 @@ export default class Category extends BaseComponent {
     }
 
     createCategoryCard(categoryData) {
-    const card = document.createElement('div');
-    card.className = 'category-card';
-    
-    const name = document.createElement('span');
-    name.textContent = categoryData.name;
-    name.style.color = "#6ca09d";
-    name.style.fontSize = "1.5rem";
+        const card = document.createElement('div');
+        card.className = 'category-card';
+        
+        const name = document.createElement('span');
+        
+        name.textContent = categoryData.categoryName || categoryData.name;
+        name.style.color = "#6ca09d";
+        name.style.fontSize = "1.5rem";
 
-    const actions = document.createElement('div');
-    actions.style.display = "flex";
-    actions.style.gap = "15px";
-    actions.style.alignItems = "center";
+        const actions = document.createElement('div');
+        actions.style.display = "flex";
+        actions.style.gap = "15px";
+        actions.style.alignItems = "center";
 
-    const editIcon = document.createElement('img');
-    
-    editIcon.src = './assets/gray-edit-icon.png'; 
-    editIcon.alt = 'Editar';
-    editIcon.style.width = '20px';
-    editIcon.style.height = '20px';
-    editIcon.style.cursor = 'pointer';
-    editIcon.onclick = () => console.log('Editar:', categoryData.name);
+        const editIcon = document.createElement('img');
+        editIcon.src = './assets/gray-edit-icon.png'; 
+        editIcon.alt = 'Editar';
+        editIcon.style.width = '20px';
+        editIcon.style.cursor = 'pointer';
 
-   
-    const deleteIcon = document.createElement('img');
-    
-    deleteIcon.src = './assets/gray-delete-icon.png';
-    deleteIcon.alt = 'Excluir';
-    deleteIcon.style.width = '20px';
-    deleteIcon.style.height = '20px';
-    deleteIcon.style.cursor = 'pointer';
-    deleteIcon.onclick = () => console.log('Deletar:', categoryData.name);
+        const deleteIcon = document.createElement('img');
+        deleteIcon.src = './assets/gray-delete-icon.png';
+        deleteIcon.alt = 'Excluir';
+        deleteIcon.style.width = '20px';
+        deleteIcon.style.cursor = 'pointer';
 
-    actions.append(editIcon, deleteIcon);
-    card.append(name, actions);
+        actions.append(editIcon, deleteIcon);
+        card.append(name, actions);
 
-    this.styleCard(card);
-
-    return card;
-}
+        this.styleCard(card);
+        return card;
+    }
 
     style(style_config) {
-        
-        Object.assign(this.main.style, {
+         Object.assign(this.main.style, {
             padding: "40px",
-            flexGrow: "1",
             display: "flex",
             flexDirection: "column",
-            gap: "30px",
-            fontFamily: "sans-serif"
+            alignItems: "center", 
+            width: "100%",
+            minHeight: "100vh",
+            boxSizing: "border-box",
+            position: "relative" 
         });
 
-       
+        
         Object.assign(this.header_wrapper.style, {
+            width: "100%",
+            maxWidth: "1000px",
             display: "flex",
-            justifyContent: "space-between",
+            justifyContent: "center",
             alignItems: "center",
-            width: "100%"
+            marginBottom: "20px",
+            position: "relative"
         });
 
         this.title.style.color = "#6ca09d";
-        this.title.style.fontWeight = "400";
-        this.title.style.margin = "0 auto"; 
-        
+        this.title.style.margin = "0";
+
+       
         Object.assign(this.button.style, {
             backgroundColor: "#6ca09d",
             color: "white",
@@ -106,29 +103,38 @@ export default class Category extends BaseComponent {
             cursor: "pointer",
             fontWeight: "bold",
             position: "absolute", 
-            right: "40px"
+            right: "0"
         });
 
         
         Object.assign(this.cards_container.style, {
             display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: "25px",
-            marginTop: "20px"
+            gridTemplateColumns: "repeat(3, 320px)", 
+            gap: "30px",
+            marginTop: "40px",
+            justifyContent: "center", 
+            width: "100%",
+            maxWidth: "1100px"
         });
     }
+
     styleCard(card) {
-    Object.assign(card.style, {
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "30px 30px",
-        border: "1px solid #d1e3e2",
-        borderRadius: "8px",
-        backgroundColor: "white",
-        boxShadow: "0 2px 4px rgba(0,0,0,0.05)"
-    });
-}
+        Object.assign(card.style, {
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: "40px 25px",
+            minHeight: "130px",
+            border: "1px solid #d1e3e2",
+            borderRadius: "12px",
+            backgroundColor: "white",
+            boxShadow: "0 4px 10px rgba(0,0,0,0.05)",
+            boxSizing: "border-box",
+            transition: "transform 0.2s" 
+        });
+        card.onmouseenter = () => card.style.transform = "scale(1.03)";
+        card.onmouseleave = () => card.style.transform = "scale(1)";
+    }
 
     build() {
         this.header_wrapper.appendChild(this.title);
