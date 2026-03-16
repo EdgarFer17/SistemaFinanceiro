@@ -6,6 +6,7 @@ import PageState from '../repository/pageState.js';
 import Category from './ui/category.js'
 import Transaction from './ui/transaction.js';
 import Dashboard from './ui/dashboard.js';
+import ModalReport from './ui/modal/report.js';
 
 class App {
     constructor() {
@@ -36,8 +37,8 @@ class App {
                         icon_src: './assets/Dashboard.png',
                         icon_alt: 'Botão de Dashboard',
                         function: () => {
-                            this.buildPage(0);
-                            PageState.save(0);
+                            this.buildPage("Dashboard");
+                            PageState.save("Dashboard");
                         },
                     },
                     {
@@ -45,8 +46,8 @@ class App {
                         icon_src: './assets/Category.png',
                         icon_alt: 'Botão de Categorias',
                         function: () => {
-                            this.buildPage(1);
-                            PageState.save(1);
+                            this.buildPage("Category");
+                            PageState.save("Category");
                         },
                     },
                     {
@@ -54,8 +55,8 @@ class App {
                         icon_src: './assets/Transaction.png',
                         icon_alt: 'Botão de Transações',
                         function: () => {
-                            this.buildPage(2);
-                            PageState.save(2);
+                            this.buildPage("Transaction");
+                            PageState.save("Transaction");
                         },
                     },
                 ],
@@ -86,13 +87,16 @@ class App {
         this.body = document.querySelector('body');
         this.wrapper = document.createElement('div');
         this.page = document.createElement('main');
+        this.modal_wrapper = document.createElement('div');
 
-        this.pages = [
-            new Dashboard(),
-            new Category({}),
-            new Transaction({}),
-        ]
-        this.pages[0].main
+        this.pages = {
+            Dashboard: new Dashboard(),
+            Category: new Category({}),
+            Transaction: new Transaction({}),
+        }
+        this.modals = {
+            Report: new ModalReport({}),
+        }
         
         this.header = new Header(this.header_config, this.header_style_config);
         this.sidenav = new SideNav(this.sidenav_config, this.sidenav_style_config);
@@ -101,12 +105,14 @@ class App {
     build() {
         this.buildPage(PageState.load())
         this.wrapper.replaceChildren(this.sidenav.aside, this.page);
-        this.body.replaceChildren(this.header.header, this.wrapper);
+        this.body.replaceChildren(this.header.header, this.wrapper, this.modal_wrapper);
     }
 
-    buildPage(page_index) {
-        if (page_index >= 0 && page_index < this.pages.length)
-        this.page.replaceChildren(this.pages.at(page_index).main);
+    buildPage(page) {
+        const PAGE = this.pages[page];
+        if (PAGE) {
+            this.page.replaceChildren(PAGE.main);
+        }
     }
 
     style() {
