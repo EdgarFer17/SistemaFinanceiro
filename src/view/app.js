@@ -5,6 +5,7 @@ import SideNav from './ui/sidenav.js';
 import PageState from '../repository/pageState.js';
 import Category from './ui/category.js'
 import Transaction from './ui/transaction.js';
+import Dashboard from './ui/dashboard.js';
 
 class App {
     constructor() {
@@ -87,7 +88,7 @@ class App {
         this.page = document.createElement('main');
 
         this.pages = [
-            // new Dashboard()
+            new Dashboard(),
             new Category({}),
             new Transaction({}),
         ]

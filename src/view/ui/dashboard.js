@@ -1,4 +1,7 @@
+import ComponentBar from "./components/bar.js";
 import BaseComponent from "./components/baseComponent.js";
+import ComponentDonut from "./components/donut.js";
+import ComponentFilter from "./components/filter.js";
 
 export default class Dashboard extends BaseComponent {
     constructor(config = {}, style_config = {}) {
@@ -45,25 +48,15 @@ export default class Dashboard extends BaseComponent {
                 donut_1_div: {
                     _tag: "div",
                     donut_1_title: "h3",
-                    donut_1_chart_div: {
-                        _tag: "div",
-                        donut_1_chart_title: "h4",
-                        donut_1_chart_subtitle: "h5",
-                        donut_1_component: "i", // adicionar
-                    },
+                    donut_1_component: new ComponentDonut({})
                 },
                 donut_2_div: {
                     _tag: "div",
                     donut_2_title: "h3",
                     donut_2_div_2: {
                         _tag: "div",
-                        donut_2_filter: "i", // adicionar
-                        donut_2_chart_div: {
-                            _tag: "div",
-                            donut_2_chart_title: "h4",
-                            donut_2_chart_subtitle: "h5",
-                            donut_2_component: "i", // adicionar
-                        },
+                        donut_2_filter: new ComponentFilter({}),
+                        donut_2_component: new ComponentDonut({}),
                     },
                 },
             },
@@ -71,7 +64,7 @@ export default class Dashboard extends BaseComponent {
             bar_section: {
                 _tag: "section",
                 bar_title: "h3",
-                bar_component: "i", // adicionar
+                bar_component: new ComponentBar({}),
             },
 
             transaction_section: {
@@ -114,6 +107,12 @@ export default class Dashboard extends BaseComponent {
 
     parseSchema(NAME, SCHEMA) {
         const IS_OBJECT = typeof SCHEMA === "object" && SCHEMA !== null;
+        if (IS_OBJECT) {
+            if(SCHEMA instanceof BaseComponent) {
+                this.elements[NAME] = SCHEMA;
+                return SCHEMA.main;
+            }
+        }
         const TAG_NAME = IS_OBJECT ? SCHEMA._tag : SCHEMA;
         const EL = document.createElement(TAG_NAME);
         this.elements[NAME] = EL;
