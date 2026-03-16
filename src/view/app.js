@@ -76,10 +76,11 @@ class App {
             tab_wrapper: ["nav", "flex-column", "w-100", "mt-3", "px-3", "gap-1"],
             footer: ["navbarFooter", "d-flex", "flex-column", "mt-auto", "text-white-50", "text-center", "mb-3", "w-100", "px-2", "small"], 
         }
-
+        
         this.spawn()
-        this.build()
+        this.setup()
         this.style()
+        this.build()
     }
 
     spawn() {
@@ -91,15 +92,20 @@ class App {
 
         this.pages = {
             Dashboard: new Dashboard(),
-            Category: new Category({}),
-            Transaction: new Transaction({}),
+            Category: new Category(),
+            Transaction: new Transaction(),
         }
         this.modals = {
-            Report: new ModalReport({}),
+            Report: new ModalReport(),
         }
         
         this.header = new Header(this.header_config, this.header_style_config);
         this.sidenav = new SideNav(this.sidenav_config, this.sidenav_style_config);
+    }
+
+    setup() {
+        this.pages["Dashboard"].setReportFunction(()=>{this.toggleModal("Report")})
+        this.modal_wrapper.addEventListener('click', this.toggleModal)
     }
 
     build() {
@@ -114,17 +120,28 @@ class App {
             this.page.replaceChildren(PAGE.main);
         }
     }
+    
+    toggleModal(modal) {
+        if (modal === undefined) {
+            this.modal_wrapper.replaceChildren();
+            this.modal_wrapper.classList.remove("show_modal");
+        } else {
+            const MODAL = this.modals[modal];
+            if (!MODAL) {
+                throw new Error(`Modal Inválido: ${modal}\nModais Disponíveis: ${this.modals}`);
+            }
+            this.modal_wrapper.replaceChildren(MODAL.main)
+            this.modal_wrapper.classList.add("show_modal");
+        }
+    }
 
     style() {
         // BOOTSTRAP
-
         this.body.classList.add(...[]);
-
         this.html.classList.add(...[]);
-
-        this.page.classList.add(...[]);
-
         this.wrapper.classList.add(...["d-flex"]);
+        this.page.classList.add(...[]);
+        this.modal_wrapper.classList.add(...["modal-1"]);
     }
 }
 

@@ -36,3 +36,11 @@
     max-width: 80px;
     justify-content: center !important;
 }
+
+.modal-1 {
+    display: none;
+}
+
+.show-modal {
+    display: block;
+}

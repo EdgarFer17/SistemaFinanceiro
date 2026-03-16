@@ -19,11 +19,11 @@ export default class Dashboard extends BaseComponent {
                 title: "h2",
                 ope_div: {
                     _tag: "div",
-                    ope_report_div: {
+                    ope_report_button: {
                         _tag:"button",
                         ope_report_icon: "img",
                     },
-                    ope_show_div: {
+                    ope_show_button: {
                         _tag: "button",
                         ope_show_icon: "img",
                     },
@@ -86,7 +86,7 @@ export default class Dashboard extends BaseComponent {
     }
 
     setup() {
-        this.setFunction('click', ()=>{this.toggleShow()}, this.elements.ope_show_div)
+        this.setFunction('click', ()=>{this.toggleShow()}, this.elements.ope_show_button)
     }
 
     style(style_config) {
@@ -130,12 +130,14 @@ export default class Dashboard extends BaseComponent {
     updateTitle(_text){
         this.elements.title.textContet = _text;
     };
+
     updateCurrency(_currency){
         if (typeof _currency === "number") {
             this.currency = _currency;
             this.elements.balance_currency.textContent = `R$: ${this.currency}`;
         }
     };
+
     updateHealthStatus(_status){
         this.elements.health_status.textContent = _status;
         // if (_status === ) PRECISO DO REPOSITORY, ou do FIGMA
@@ -145,9 +147,9 @@ export default class Dashboard extends BaseComponent {
     toggleShow(){
         if (this.hide_backup.length > 0) {
             const TO_SHOW = [
-                this.elements.donut_1_chart_div,
+                this.elements.donut_1_component.main,
                 this.elements.donut_2_div_2,
-                this.elements.bar_component,
+                this.elements.bar_component.main,
                 this.elements.transaction_table,
             ]
             for (const i in this.hide_backup) {
@@ -159,9 +161,9 @@ export default class Dashboard extends BaseComponent {
         } else {
             this.hide_backup = [];
             const TO_HIDE = [
-                this.elements.donut_1_chart_div,
+                this.elements.donut_1_component.main,
                 this.elements.donut_2_div_2,
-                this.elements.bar_component,
+                this.elements.bar_component.main,
                 this.elements.transaction_table,
             ]
             const HIDE_ELEMENTS = [];
@@ -178,14 +180,14 @@ export default class Dashboard extends BaseComponent {
         }
     };
 
+    setReportFunction(_function) {
+        this.setFunction('click', _function, this.elements.ope_report_button);
+    }
+
     setFunction(_event, _function, _element) {
         const SIGNAL = this.controller.signal;
         if (_element instanceof HTMLElement) {
-            _element.addEventListener(_event, _function, { SIGNAL });
+            _element.addEventListener(_event, ()=>{_function()}, { SIGNAL });
         }
     }
 }
-
-const A = new Dashboard({}, {main:["teste", "opa"], donut_section:["tituloAQUIEm"]});
-document.body.appendChild(A.main)
-console.log(A)
