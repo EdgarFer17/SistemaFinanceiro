@@ -7,7 +7,7 @@ export default class SideNav extends BaseComponent {
     }
 
     spawn() {
-        this.aside = document.createElement('aside');
+        this.main = document.createElement('aside');
         this.toggle_wrapper = document.createElement('button');
         this.toggle_icon = document.createElement('img');
         this.tab_wrapper = document.createElement('div');
@@ -44,10 +44,10 @@ export default class SideNav extends BaseComponent {
         this.toggle_icon.alt = 'Botão para minimizar/expandir o sidenav';
     }
 
-    style(style_config = { aside: [], tab_wrapper: [], footer: [], toggle_icon: [], toggle_wrapper: []}) {
+    style(style_config = { main: [], tab_wrapper: [], footer: [], toggle_icon: [], toggle_wrapper: []}) {
         // BOOTSTRAP
 
-        this.aside.classList.add(...[], ...style_config.aside);
+        this.main.classList.add(...[], ...style_config.main);
         this.toggle_wrapper.classList.add(...[], ...style_config.toggle_wrapper);
         this.toggle_icon.classList.add(...[], ...style_config.toggle_icon);
         this.tab_wrapper.classList.add(...[], ...style_config.tab_wrapper);
@@ -62,7 +62,7 @@ export default class SideNav extends BaseComponent {
         }
         this.toggle_wrapper.replaceChildren(this.toggle_icon);
         this.footer.replaceChildren(...this.footer_content);
-        this.aside.replaceChildren(this.toggle_wrapper, this.tab_wrapper, this.footer);
+        this.main.replaceChildren(this.toggle_wrapper, this.tab_wrapper, this.footer);
     }
 
     collapse() {

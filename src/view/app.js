@@ -34,49 +34,64 @@ class App {
                 config: [
                     {
                         name: 'Dashboard',
+                        icon_src_active: './assets/DashboardActive.png',
                         icon_src: './assets/Dashboard.png',
                         icon_alt: 'Botão de Dashboard',
                         function: () => {
-                            this.buildPage("Dashboard");
+                            this.buildPage("Dashboard", 0);
                             PageState.save("Dashboard");
                         },
                     },
                     {
                         name: 'Categorias',
+                        icon_src_active: './assets/CategoryActive.png',
                         icon_src: './assets/Category.png',
                         icon_alt: 'Botão de Categorias',
                         function: () => {
-                            this.buildPage("Category");
+                            this.buildPage("Category", 1);
                             PageState.save("Category");
                         },
                     },
                     {
                         name: 'Transações',
+                        icon_src_active: './assets/TransactionActive.png',
                         icon_src: './assets/Transaction.png',
                         icon_alt: 'Botão de Transações',
                         function: () => {
-                            this.buildPage("Transaction");
+                            this.buildPage("Transaction", 2);
                             PageState.save("Transaction");
                         },
                     },
                 ],
                 style_config: {
-                    main: ["tabMain", "nav-link", "d-flex", "py-2", "px-3", "rounded-3"],
-                    button: ["btn", "w-100", "border-0", "bg-transparent", "text-white", "d-flex", "align-items-center"],
-                    icon: ["tabIcon", "me-3"],
-                    text: ["tabText", "fw-medium", "mb-0"] 
+                    inactive: {
+                        main: ["tabMain", "nav-link", "d-flex", "py-2", "px-3", "rounded-3"],
+                        button: ["btn", "w-100", "border-0", "bg-transparent", "text-white", "d-flex", "align-items-center"],
+                        icon: ["tabIcon", "me-3"],
+                        text: ["tabText", "fw-medium", "mb-0"] 
+                    },
+                    active: {
+                        main: ["tabMain", "nav-link", "bg-white", "d-flex", "align-items-center", "rounded-3", "py-2", "px-3", "shadow-sm"],
+                        button: ["d-flex", "bg-white", "align-items-center", "border-0", "text-primary", "w-100"],
+                        icon: ["tabIcon", "tabIcon", "me-3"],
+                        text: ["tabText", "fw-bold", "mb-0"],
+                    }
                 }
             },
             footer: ['© 2026 TargetFinance', 'Todos os direitos reservados.'],
         }
         this.sidenav_style_config = {
-            aside: ["navbar", "vh-100", "d-flex", "flex-column", "p-0", "bg-primary"],
+            main: ["navbar", "vh-100", "d-flex", "flex-column", "p-0", "bg-primary"],
             toggle_wrapper: ["toggleWrapper", "btn", "border-0", "bg-transparent", "align-self-end", "w-25", "text-end", "pt-2"],
             toggle_icon: ["img-fluid"], 
             tab_wrapper: ["nav", "flex-column", "w-100", "mt-3", "px-3", "gap-1"],
             footer: ["navbarFooter", "d-flex", "flex-column", "mt-auto", "text-white-50", "text-center", "mb-3", "w-100", "px-2", "small"], 
         }
-        
+
+        this.dashboard_style_config = {
+            main: ["d-flex", "flex-column", "align-items-center"]
+        }
+
         this.spawn()
         this.setup()
         this.style()
@@ -91,7 +106,7 @@ class App {
         this.modal_wrapper = document.createElement('div');
 
         this.pages = {
-            Dashboard: new Dashboard(),
+            Dashboard: new Dashboard({}, this.dashboard_style_config),
             Category: new Category(),
             Transaction: new Transaction(),
         }
@@ -110,16 +125,21 @@ class App {
 
     build() {
         this.buildPage(PageState.load())
-        this.wrapper.replaceChildren(this.sidenav.aside, this.page);
+        this.wrapper.replaceChildren(this.sidenav.main, this.page);
         this.body.replaceChildren(this.header.header, this.wrapper, this.modal_wrapper);
     }
 
-    buildPage(page) {
+    buildPage(page, index) {
         const PAGE = this.pages[page];
         if (PAGE) {
+            for (const TAB of this.sidenav.tabs) {
+                TAB.changeStatus(false);
+            }
+            this.sidenav.tabs.at(index).changeStatus(true);
             this.page.replaceChildren(PAGE.main);
         }
     }
+    
     
     toggleModal(modal) {
         if (modal === undefined) {
