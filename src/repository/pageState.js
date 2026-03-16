@@ -1,21 +1,21 @@
 export default class PageState {
     static load() {
-        const PAGE_INDEX = localStorage.getItem("actual_page");
-        if (PAGE_INDEX === null || isNaN(Number(PAGE_INDEX))) {
-            this.save(0);
-            return 0;
+        const PAGE = localStorage.getItem("TARGET_FINANCE-actual_page");
+        if (PAGE === null) {
+            this.save("Dashboard");
+            return "Dashboard";
         }
 
-        return Number(PAGE_INDEX);
+        return PAGE;
     }
 
-    static save(page_index) {
-        if (isNaN(page_index)) {
-            localStorage.setItem("actual_page", "0");
+    static save(page) {
+        if (page === null) {
+            localStorage.setItem("TARGET_FINANCE-actual_page", "Dashboard");
             return false;
         }
         
-        localStorage.setItem("actual_page", page_index.toString());
+        localStorage.setItem("TARGET_FINANCE-actual_page", page);
         return true;
     }
 }
