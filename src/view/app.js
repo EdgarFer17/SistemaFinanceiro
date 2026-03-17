@@ -73,7 +73,7 @@ class App {
                     active: {
                         main: ["tabMain", "nav-link", "bg-white", "d-flex", "align-items-center", "rounded-3", "py-2", "px-3", "shadow-sm"],
                         button: ["d-flex", "bg-white", "align-items-center", "border-0", "text-primary", "w-100"],
-                        icon: ["tabIcon", "tabIcon", "me-3"],
+                        icon: ["tabIcon", "me-3"],
                         text: ["tabText", "fw-bold", "mb-0"],
                     }
                 }
@@ -82,14 +82,45 @@ class App {
         }
         this.sidenav_style_config = {
             main: ["navbar", "vh-100", "d-flex", "flex-column", "p-0", "bg-primary"],
-            toggle_wrapper: ["toggleWrapper", "btn", "border-0", "bg-transparent", "align-self-end", "w-25", "text-end", "pt-2"],
+            toggle_wrapper: ["toggleWrapper", "btn", "border-0", "align-self-end", "w-25", "pt-2"],
             toggle_icon: ["img-fluid"], 
             tab_wrapper: ["nav", "flex-column", "w-100", "mt-3", "px-3", "gap-1"],
             footer: ["navbarFooter", "d-flex", "flex-column", "mt-auto", "text-white-50", "text-center", "mb-3", "w-100", "px-2", "small"], 
         }
 
         this.dashboard_style_config = {
-            main: ["d-flex", "flex-column", "align-items-center"]
+            main: ["d-flex", "flex-column", "align-items-center", "w-100"],
+            title_section: ["d-flex", "justify-content-between", "align-items-center", "w-100", "mt-5", "me-5", "ms-5"],
+            title: ["fs-5", "ms-5"],
+            ope_div: ["d-flex", "justify-content-end",  "me-5"],
+            ope_report_button: ["btn", "border-0", "w-25"],
+            ope_report_icon: ["img-fluid"],
+            ope_show_button: ["btn", "border-0", "w-25"],
+            ope_show_icon: ["img-fluid"],
+
+            status_section: [],
+            balance_div: [],
+            balance_title: [],
+            balance_currency: [],
+            health_div: [],
+            health_title: [],
+            health_status: [],
+
+            donut_section: [],
+            donut_1_div: [],
+            donut_1_title: [],
+            donut_2_div: [],
+            donut_2_title: [],
+            donut_2_div_2: [],
+
+            bar_section: [],
+            bar_title: [],
+            
+            transaction_section: [],
+            transaction_title: [],
+            transaction_table: [],
+            transaction_th: [],
+            transaction_tr: [],
         }
 
         this.spawn()
@@ -102,7 +133,7 @@ class App {
         this.html = document.querySelector('html');
         this.body = document.querySelector('body');
         this.wrapper = document.createElement('div');
-        this.page = document.createElement('main');
+        this.page = document.createElement('div');
         this.modal_wrapper = document.createElement('div');
 
         this.pages = {
@@ -119,8 +150,9 @@ class App {
     }
 
     setup() {
-        this.pages["Dashboard"].setReportFunction(()=>{this.toggleModal("Report")})
-        this.modal_wrapper.addEventListener('click', this.toggleModal)
+        this.pages["Dashboard"].setReportFunction(()=>{this.toggleModal("Report")});
+        this.modal_wrapper.addEventListener('click', this.toggleModal);
+        this.pages.Dashboard.updateTitle("Bem-vindo, Nome do Usuário");
     }
 
     build() {
@@ -160,7 +192,7 @@ class App {
         this.body.classList.add(...[]);
         this.html.classList.add(...[]);
         this.wrapper.classList.add(...["d-flex"]);
-        this.page.classList.add(...[]);
+        this.page.classList.add(...["d-flex", "flex-grow-1"]);
         this.modal_wrapper.classList.add(...["modal-1"]);
     }
 }

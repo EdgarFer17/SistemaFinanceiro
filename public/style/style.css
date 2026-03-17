@@ -6,6 +6,10 @@
     height: 2.5rem;
 }
 
+.Icon {
+    height: 2.5rem;
+}
+
 .navbar {
     width: 250px; 
     transition: width 0.3s ease-in-out;

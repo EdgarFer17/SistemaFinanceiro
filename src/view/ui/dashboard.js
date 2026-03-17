@@ -86,6 +86,10 @@ export default class Dashboard extends BaseComponent {
     }
 
     setup() {
+        this.elements.ope_report_icon.src = "./assets/ReportIcon.png";
+        this.elements.ope_report_icon.alt = "Icone do botao para gerar um relatório";
+        this.elements.ope_show_icon.src = "./assets/EyeIcon.png";
+        this.elements.ope_show_icon.alt = "Icone do botao para esconder dados sensiveis";
         this.setFunction('click', ()=>{this.toggleShow()}, this.elements.ope_show_button)
     }
 
@@ -128,7 +132,7 @@ export default class Dashboard extends BaseComponent {
     }
 
     updateTitle(_text){
-        this.elements.title.textContet = _text;
+        this.elements.title.textContent = _text;
     };
 
     updateCurrency(_currency){
