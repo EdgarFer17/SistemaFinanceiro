@@ -10,6 +10,7 @@ import ModalReport from './ui/modal/report.js';
 
 class App {
     constructor() {
+
         this.header_config = {
             brand_icon: null,
             app_name: 'TargetFinance',
@@ -20,14 +21,14 @@ class App {
         }
         this.header_style_config = {
             header: ["bg-light", "py-3", "shadow"],
-            header_wrapper: ["container-fluid", "d-flex", "justify-content-between", "align-items-center"],
-            brand_wrapper: ["d-flex", "align-items-center", "gap-2"],
-            brand_icon: ["rounded-circle", "brandIcon"],
-            brand_name: ["h5", "mb-0", "fw-bold", "text-primary"],
-            user_wrapper: ["btn", "border-0", "d-flex", "align-items-center", "gap-2", "px-3", "py-1", "rounded-pill", "bg-transparent"],
+            header_wrapper: ["container-fluid", "d-flex", "justify-content-between", "gap-2"],
+            brand_wrapper: ["d-flex", "align-items-center", "gap-1"],
+            brand_icon: ["brandIcon"],
+            brand_name: ["h5", "m-0", "fw-bold", "text-primary"],
+            user_wrapper: ["border-0", "d-flex", "align-items-center", "gap-1", "bg-transparent"],
             user_icon: ["rounded-circle", "border"],
-            user_name: ["fs-6", "mb-0", "text-secondary", "fw-medium"],
-            user_post_icon: ["ms-1"],
+            user_name: ["fs-6", "m-0", "text-primary", "fw-medium"],
+            user_post_icon: ["img-fluid"],
         }
         this.sidenav_config = {
             tab: {
@@ -65,15 +66,15 @@ class App {
                 ],
                 style_config: {
                     inactive: {
-                        main: ["tabMain", "nav-link", "d-flex", "py-2", "px-3", "rounded-3"],
-                        button: ["btn", "w-100", "border-0", "bg-transparent", "text-white", "d-flex", "align-items-center"],
-                        icon: ["tabIcon", "me-3"],
+                        main: ["nav-link", "d-flex", "rounded-3", "p-1"],
+                        button: ["d-flex", "align-items-center", "bg-transparent", "border-0", "text-white", "gap-3", "p-0"],
+                        icon: ["tabIcon"],
                         text: ["tabText", "fw-medium", "mb-0"] 
                     },
                     active: {
-                        main: ["tabMain", "nav-link", "bg-white", "d-flex", "align-items-center", "rounded-3", "py-2", "px-3", "shadow-sm"],
-                        button: ["d-flex", "bg-white", "align-items-center", "border-0", "text-primary", "w-100"],
-                        icon: ["tabIcon", "me-3"],
+                        main: ["nav-link", "bg-white", "rounded-3", "p-1"],
+                        button: ["d-flex", "align-items-center", "bg-white", "border-0", "text-primary", "gap-3", "p-0"],
+                        icon: ["tabIcon"],
                         text: ["tabText", "fw-bold", "mb-0"],
                     }
                 }
@@ -81,40 +82,47 @@ class App {
             footer: ['© 2026 TargetFinance', 'Todos os direitos reservados.'],
         }
         this.sidenav_style_config = {
-            main: ["navbar", "vh-100", "d-flex", "flex-column", "p-0", "bg-primary"],
-            toggle_wrapper: ["toggleWrapper", "btn", "border-0", "align-self-end", "w-25", "pt-2"],
+            main: ["navbar", "d-flex", "flex-column", "p-0", "bg-primary", "flex-shrink-0"],
+            toggle_wrapper: ["toggleWrapper", "btn", "border-0", "align-self-end", "w-25", "p-2"],
             toggle_icon: ["img-fluid"], 
-            tab_wrapper: ["nav", "flex-column", "w-100", "mt-3", "px-3", "gap-1"],
+            tab_wrapper: ["nav", "flex-column", "w-100", "px-3", "gap-1"],
             footer: ["navbarFooter", "d-flex", "flex-column", "mt-auto", "text-white-50", "text-center", "mb-3", "w-100", "px-2", "small"], 
         }
 
         this.dashboard_style_config = {
-            main: ["d-flex", "flex-column", "align-items-center", "w-100"],
+            main: ["d-flex", "flex-column", "align-items-center", "w-100", "gap-5", "text-primary"],
             title_section: ["d-flex", "justify-content-between", "align-items-center", "w-100", "mt-5", "me-5", "ms-5"],
-            title: ["fs-5", "ms-5"],
-            ope_div: ["d-flex", "justify-content-end",  "me-5"],
+            title: ["fs-5", "ms-4"],
+            ope_div: ["d-flex", "justify-content-end",  "me-4"],
             ope_report_button: ["btn", "border-0", "w-25"],
             ope_report_icon: ["img-fluid"],
             ope_show_button: ["btn", "border-0", "w-25"],
             ope_show_icon: ["img-fluid"],
 
-            status_section: [],
-            balance_div: [],
-            balance_title: [],
-            balance_currency: [],
-            health_div: [],
-            health_title: [],
-            health_status: [],
+            status_section: ["d-flex", "justify-content-around", "w-100", "mx-5", "fw-bold", "py-5"],
+            vertical_rule_1: ["vr"],
+            vertical_rule_2: ["vr"],
+            balance_div: ["d-flex", "flex-column"],
+            balance_title: ["align-self-end"],
+            balance_currency: ["fs-5"],
+            balance_value: ["text-black", "fs-2"],
+            income_div: ["d-flex", "flex-column"],
+            income_title: ["text-success", "align-self-end"],
+            income_currency: ["fs-5"],
+            income_value: ["text-black", "fs-2"],
+            expense_div: ["d-flex", "flex-column"],
+            expense_title: ["text-danger", "align-self-end"],
+            expense_currency: ["fs-5"],
+            expense_value: ["text-black", "fs-2"],
 
-            donut_section: [],
-            donut_1_div: [],
-            donut_1_title: [],
-            donut_2_div: [],
-            donut_2_title: [],
-            donut_2_div_2: [],
+            donut_section: ["d-flex", "justify-content-around", "w-100", "p-5", "gap-5", "fw-medium"],
+            donut_1_div: ["d-flex", "flex-column", "w-100"],
+            donut_1_title: ["align-self-center"],
+            donut_2_div: ["d-flex", "flex-column", "w-100"],
+            donut_2_title: ["align-self-center"],
 
-            bar_section: [],
-            bar_title: [],
+            bar_section: ["d-flex", "flex-column", "align-items-center", "w-100"],
+            bar_title: ["align-self-center", "fw-medium"],
             
             transaction_section: [],
             transaction_title: [],
@@ -153,6 +161,13 @@ class App {
         this.pages["Dashboard"].setReportFunction(()=>{this.toggleModal("Report")});
         this.modal_wrapper.addEventListener('click', this.toggleModal);
         this.pages.Dashboard.updateTitle("Bem-vindo, Nome do Usuário");
+
+
+        window.addEventListener('resize', () => {
+            this.pages.Dashboard.elements.bar_component.resize();
+            this.pages.Dashboard.elements.donut_1_component.resize();
+            this.pages.Dashboard.elements.donut_2_component.resize();
+        });
     }
 
     build() {
@@ -191,7 +206,7 @@ class App {
         // BOOTSTRAP
         this.body.classList.add(...[]);
         this.html.classList.add(...[]);
-        this.wrapper.classList.add(...["d-flex"]);
+        this.wrapper.classList.add(...["d-flex", "min-vh-100","h-auto"]);
         this.page.classList.add(...["d-flex", "flex-grow-1"]);
         this.modal_wrapper.classList.add(...["modal-1"]);
     }

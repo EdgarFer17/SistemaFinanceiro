@@ -48,3 +48,7 @@
 .show-modal {
     display: block;
 }
+
+.vertical_hr {
+    border-width: 2px;
+}

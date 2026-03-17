@@ -1,7 +1,6 @@
 import ComponentBar from "./components/bar.js";
 import BaseComponent from "./components/baseComponent.js";
 import ComponentDonut from "./components/donut.js";
-import ComponentFilter from "./components/filter.js";
 
 export default class Dashboard extends BaseComponent {
     constructor(config = {}, style_config = {}) {
@@ -34,12 +33,28 @@ export default class Dashboard extends BaseComponent {
                 balance_div: {
                     _tag: "div",
                     balance_title: "h3",
-                    balance_currency: "p",
+                    balance_currency: {
+                        _tag: "p",
+                        balance_value: "span",
+                    },
                 },
-                health_div: {
+                vertical_rule_1: "div",
+                income_div: {
                     _tag: "div",
-                    health_title: "h3",
-                    health_status: "p",
+                    income_title: "h3",
+                    income_currency: {
+                        _tag: "p",
+                        income_value: "span"
+                    },
+                },
+                vertical_rule_2: "div",
+                expense_div: {
+                    _tag: "div",
+                    expense_title: "h3",
+                    expense_currency: {
+                        _tag: "p",
+                        expense_value: "span",
+                    },
                 },
             },
 
@@ -53,11 +68,7 @@ export default class Dashboard extends BaseComponent {
                 donut_2_div: {
                     _tag: "div",
                     donut_2_title: "h3",
-                    donut_2_div_2: {
-                        _tag: "div",
-                        donut_2_filter: new ComponentFilter({}),
-                        donut_2_component: new ComponentDonut({}),
-                    },
+                    donut_2_component: new ComponentDonut({}),
                 },
             },
 
@@ -91,6 +102,21 @@ export default class Dashboard extends BaseComponent {
         this.elements.ope_show_icon.src = "./assets/EyeIcon.png";
         this.elements.ope_show_icon.alt = "Icone do botao para esconder dados sensiveis";
         this.setFunction('click', ()=>{this.toggleShow()}, this.elements.ope_show_button)
+
+        this.elements.balance_title.textContent = "Saldo";
+        this.elements.balance_currency.prepend("R$ ");
+        this.elements.balance_value.textContent = "-1000.00";
+        this.elements.income_title.textContent = "Receita";
+        this.elements.income_currency.prepend("R$ ");
+        this.elements.income_value.textContent = "1000.00";
+        this.elements.expense_title.textContent = "Despesa";
+        this.elements.expense_currency.prepend("R$ ");
+        this.elements.expense_value.textContent = "2000.00";
+
+        this.elements.donut_1_title.textContent = "Arrecadação e Gastos no Mês";
+        this.elements.donut_2_title.textContent = "Gastos por Categorias";
+
+        this.elements.bar_title.textContent = "Evolução Mensal"
     }
 
     style(style_config) {
@@ -152,7 +178,7 @@ export default class Dashboard extends BaseComponent {
         if (this.hide_backup.length > 0) {
             const TO_SHOW = [
                 this.elements.donut_1_component.main,
-                this.elements.donut_2_div_2,
+                this.elements.donut_2_component.main,
                 this.elements.bar_component.main,
                 this.elements.transaction_table,
             ]
@@ -160,13 +186,14 @@ export default class Dashboard extends BaseComponent {
                 TO_SHOW[i].replaceChildren(...this.hide_backup[i]);
             }
             this.hide_backup = [];
+            this.elements.ope_show_icon.src = "./assets/EyeIcon.png"
             this.elements.balance_currency.textContent = `R$: ${this.currency}`;
             this.elements.health_status.textContent = this.health_status;
         } else {
             this.hide_backup = [];
             const TO_HIDE = [
                 this.elements.donut_1_component.main,
-                this.elements.donut_2_div_2,
+                this.elements.donut_2_component.main,
                 this.elements.bar_component.main,
                 this.elements.transaction_table,
             ]
@@ -179,6 +206,7 @@ export default class Dashboard extends BaseComponent {
                 TO_HIDE.at(i).replaceChildren(HIDE_ELEMENTS.at(i));
             }
     
+            this.elements.ope_show_icon.src = "./assets/OcultEyeIcon.png"
             this.elements.balance_currency.textContent = `R$: ${"*".repeat(this.currency.toString().length)}`;
             this.elements.health_status.textContent = "*".repeat(this.health_status.length);
         }
