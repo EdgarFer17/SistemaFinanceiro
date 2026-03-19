@@ -160,6 +160,7 @@ class App {
         this.body.classList.add(...[]);
         this.html.classList.add(...[]);
         this.wrapper.classList.add(...["d-flex"]);
+        this.page.classList.add(...["flex-grow-1", "w-100"]);
         this.page.classList.add(...[]);
         this.modal_wrapper.classList.add(...["modal-1"]);
     }
