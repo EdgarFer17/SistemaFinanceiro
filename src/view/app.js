@@ -7,6 +7,9 @@ import Category from './ui/category.js'
 import Transaction from './ui/transaction.js';
 import Dashboard from './ui/dashboard.js';
 import ModalReport from './ui/modal/report.js';
+import CreateCategoriesDefault from '../db/createDefaultCategories.js';
+
+CreateCategoriesDefault.create();
 
 class App {
     constructor() {
@@ -120,7 +123,12 @@ class App {
 
     setup() {
         this.pages["Dashboard"].setReportFunction(()=>{this.toggleModal("Report")})
-        this.modal_wrapper.addEventListener('click', this.toggleModal)
+        this.pages["Transaction"].setAddTransactionFunction((dataDaLinha) => { 
+                this.modals["Report"].prepareModal(dataDaLinha); 
+                this.toggleModal("Report");
+            });
+        this.modal_wrapper.addEventListener('click', () => this.toggleModal)
+        this.modal_wrapper.addEventListener('fecharModal', () => this.toggleModal());
     }
 
     build() {
@@ -160,6 +168,7 @@ class App {
         this.body.classList.add(...[]);
         this.html.classList.add(...[]);
         this.wrapper.classList.add(...["d-flex"]);
+        this.page.classList.add(...["flex-grow-1", "w-100"]);
         this.page.classList.add(...[]);
         this.modal_wrapper.classList.add(...["modal-1"]);
         this.body.style.backgroundColor = "#f4f7f6"; 

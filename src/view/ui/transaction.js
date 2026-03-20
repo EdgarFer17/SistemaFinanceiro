@@ -1,4 +1,5 @@
 import BaseComponent from "./components/baseComponent.js";
+import TransationController from "../../controller/transationController.js";
 
 export default class Transaction extends BaseComponent {
     constructor(config = {}, style_config = {}) {
@@ -10,11 +11,7 @@ export default class Transaction extends BaseComponent {
         this.header_wrapper = document.createElement('div');
         this.title = document.createElement('h2');
         this.button = document.createElement('button');
-        
-        // Container que vai segurar as linhas de transação
         this.list_container = document.createElement('section');
-        
-        // Cabeçalho das colunas
         this.table_header_row = document.createElement('div');
     }
 
@@ -22,15 +19,7 @@ export default class Transaction extends BaseComponent {
         this.title.textContent = config['title'] || "Transações";
         this.button.textContent = config['button_title'] || "Adicionar Transação";
         
-        // Exemplo de dados
-        const transactions = config.transactions || [
-            { data: '04/02/2026', categoria: 'Lazer', tipo: 'DESPESA', valor: -1000.00 },
-            { data: '16/01/2026', categoria: 'Outros', tipo: 'RECEITA', valor: 750.00 }
-        ];
-
-        // Criar os nomes das colunas
-        this.table_header_row.innerHTML = '';
-        const headers = ['Data', 'Categoria', 'Tipo', 'Valor', 'Editar', 'Deletar'];
+        const headers = ['Data', 'Categoria', 'Tipo', 'Valor', "Descrição", "Editar/Excluir"];
         headers.forEach(text => {
             const span = document.createElement('span');
             span.textContent = text;
@@ -40,41 +29,99 @@ export default class Transaction extends BaseComponent {
             this.table_header_row.appendChild(span);
         });
 
-        // Limpar e popular a lista
+        this.renderList();
+
+
+        document.addEventListener('transactionSaved', () => {
+            this.renderList(); 
+        });
+    }
+
+    renderList() {
         this.list_container.innerHTML = '';
-        transactions.forEach(trans => {
+
+        let transacoesDoBanco = [];
+        try {
+            transacoesDoBanco = TransationController.getTransactions() || [];
+        } catch (e) {
+            console.error("Erro ao buscar transações:", e);
+        }
+
+
+        transacoesDoBanco.reverse().forEach(trans => {
             const row = this.createTransactionRow(trans);
             this.list_container.appendChild(row);
         });
+    }
+
+    setAddTransactionFunction(func) {
+        this.openModalFunc = func; 
+
+
+        this.button.onclick = () => {
+            this.openModalFunc(null);
+        };
     }
 
     createTransactionRow(data) {
         const row = document.createElement('div');
         row.className = 'transaction-row';
 
-        // Lógica de cor para o valor
-        const isNegative = data.valor < 0;
-        const valorFormatado = `R$ ${data.valor.toFixed(2).replace('.', ',')}`;
+        const isNegative = data.value < 0;
+        const valorFormatado = `R$ ${data.value.toFixed(2).replace('.', ',')}`;
+
+
+        const dataObj = new Date(data.date);
+        const dia = String(dataObj.getDate()).padStart(2, '0');
+        const mes = String(dataObj.getMonth() + 1).padStart(2, '0');
+        const ano = dataObj.getFullYear();
+        const dataFormatadaStr = `${dia}/${mes}/${ano}`;
+
+
+        const tipoDisplay = data.type === "EXPENSE" ? "DESPESA" : "RECEITA";
 
         row.innerHTML = `
-            <span style="flex: 1; text-align: center; font-weight: bold;">${data.data}</span>
-            <span style="flex: 1; text-align: center; font-style: italic; font-weight: bold;">${data.categoria}</span>
-            <span style="flex: 1; text-align: center; font-weight: bold;">${data.tipo}</span>
+            <span style="flex: 1; text-align: center; font-weight: bold;">${dataFormatadaStr}</span>
+            <span style="flex: 1; text-align: center; font-style: italic; font-weight: bold;">${data.category.categoryName}</span>
+            <span style="flex: 1; text-align: center; font-weight: bold;">${tipoDisplay}</span>
             <span style="flex: 1; text-align: center; color: ${isNegative ? '#e74c3c' : '#27ae60'}; font-weight: bold;">
                 ${valorFormatado}
             </span>
+            <span style="flex: 1; text-align: center; font-weight: bold;">${data.desc || ''}</span>
             <div style="flex: 1; display: flex; justify-content: center; gap: 10px;">
-                <img src="./assets/gray-edit-icon.png" style="width: 20px; cursor: pointer;">
-                <img src="./assets/gray-delete-icon.png" style="width: 20px; cursor: pointer;">
+                <img src="./assets/green-edit-icon.png" class="edit-btn" style="width: 20px; cursor: pointer;" title="Editar">
+                <img src="./assets/green-delete-icon.png" class="delete-btn" style="width: 20px; cursor: pointer;" title="Excluir">
             </div>
         `;
 
         this.styleRow(row);
+
+        // --- BOTÃO EXCLUIR ---
+        row.querySelector('.delete-btn').addEventListener('click', () => {
+            if (confirm(`Deseja realmente excluir a transação de ${valorFormatado}?`)) {
+                try {
+
+                    TransationController.deleteTransation(data.id);
+
+                    this.renderList();
+                } catch (e) {
+                    alert("Erro ao excluir: " + e.message);
+                }
+            }
+        });
+
+        // --- BOTÃO EDITAR ---
+        row.querySelector('.edit-btn').addEventListener('click', () => {
+            if (this.openModalFunc) {
+
+                this.openModalFunc(data);
+            }
+        });
+
         return row;
     }
 
     style(style_config) {
-        // Estilo do Main
         Object.assign(this.main.style, {
             flex: "1",                
             display: "flex",
@@ -86,7 +133,6 @@ export default class Transaction extends BaseComponent {
             width: "100%"
         });
 
-        
         Object.assign(this.header_wrapper.style, {
            display: "flex",
             justifyContent: "center", 
@@ -109,7 +155,6 @@ export default class Transaction extends BaseComponent {
             right: "0"
         });
 
-        // Estilo do Cabeçalho das colunas
         Object.assign(this.table_header_row.style, {
             display: "flex",
             padding: "0 20px",
@@ -117,7 +162,6 @@ export default class Transaction extends BaseComponent {
             marginBottom: "10px"
         });
 
-        // Container das linhas
         Object.assign(this.list_container.style, {
             width: "100%",
             display: "flex",

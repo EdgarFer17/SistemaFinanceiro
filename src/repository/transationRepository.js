@@ -51,7 +51,8 @@ export default class TransationRepository {
                 new Date(t.date), 
                 category, 
                 t.type === 'DESPESA' ? TRANSATION_TYPE_MODEL.EXPENSE : TRANSATION_TYPE_MODEL.INCOME, 
-                t.value
+                t.value,
+                t.desc || "" // <-- DESCRIÇÃO ADICIONADA AQUI
             );
             transaction.id = t.id;
             return transaction; 
@@ -68,6 +69,7 @@ export default class TransationRepository {
                 t.category = newTransaction.category;
                 t.type = newTransaction.type;
                 t.value = newTransaction.value;
+                t.desc = newTransaction.desc; // <-- DESCRIÇÃO ADICIONADA AQUI
             }
         })
 
@@ -91,36 +93,37 @@ export default class TransationRepository {
     }
 
     // recebe um id e retorna a transação
-        static getTransactionById(id) {
-            if (typeof id !== "number" || id < 0) {
-                throw new Error("O id deve ser um número maior do que zero!")
-            }
-    
-            const transactionsList =  this._getTransactionsList();
-    
-            const transactionStorage = transactionsList.find(c => c.id === id);
-    
-            if (!transactionStorage) {
-                return null;
-            }
-
-            const category = new CategoryModel(
-                transactionStorage.category.categoryName,
-                transactionStorage.category.limit,
-                transactionStorage.category.type === "PADRÃO" ? CATEGORY_TYPE_MODEL.DEFAULT : CATEGORY_TYPE_MODEL.CUSTOM
-            );
-
-            category.id = transactionStorage.category.id;
-    
-            const transaction = new TransationModel(
-                new Date(transactionStorage.date),
-                category,
-                transactionStorage.type === 'DESPESA' ? TRANSATION_TYPE_MODEL.EXPENSE :TRANSATION_TYPE_MODEL.INCOME,
-                transactionStorage.value
-            );
-
-            transaction.id = transactionStorage.id;
-    
-            return transaction;
+    static getTransactionById(id) {
+        if (typeof id !== "number" || id < 0) {
+            throw new Error("O id deve ser um número maior do que zero!")
         }
+
+        const transactionsList =  this._getTransactionsList();
+
+        const transactionStorage = transactionsList.find(c => c.id === id);
+
+        if (!transactionStorage) {
+            return null;
+        }
+
+        const category = new CategoryModel(
+            transactionStorage.category.categoryName,
+            transactionStorage.category.limit,
+            transactionStorage.category.type === "PADRÃO" ? CATEGORY_TYPE_MODEL.DEFAULT : CATEGORY_TYPE_MODEL.CUSTOM
+        );
+
+        category.id = transactionStorage.category.id;
+
+        const transaction = new TransationModel(
+            new Date(transactionStorage.date),
+            category,
+            transactionStorage.type === 'DESPESA' ? TRANSATION_TYPE_MODEL.EXPENSE :TRANSATION_TYPE_MODEL.INCOME,
+            transactionStorage.value,
+            transactionStorage.desc || ""
+        );
+
+        transaction.id = transactionStorage.id;
+
+        return transaction;
+    }
 }
