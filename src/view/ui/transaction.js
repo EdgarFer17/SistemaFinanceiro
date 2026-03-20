@@ -1,4 +1,6 @@
 import BaseComponent from "./components/baseComponent.js";
+// IMPORTAMOS O CONTROLLER PARA LER E DELETAR DO BANCO
+import TransationController from "../../controller/transationController.js";
 
 export default class Transaction extends BaseComponent {
     constructor(config = {}, style_config = {}) {
@@ -17,8 +19,6 @@ export default class Transaction extends BaseComponent {
     setup(config) {
         this.title.textContent = config['title'] || "Transações";
         this.button.textContent = config['button_title'] || "Adicionar Transação";
-
-        this.transactions = (config.transactions || []).map(t => ({...t, temp_id: Math.random().toString(36).substr(2, 9)}));
         
         const headers = ['Data', 'Categoria', 'Tipo', 'Valor', "Descrição", "Editar/Excluir"];
         headers.forEach(text => {
@@ -30,51 +30,28 @@ export default class Transaction extends BaseComponent {
             this.table_header_row.appendChild(span);
         });
 
+        // Chama a função que desenha a lista puxando do banco
         this.renderList();
 
-        document.addEventListener('newTransaction', (event) => {
-            const transacaoSalva = event.detail;
-
-            const dataObjeto = new Date(transacaoSalva.date);
-            const dia = String(dataObjeto.getDate()).padStart(2, '0');
-            const mes = String(dataObjeto.getMonth() + 1).padStart(2, '0');
-            const ano = dataObjeto.getFullYear();
-
-            let nomeCategoria = "Sem Categoria";
-            if (transacaoSalva.category && transacaoSalva.category.categoryName) {
-                nomeCategoria = transacaoSalva.category.categoryName;
-            } else if (typeof transacaoSalva.category === 'string') {
-                nomeCategoria = transacaoSalva.category;
-            }
-
-            const transacaoFormatada = {
-                data: `${dia}/${mes}/${ano}`,
-                categoria: nomeCategoria,
-                tipo: transacaoSalva.type,
-                valor: Number(transacaoSalva.value), 
-                desc: transacaoSalva.desc || "",
-                temp_id: transacaoSalva.temp_id 
-            };
-
-            if (transacaoFormatada.temp_id) {
-
-                const index = this.transactions.findIndex(t => t.temp_id === transacaoFormatada.temp_id);
-                if (index > -1) {
-                    this.transactions[index] = transacaoFormatada;
-                }
-            } else {
-
-                transacaoFormatada.temp_id = Math.random().toString(36).substr(2, 9);
-                this.transactions.unshift(transacaoFormatada);
-            }
-
+        // Quando o modal avisar que salvou/editou no banco, a gente recarrega a lista!
+        document.addEventListener('transactionSaved', () => {
             this.renderList(); 
         });
     }
 
     renderList() {
         this.list_container.innerHTML = '';
-        this.transactions.forEach(trans => {
+
+        // 1. Busca os dados REAIS direto do banco
+        let transacoesDoBanco = [];
+        try {
+            transacoesDoBanco = TransationController.getTransactions() || [];
+        } catch (e) {
+            console.error("Erro ao buscar transações:", e);
+        }
+
+        // 2. Inverte o array para as mais novas aparecerem no topo (se quiser a ordem inversa, remova o .reverse())
+        transacoesDoBanco.reverse().forEach(trans => {
             const row = this.createTransactionRow(trans);
             this.list_container.appendChild(row);
         });
@@ -82,10 +59,10 @@ export default class Transaction extends BaseComponent {
 
     setAddTransactionFunction(func) {
         this.openModalFunc = func; 
-        
 
+        // Botão verde de "Adicionar Nova"
         this.button.onclick = () => {
-            this.openModalFunc(null);
+            this.openModalFunc(null); // Null significa que não há dados de edição
         };
     }
 
@@ -93,13 +70,24 @@ export default class Transaction extends BaseComponent {
         const row = document.createElement('div');
         row.className = 'transaction-row';
 
-        const isNegative = data.valor < 0;
-        const valorFormatado = `R$ ${data.valor.toFixed(2).replace('.', ',')}`;
+        // O valor agora vem de data.value (nome oficial do modelo) em vez de data.valor
+        const isNegative = data.value < 0;
+        const valorFormatado = `R$ ${data.value.toFixed(2).replace('.', ',')}`;
+
+        // Tratamento da data que vem do banco
+        const dataObj = new Date(data.date);
+        const dia = String(dataObj.getDate()).padStart(2, '0');
+        const mes = String(dataObj.getMonth() + 1).padStart(2, '0');
+        const ano = dataObj.getFullYear();
+        const dataFormatadaStr = `${dia}/${mes}/${ano}`;
+
+        // Tradução do tipo para exibição
+        const tipoDisplay = data.type === "EXPENSE" ? "DESPESA" : "RECEITA";
 
         row.innerHTML = `
-            <span style="flex: 1; text-align: center; font-weight: bold;">${data.data}</span>
-            <span style="flex: 1; text-align: center; font-style: italic; font-weight: bold;">${data.categoria}</span>
-            <span style="flex: 1; text-align: center; font-weight: bold;">${data.tipo}</span>
+            <span style="flex: 1; text-align: center; font-weight: bold;">${dataFormatadaStr}</span>
+            <span style="flex: 1; text-align: center; font-style: italic; font-weight: bold;">${data.category.categoryName}</span>
+            <span style="flex: 1; text-align: center; font-weight: bold;">${tipoDisplay}</span>
             <span style="flex: 1; text-align: center; color: ${isNegative ? '#e74c3c' : '#27ae60'}; font-weight: bold;">
                 ${valorFormatado}
             </span>
@@ -115,10 +103,14 @@ export default class Transaction extends BaseComponent {
         // --- BOTÃO EXCLUIR ---
         row.querySelector('.delete-btn').addEventListener('click', () => {
             if (confirm(`Deseja realmente excluir a transação de ${valorFormatado}?`)) {
-                const index = this.transactions.indexOf(data);
-                if (index > -1) {
-                    this.transactions.splice(index, 1);
+                try {
+                    // Manda deletar no BANCO usando o ID
+                    TransationController.deleteTransation(data.id);
+                    
+                    // Recarrega a tela para a linha sumir
                     this.renderList();
+                } catch (e) {
+                    alert("Erro ao excluir: " + e.message);
                 }
             }
         });
@@ -126,7 +118,7 @@ export default class Transaction extends BaseComponent {
         // --- BOTÃO EDITAR ---
         row.querySelector('.edit-btn').addEventListener('click', () => {
             if (this.openModalFunc) {
-
+                // Passa o objeto completo (com id) para o modal saber que é edição
                 this.openModalFunc(data);
             }
         });
@@ -135,7 +127,6 @@ export default class Transaction extends BaseComponent {
     }
 
     style(style_config) {
-
         Object.assign(this.main.style, {
             flex: "1",                
             display: "flex",
@@ -168,7 +159,6 @@ export default class Transaction extends BaseComponent {
             position: "absolute",
             right: "0"
         });
-
 
         Object.assign(this.table_header_row.style, {
             display: "flex",
