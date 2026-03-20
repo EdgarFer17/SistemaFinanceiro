@@ -1,7 +1,7 @@
 import BaseComponent from "./baseComponent.js";
 
 export default class ComponentBar extends BaseComponent {
-    constructor(config, style_config) {
+    constructor(config = {}, style_config) {
         super(config, style_config);
     }
 
@@ -17,7 +17,7 @@ export default class ComponentBar extends BaseComponent {
             labels: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Junho', 'Julho'],
             datasets: [
                 {
-                    label: 'Lucro',
+                    label: 'Final',
                     data: [1300, 500, -1000, 300, -100, 100],
                     borderColor: '#FCD34D',
                     borderWidth: 2,
@@ -51,7 +51,7 @@ export default class ComponentBar extends BaseComponent {
 
     style(style_config = { main: [], title: [], chart: [] }) {
         this.main.classList.add(...[
-            "w-75"
+            "w-75", "d-flex", "justify-content-center"
         ], ...style_config.main);
         this.chart.classList.add(...[], ...style_config.chart);
     }

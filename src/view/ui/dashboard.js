@@ -1,11 +1,14 @@
 import ComponentBar from "./components/bar.js";
 import BaseComponent from "./components/baseComponent.js";
 import ComponentDonut from "./components/donut.js";
+import ComponentTransactionList from "./components/transactionList.js";
 
 export default class Dashboard extends BaseComponent {
     constructor(config = {}, style_config = {}) {
         super(config, style_config)
-        this.currency = 0;
+        this.currency = -1000.00
+        this.income = 1000.00
+        this.expense = 2000.00
         this.health_status = "a";
         this.hide_backup = [];
     }
@@ -63,31 +66,25 @@ export default class Dashboard extends BaseComponent {
                 donut_1_div: {
                     _tag: "div",
                     donut_1_title: "h3",
-                    donut_1_component: new ComponentDonut({})
+                    donut_1_component: new ComponentDonut()
                 },
                 donut_2_div: {
                     _tag: "div",
                     donut_2_title: "h3",
-                    donut_2_component: new ComponentDonut({}),
+                    donut_2_component: new ComponentDonut(),
                 },
             },
 
             bar_section: {
                 _tag: "section",
                 bar_title: "h3",
-                bar_component: new ComponentBar({}),
+                bar_component: new ComponentBar(),
             },
 
             transaction_section: {
                 _tag: "section",
                 transaction_title: "h3",
-                transaction_table: {
-                    _tag: "table",
-                    transaction_th: {
-                        _tag: "thead",
-                        transaction_tr: "tr",
-                    },
-                },
+                transaction_component: new ComponentTransactionList(),
             },
 
             report_component: "i" // adicionar
@@ -103,20 +100,25 @@ export default class Dashboard extends BaseComponent {
         this.elements.ope_show_icon.alt = "Icone do botao para esconder dados sensiveis";
         this.setFunction('click', ()=>{this.toggleShow()}, this.elements.ope_show_button)
 
+        this.currency = -1000.00
+        this.income = 1000.00
+        this.expense = 2000.00
         this.elements.balance_title.textContent = "Saldo";
         this.elements.balance_currency.prepend("R$ ");
-        this.elements.balance_value.textContent = "-1000.00";
+        this.elements.balance_value.textContent = this.currency;
         this.elements.income_title.textContent = "Receita";
         this.elements.income_currency.prepend("R$ ");
-        this.elements.income_value.textContent = "1000.00";
+        this.elements.income_value.textContent = this.income;
         this.elements.expense_title.textContent = "Despesa";
         this.elements.expense_currency.prepend("R$ ");
-        this.elements.expense_value.textContent = "2000.00";
+        this.elements.expense_value.textContent = this.expense;
 
         this.elements.donut_1_title.textContent = "Arrecadação e Gastos no Mês";
         this.elements.donut_2_title.textContent = "Gastos por Categorias";
 
-        this.elements.bar_title.textContent = "Evolução Mensal"
+        this.elements.bar_title.textContent = "Evolução Mensal";
+
+        this.elements.transaction_title.textContent = "Últimas Transações";
     }
 
     style(style_config) {
@@ -161,17 +163,23 @@ export default class Dashboard extends BaseComponent {
         this.elements.title.textContent = _text;
     };
 
-    updateCurrency(_currency){
-        if (typeof _currency === "number") {
-            this.currency = _currency;
-            this.elements.balance_currency.textContent = `R$: ${this.currency}`;
+    updateIncome(_value){
+        if (typeof _value === "number") {
+            this.income = _value;
         }
     };
 
-    updateHealthStatus(_status){
-        this.elements.health_status.textContent = _status;
-        // if (_status === ) PRECISO DO REPOSITORY, ou do FIGMA
-        this.elements.health_status.classList.toggle("text-danger");
+    updateExpense(_value){
+        if (typeof _value === "number") {
+            this.expense = _value;
+        }
+    };
+
+    reloadStatus() {
+        this.balance = this.income - this.expense;
+        this.elements.balance_value.textContent = this.balance;
+        this.elements.income_value.textContent = this.income;
+        this.elements.expense_value.textContent = this.expense;
     };
 
     toggleShow(){
@@ -180,22 +188,23 @@ export default class Dashboard extends BaseComponent {
                 this.elements.donut_1_component.main,
                 this.elements.donut_2_component.main,
                 this.elements.bar_component.main,
-                this.elements.transaction_table,
+                this.elements.transaction_component.main,
             ]
             for (const i in this.hide_backup) {
                 TO_SHOW[i].replaceChildren(...this.hide_backup[i]);
             }
             this.hide_backup = [];
             this.elements.ope_show_icon.src = "./assets/EyeIcon.png"
-            this.elements.balance_currency.textContent = `R$: ${this.currency}`;
-            this.elements.health_status.textContent = this.health_status;
+            this.elements.balance_value.textContent = this.currency;
+            this.elements.income_value.textContent = this.income;
+            this.elements.expense_value.textContent = this.expense;
         } else {
             this.hide_backup = [];
             const TO_HIDE = [
                 this.elements.donut_1_component.main,
                 this.elements.donut_2_component.main,
                 this.elements.bar_component.main,
-                this.elements.transaction_table,
+                this.elements.transaction_component.main,
             ]
             const HIDE_ELEMENTS = [];
             for (let i = 0; i < 4; i++) {
@@ -207,8 +216,9 @@ export default class Dashboard extends BaseComponent {
             }
     
             this.elements.ope_show_icon.src = "./assets/OcultEyeIcon.png"
-            this.elements.balance_currency.textContent = `R$: ${"*".repeat(this.currency.toString().length)}`;
-            this.elements.health_status.textContent = "*".repeat(this.health_status.length);
+            this.elements.balance_value.textContent = "*".repeat(this.currency.toString().length);
+            this.elements.income_value.textContent = "*".repeat(this.income.toString().length);
+            this.elements.expense_value.textContent = "*".repeat(this.expense.toString().length);
         }
     };
 

@@ -117,18 +117,15 @@ class App {
 
             donut_section: ["d-flex", "justify-content-around", "w-100", "p-5", "gap-5", "fw-medium"],
             donut_1_div: ["d-flex", "flex-column", "w-100"],
-            donut_1_title: ["align-self-center"],
+            donut_1_title: ["align-self-center", "fs-5"],
             donut_2_div: ["d-flex", "flex-column", "w-100"],
-            donut_2_title: ["align-self-center"],
+            donut_2_title: ["align-self-center", "fs-5"],
 
             bar_section: ["d-flex", "flex-column", "align-items-center", "w-100"],
-            bar_title: ["align-self-center", "fw-medium"],
+            bar_title: [],
             
-            transaction_section: [],
+            transaction_section: ["d-flex", "flex-column", "align-items-center", "w-100"],
             transaction_title: [],
-            transaction_table: [],
-            transaction_th: [],
-            transaction_tr: [],
         }
 
         this.spawn()
