@@ -8,93 +8,115 @@ export default class ModalReport extends BaseComponent {
     }
 
     spawn() {
-        const categoryList = CategoryController.getCategories();
-        
-        const categoryOptions = categoryList.map(cat => 
-            `<option value="${cat.categoryName}">${cat.categoryName}</option>`
-        ).join('');
-        
         this.main = document.createElement('div');
+        this.modal_container = document.createElement('div');
+        this.header = document.createElement('div');
+        this.title = document.createElement('h2');
+        this.close_btn = document.createElement('button');
         
-        this.main.innerHTML = `
-            <div style="background-color: white; border-radius: 20px; border: 1px solid #6ca09d; padding: 40px 60px; width: 100%; max-width: 750px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); font-family: sans-serif; position: relative;">
-                
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 35px;">
-                    <h2 style="color: #6ca09d; font-weight: bold; font-size: 2.2rem; margin: 0;">
-                        Fazer Transação
-                    </h2>
-                    <button type="button" id="close-modal-btn" 
-                            style="background: none; border: none; font-size: 2.5rem; color: #a4c4c1; cursor: pointer; padding: 0; line-height: 0.8; transition: color 0.2s;">
-                        &times;
-                    </button>
-                </div>
+        this.form = document.createElement('form');
+        this.form.id = "transaction-form";
 
-                <form id="transaction-form" style="display: flex; flex-direction: column; gap: 25px;">
-                    
-                    <div style="display: flex; flex-direction: column; gap: 8px;">
-                        <label style="color: #6ca09d; font-size: 1.2rem;">Valor</label>
-                        <input type="number" step="any" id="valor-input" placeholder="Digite o valor da transação" required
-                               style="padding: 15px; border: 1px solid #a4c4c1; border-radius: 8px; font-size: 1rem; color: #777; outline: none; width: 100%; box-sizing: border-box;">
-                    </div>
+        // Criação dos grupos de input
+        this.value_group = this.createFormGroup("Valor", "number", "valor-input", "Digite o valor da transação", "any");
+        
+        this.type_group = this.createSelectGroup("Tipo", "type-select", [
+            { value: "RECEITA", text: "Receita" },
+            { value: "DESPESA", text: "Despesa" }
+        ]);
 
-                    <div style="display: flex; flex-direction: column; gap: 8px;">
-                        <label style="color: #6ca09d; font-size: 1.2rem;">Tipo</label>
-                        <select id="type-select" required style="padding: 15px; border: 1px solid #a4c4c1; border-radius: 8px; font-size: 1rem; color: #777; outline: none; background-color: white; cursor: pointer; width: 100%; box-sizing: border-box;">
-                            <option value="" disabled selected></option>
-                            <option value="RECEITA">Receita</option>
-                            <option value="DESPESA">Despesa</option>
-                        </select>
-                    </div>
+        this.category_group = this.createCategorySelectGroup();
+        
+        this.desc_group = this.createFormGroup("", "text", "desc-input", "Descrição (opcional)", null, false);
+        this.desc_group.querySelector('label').remove();
 
-                    <div style="display: flex; flex-direction: column; gap: 8px;">
-                        <label style="color: #6ca09d; font-size: 1.2rem;">Categoria</label>
-                        <select id="category-select" required
-                                style="padding: 15px; border: 1px solid #a4c4c1; border-radius: 8px; font-size: 1rem; color: #777; outline: none; background-color: white; cursor: pointer; width: 100%; box-sizing: border-box;">
-                            <option value="" disabled selected></option>
-                            ${categoryOptions}
-                        </select>
-                    </div>
-
-                    <div style="display: flex; flex-direction: column; gap: 8px;">
-                    <label style="color: #6ca09d; font-size: 1.2rem;">Descrição</label>
-                        <input type="text" id="desc-input" placeholder="Descrição (opcional)" style="padding: 15px; border: 1px solid #a4c4c1; border-radius: 8px; font-size: 1rem;"> 
-                    </div>
-
-                    <button type="submit" 
-                            style="background-color: #6ca09d; color: white; border: none; padding: 18px; border-radius: 8px; font-size: 1.2rem; margin-top: 20px; cursor: pointer; font-weight: 500; width: 100%; box-sizing: border-box;">
-                        Adicionar Transação
-                    </button>
-
-                </form>
-            </div>`;
+        this.submit_btn = document.createElement('button');
+        this.submit_btn.type = "submit";
+        this.submit_btn.textContent = "Adicionar Transação";
     }
 
-    style(){}
+    createFormGroup(labelText, type, id, placeholder, step = null, required = true) {
+        const group = document.createElement('div');
+        group.style.display = "flex";
+        group.style.flexDirection = "column";
+        group.style.gap = "8px";
 
-    setup(config) {
-        
-        const form = this.main.querySelector('#transaction-form');
-        const closeBtn = this.main.querySelector('#close-modal-btn');
+        const label = document.createElement('label');
+        label.textContent = labelText;
 
-        // Lógica do botão Fechar
-        closeBtn.addEventListener('click', () => {
-            const event = new CustomEvent('fecharModal', { bubbles: true });
-            this.main.dispatchEvent(event);
+        const input = document.createElement('input');
+        input.type = type;
+        input.id = id;
+        input.placeholder = placeholder;
+        if (step) input.step = step;
+        if (required) input.required = true;
 
+        group.append(label, input);
+        return group;
+    }
+
+    createSelectGroup(labelText, id, options) {
+        const group = document.createElement('div');
+        group.style.display = "flex";
+        group.style.flexDirection = "column";
+        group.style.gap = "8px";
+
+        const label = document.createElement('label');
+        label.textContent = labelText;
+
+        const select = document.createElement('select');
+        select.id = id;
+        select.required = true;
+
+        const defaultOption = document.createElement('option');
+        defaultOption.value = "";
+        defaultOption.disabled = true;
+        defaultOption.selected = true;
+        select.appendChild(defaultOption);
+
+        options.forEach(opt => {
+            const optionElement = document.createElement('option');
+            optionElement.value = opt.value;
+            optionElement.textContent = opt.text;
+            select.appendChild(optionElement);
         });
 
-        // Hover effect para o botão fechar ficar mais escuro ao passar o mouse
-        closeBtn.addEventListener('mouseover', () => closeBtn.style.color = '#6ca09d');
-        closeBtn.addEventListener('mouseout', () => closeBtn.style.color = '#a4c4c1');
+        group.append(label, select);
+        return group;
+    }
 
-        form.addEventListener('submit', (event) => {
+    createCategorySelectGroup() {
+        const categoryList = CategoryController.getCategories();
+        const options = categoryList.map(cat => ({
+            value: cat.categoryName,
+            text: cat.categoryName
+        }));
+        return this.createSelectGroup("Categoria", "category-select", options);
+    }
+
+    setup(config) {
+        this.title.textContent = "Fazer Transação";
+        this.close_btn.innerHTML = "&times;";
+
+        // Lógica de Fechar Modal
+        const closeModal = () => {
+            const event = new CustomEvent('fecharModal', { bubbles: true });
+            this.main.dispatchEvent(event);
+        };
+
+        this.close_btn.onclick = closeModal;
+        this.close_btn.onmouseover = () => this.close_btn.style.color = '#6ca09d';
+        this.close_btn.onmouseout = () => this.close_btn.style.color = '#a4c4c1';
+
+        // Lógica de Salvar
+        this.form.addEventListener('submit', (event) => {
             event.preventDefault();
 
             try {
-                let value = parseFloat(this.main.querySelector('#valor-input').value);
-                const type = this.main.querySelector('#type-select').value;
-                const categoryName = this.main.querySelector('#category-select').value;
-                const desc = this.main.querySelector('#desc-input').value;
+                let value = parseFloat(this.value_group.querySelector('input').value);
+                const type = this.type_group.querySelector('select').value;
+                const categoryName = this.category_group.querySelector('select').value;
+                const desc = this.desc_group.querySelector('input').value;
                 
                 const dataAtual = new Date();
 
@@ -104,16 +126,13 @@ export default class ModalReport extends BaseComponent {
                 const categoryObj = CategoryController.getCategories().find(c => c.categoryName === categoryName);
 
                 const newTransaction = new TransationModel(dataAtual, categoryObj, type, value, desc);
-                console.log("Transação salva:", newTransaction);
 
                 const transactionEvent = new CustomEvent('newTransaction', { bubbles: true, detail: newTransaction });
                 this.main.dispatchEvent(transactionEvent);
 
-                form.reset();
+                this.form.reset();
                 alert("Transação Adicionada com Sucesso!");
-                
-                // Fecha o modal após adicionar com sucesso
-                closeBtn.click();
+                closeModal();
 
             } catch (error) {
                 alert("Erro: " + error.message);
@@ -121,5 +140,106 @@ export default class ModalReport extends BaseComponent {
         });
     }
 
-    build() {}
+    style(style_config) {
+        // Estilos principais transferidos do HTML inline para cá
+        this.main.style.width = "100%";
+        this.main.style.display = "flex";
+        this.main.style.justifyContent = "center";
+
+        Object.assign(this.modal_container.style, {
+            backgroundColor: "white",
+            borderRadius: "20px",
+            border: "1px solid #6ca09d",
+            padding: "40px 60px",
+            width: "100%",
+            maxWidth: "750px",
+            boxShadow: "0 4px 15px rgba(0,0,0,0.05)",
+            fontFamily: "sans-serif",
+            position: "relative"
+        });
+
+        Object.assign(this.header.style, {
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            marginBottom: "35px"
+        });
+
+        Object.assign(this.title.style, {
+            color: "#6ca09d",
+            fontWeight: "bold",
+            fontSize: "2.2rem",
+            margin: "0"
+        });
+
+        Object.assign(this.close_btn.style, {
+            background: "none",
+            border: "none",
+            fontSize: "2.5rem",
+            color: "#a4c4c1",
+            cursor: "pointer",
+            padding: "0",
+            lineHeight: "0.8",
+            transition: "color 0.2s"
+        });
+
+        Object.assign(this.form.style, {
+            display: "flex",
+            flexDirection: "column",
+            gap: "25px"
+        });
+
+        // Estilos comuns para inputs e selects
+        const inputStyles = {
+            padding: "15px",
+            border: "1px solid #a4c4c1",
+            borderRadius: "8px",
+            fontSize: "1rem",
+            color: "#777",
+            outline: "none",
+            width: "100%",
+            boxSizing: "border-box",
+            backgroundColor: "white"
+        };
+
+        const labelStyles = { color: "#6ca09d", fontSize: "1.2rem" };
+
+        [this.value_group, this.type_group, this.category_group, this.desc_group].forEach(group => {
+            const label = group.querySelector('label');
+            const inputOrSelect = group.querySelector('input, select');
+            
+            if (label) Object.assign(label.style, labelStyles);
+            if (inputOrSelect) Object.assign(inputOrSelect.style, inputStyles);
+            if (inputOrSelect && inputOrSelect.tagName === 'SELECT') inputOrSelect.style.cursor = "pointer";
+        });
+
+        Object.assign(this.submit_btn.style, {
+            backgroundColor: "#6ca09d",
+            color: "white",
+            border: "none",
+            padding: "18px",
+            borderRadius: "8px",
+            fontSize: "1.2rem",
+            marginTop: "20px",
+            cursor: "pointer",
+            fontWeight: "500",
+            width: "100%",
+            boxSizing: "border-box"
+        });
+    }
+
+    build() {
+        this.header.append(this.title, this.close_btn);
+        
+        this.form.append(
+            this.value_group, 
+            this.type_group, 
+            this.category_group, 
+            this.desc_group, 
+            this.submit_btn
+        );
+        
+        this.modal_container.append(this.header, this.form);
+        this.main.appendChild(this.modal_container);
+    }
 }
