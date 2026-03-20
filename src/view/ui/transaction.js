@@ -89,8 +89,8 @@ export default class Transaction extends BaseComponent {
             </span>
             <span style="flex: 1; text-align: center; font-weight: bold;">${data.desc || ''}</span>
             <div style="flex: 1; display: flex; justify-content: center; gap: 10px;">
-                <img src="./assets/gray-edit-icon.png" class="edit-btn" style="width: 20px; cursor: pointer;" title="Editar">
-                <img src="./assets/gray-delete-icon.png" class="delete-btn" style="width: 20px; cursor: pointer;" title="Excluir">
+                <img src="./assets/green-edit-icon.png" class="edit-btn" style="width: 20px; cursor: pointer;" title="Editar">
+                <img src="./assets/green-delete-icon.png" class="delete-btn" style="width: 20px; cursor: pointer;" title="Excluir">
             </div>
         `;
 
