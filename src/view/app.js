@@ -167,6 +167,8 @@ class App {
         this.body.style.minHeight = "100vh";
         this.wrapper.style.backgroundColor = "transparent";
         this.page.style.backgroundColor = "transparent";
+        this.page.style.marginTop = "20px";
+        this.page.classList.add("flex-grow-1");
     }
 }
 
