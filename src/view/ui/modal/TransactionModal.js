@@ -1,17 +1,16 @@
 import BaseComponent from "../components/baseComponent.js";
 import CategoryController from "../../../controller/categoryController.js";
-import TransationModel from "../../../model/transationModel.js";
-import TRANSATION_TYPE_MODEL from "../../../model/transationTypeModel.js";
-import TransationController from "../../../controller/transationController.js";
+import TransactionModel from "../../../model/TransactionModel.js";
+import TRANSACTION_TYPE_MODEL from "../../../model/TransactionTypeModel.js";
+import TransactionController from "../../../controller/TransactionController.js";
 
-export default class ModalReport extends BaseComponent {
+export default class TransactionModal extends BaseComponent {
     constructor(config = {}, style_config = {}) {
         super(config, style_config);
     }
 
     spawn() {
         this.main = document.createElement('div');
-        this.modal_container = document.createElement('div');
         this.header = document.createElement('div');
         this.title = document.createElement('h2');
         this.close_btn = document.createElement('button');
@@ -105,7 +104,7 @@ export default class ModalReport extends BaseComponent {
 
             this.value_group.querySelector('input').value = Math.abs(dadosDaLinha.value);
   
-            const isExpense = dadosDaLinha.type === TRANSATION_TYPE_MODEL.EXPENSE;
+            const isExpense = dadosDaLinha.type === TRANSACTION_TYPE_MODEL.EXPENSE;
             this.type_group.querySelector('select').value = isExpense ? "DESPESA" : "RECEITA";
             
             const catSelect = this.category_group.querySelector('select');
@@ -128,12 +127,7 @@ export default class ModalReport extends BaseComponent {
     setup(config) {
         this.close_btn.innerHTML = "&times;";
         
-        const closeModal = () => {
-            const event = new CustomEvent('fecharModal', { bubbles: true });
-            this.main.dispatchEvent(event);
-        };
-
-        this.close_btn.onclick = closeModal;
+        this.close_btn.onclick = config.toggleModal;
         this.close_btn.onmouseover = () => this.close_btn.style.color = '#6ca09d';
         this.close_btn.onmouseout = () => this.close_btn.style.color = '#a4c4c1';
 
@@ -149,22 +143,22 @@ export default class ModalReport extends BaseComponent {
 
                 const dataAtual = this.editingData ? new Date(this.editingData.date) : new Date();
 
-                const typeEnum = typeStr === "DESPESA" ? TRANSATION_TYPE_MODEL.EXPENSE : TRANSATION_TYPE_MODEL.INCOME;
+                const typeEnum = typeStr === "DESPESA" ? TRANSACTION_TYPE_MODEL.EXPENSE : TRANSACTION_TYPE_MODEL.INCOME;
 
-                if (typeEnum === TRANSATION_TYPE_MODEL.EXPENSE && value > 0) value = -value;
-                else if (typeEnum === TRANSATION_TYPE_MODEL.INCOME && value < 0) value = Math.abs(value);
+                if (typeEnum === TRANSACTION_TYPE_MODEL.EXPENSE && value > 0) value = -value;
+                else if (typeEnum === TRANSACTION_TYPE_MODEL.INCOME && value < 0) value = Math.abs(value);
 
                 const categoryObj = CategoryController.getCategories().find(c => c.categoryName === categoryName);
 
-                const newTransaction = new TransationModel(dataAtual, categoryObj, typeEnum, value, desc);
+                const newTransaction = new TransactionModel(dataAtual, categoryObj, typeEnum, value, desc);
 
                 if (this.editingData && this.editingData.id) {
 
-                    TransationController.editTransaction(this.editingData.id, newTransaction);
+                    TransactionController.editTransaction(this.editingData.id, newTransaction);
                     alert("Transação Atualizada com Sucesso!");
                 } else {
 
-                    TransationController.createTransaction(newTransaction);
+                    TransactionController.createTransaction(newTransaction);
                     alert("Transação Adicionada com Sucesso!");
                 }
 
@@ -172,7 +166,7 @@ export default class ModalReport extends BaseComponent {
                 this.main.dispatchEvent(transactionEvent);
 
                 this.form.reset();
-                closeModal();
+                config.toggleModal();
 
             } catch (error) {
                 alert("Erro: " + error.message);
@@ -183,11 +177,7 @@ export default class ModalReport extends BaseComponent {
 
     style(style_config) {
 
-        this.main.style.width = "100%";
-        this.main.style.display = "flex";
-        this.main.style.justifyContent = "center";
-
-        Object.assign(this.modal_container.style, {
+        Object.assign(this.main.style, {
             backgroundColor: "white",
             borderRadius: "20px",
             border: "1px solid #6ca09d",
@@ -269,9 +259,9 @@ export default class ModalReport extends BaseComponent {
     }
 
     build() {
-        this.header.append(this.title, this.close_btn);
+        this.header.replaceChildren(this.title, this.close_btn);
         
-        this.form.append(
+        this.form.replaceChildren(
             this.value_group, 
             this.type_group, 
             this.category_group, 
@@ -279,7 +269,6 @@ export default class ModalReport extends BaseComponent {
             this.submit_btn
         );
         
-        this.modal_container.append(this.header, this.form);
-        this.main.appendChild(this.modal_container);
+        this.main.replaceChildren(this.header, this.form);
     }
 }

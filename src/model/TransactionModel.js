@@ -1,12 +1,12 @@
 import CategoryModel from './categoryModel.js';
-import TRANSATION_TYPE_MODEL from './transationTypeModel.js'
+import TRANSACTION_TYPE_MODEL from './TransactionTypeModel.js'
 
-export default class TransationModel {
+export default class TransactionModel {
 
     // o atributo date de ser um objeto contendo day, month e year;
     // o atributo type deve ser um TRANSACTION_TYPE;
     constructor(date, category, type, value, desc) {
-        if (!Object.values(TRANSATION_TYPE_MODEL).includes(type)) {
+        if (!Object.values(TRANSACTION_TYPE_MODEL).includes(type)) {
             throw new Error("O type deve estar contido em TRANSACTION_TYPE_MODEL!");
         }
 

@@ -1,9 +1,9 @@
 import CategoryModel from '../model/categoryModel.js';
 import CATEGORY_TYPE_MODEL from '../model/categoryTypeModel.js';
-import TransationModel from '../model/transationModel.js'
-import TRANSATION_TYPE_MODEL from '../model/transationTypeModel.js';
+import TransactionModel from '../model/TransactionModel.js'
+import TRANSACTION_TYPE_MODEL from '../model/TransactionTypeModel.js';
 
-export default class TransationRepository {
+export default class TransactionRepository {
 
     // método utilitário para pegar as transações do localStorage
     static _getTransactionsList() {
@@ -47,10 +47,10 @@ export default class TransationRepository {
 
             category.id = t.category.id;
 
-            const transaction = new TransationModel(
+            const transaction = new TransactionModel(
                 new Date(t.date), 
                 category, 
-                t.type === 'DESPESA' ? TRANSATION_TYPE_MODEL.EXPENSE : TRANSATION_TYPE_MODEL.INCOME, 
+                t.type === 'DESPESA' ? TRANSACTION_TYPE_MODEL.EXPENSE : TRANSACTION_TYPE_MODEL.INCOME, 
                 t.value,
                 t.desc || "" // <-- DESCRIÇÃO ADICIONADA AQUI
             );
@@ -114,10 +114,10 @@ export default class TransationRepository {
 
         category.id = transactionStorage.category.id;
 
-        const transaction = new TransationModel(
+        const transaction = new TransactionModel(
             new Date(transactionStorage.date),
             category,
-            transactionStorage.type === 'DESPESA' ? TRANSATION_TYPE_MODEL.EXPENSE :TRANSATION_TYPE_MODEL.INCOME,
+            transactionStorage.type === 'DESPESA' ? TRANSACTION_TYPE_MODEL.EXPENSE :TRANSACTION_TYPE_MODEL.INCOME,
             transactionStorage.value,
             transactionStorage.desc || ""
         );

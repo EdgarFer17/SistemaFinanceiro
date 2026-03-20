@@ -1,5 +1,5 @@
 import BaseComponent from "./components/baseComponent.js";
-import TransationController from "../../controller/transationController.js";
+import TransactionController from "../../controller/TransactionController.js";
 
 export default class Transaction extends BaseComponent {
     constructor(config = {}, style_config = {}) {
@@ -42,7 +42,7 @@ export default class Transaction extends BaseComponent {
 
         let transacoesDoBanco = [];
         try {
-            transacoesDoBanco = TransationController.getTransactions() || [];
+            transacoesDoBanco = TransactionController.getTransactions() || [];
         } catch (e) {
             console.error("Erro ao buscar transações:", e);
         }
@@ -54,13 +54,10 @@ export default class Transaction extends BaseComponent {
         });
     }
 
-    setAddTransactionFunction(func) {
-        this.openModalFunc = func; 
-
-
-        this.button.onclick = () => {
-            this.openModalFunc(null);
-        };
+    setModal(_function) {
+        const SIGNAL = this.controller.signal;
+        this.modal_trigger = _function;
+        this.button.addEventListener("click", _function, { SIGNAL })
     }
 
     createTransactionRow(data) {
@@ -101,7 +98,7 @@ export default class Transaction extends BaseComponent {
             if (confirm(`Deseja realmente excluir a transação de ${valorFormatado}?`)) {
                 try {
 
-                    TransationController.deleteTransation(data.id);
+                    TransactionController.deleteTransaction(data.id);
 
                     this.renderList();
                 } catch (e) {
@@ -111,14 +108,15 @@ export default class Transaction extends BaseComponent {
         });
 
         // --- BOTÃO EDITAR ---
-        row.querySelector('.edit-btn').addEventListener('click', () => {
-            if (this.openModalFunc) {
-
-                this.openModalFunc(data);
-            }
+        row.querySelector('.edit-btn').addEventListener('click', (event) => {
+            this.modal_trigger(event, data);
         });
 
         return row;
+    }
+
+    openModal(data) {
+        
     }
 
     style(style_config) {

@@ -2,7 +2,7 @@ import BaseComponent from "./components/baseComponent.js";
 import CategoryController from "../../controller/categoryController.js"; 
 import CategoryModel from "../../model/categoryModel.js";
 import CATEGORY_TYPE_MODEL from "../../model/categoryTypeModel.js";
-import CategoryModal from "./components/categoryModal.js";
+import CategoryModal from "./modal/categoryModal.js";
 
 export default class Category extends BaseComponent {
     constructor(config = {}, style_config = {}) {
@@ -27,13 +27,14 @@ export default class Category extends BaseComponent {
         this.renderCategories();
     }
 
+    setModal(_function) {
+        const SIGNAL = this.controller.signal;
+        this.button.addEventListener("click", _function, { SIGNAL })
+    }
+
     handleOpenModal(categoryData = null) {
         const modal = new CategoryModal({
             category: categoryData,
-            onClose: () => {
-                const modalElement = modal.getElement();
-                if (modalElement.parentNode) document.body.removeChild(modalElement);
-            },
             onSave: (data) => {
                 try {
                     const name = data.name ? data.name.trim() : "";
@@ -57,8 +58,6 @@ export default class Category extends BaseComponent {
                 }
             }
         });
-
-        document.body.appendChild(modal.getElement());
     }
 
     renderCategories() {

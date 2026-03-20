@@ -1,15 +1,15 @@
-import TransationModel from "../model/transationModel.js";
-import TRANSATION_TYPE_MODEL from "../model/transationTypeModel.js";
+import TransactionModel from "../model/TransactionModel.js";
+import TRANSACTION_TYPE_MODEL from "../model/TransactionTypeModel.js";
 import CategoryRepository from "../repository/categoryRepository.js";
-import TransationRepository from "../repository/transationRepository.js";
+import TransactionRepository from "../repository/TransactionRepository.js";
 import BalanceController from "./balanceController.js";
 
 
-export default class TransationController {
+export default class TransactionController {
 
     // receber um TransactionModel e insere
     static createTransaction(transaction) {
-        if (!(transaction instanceof TransationModel)) {
+        if (!(transaction instanceof TransactionModel)) {
             throw new Error("O parâmetro passado precisa ser um TransactionModel!")
         }
 
@@ -22,18 +22,18 @@ export default class TransationController {
         }
 
         // transfere
-        if (transaction.type === TRANSATION_TYPE_MODEL.EXPENSE) {
+        if (transaction.type === TRANSACTION_TYPE_MODEL.EXPENSE) {
             BalanceController.withdraw(transaction.value);
         } else {
             BalanceController.deposit(transaction.value);
         }
 
-        TransationRepository.createTransaction(transaction);
+        TransactionRepository.createTransaction(transaction);
     }
 
     // retorna uma lista de TransactionModel
     static getTransactions() {
-        return TransationRepository.getTransactions();
+        return TransactionRepository.getTransactions();
     }
 
     // recebe o id da transação que deseja editar e a transação para modificação
@@ -42,13 +42,13 @@ export default class TransationController {
             throw new Error("O id deve ser um número maior do que zero!")
         }
 
-        if (!(newTransaction instanceof TransationModel)) {
+        if (!(newTransaction instanceof TransactionModel)) {
             throw new Error("O parâmetro passado precisa ser um TransactionModel!")
         }
 
-        const transationForEdit = TransationRepository.getTransactionById(id);
+        const transactionForEdit = TransactionRepository.getTransactionById(id);
 
-        if (!transationForEdit) {
+        if (!transactionForEdit) {
             throw new Error("Transação não encontrada!");
         }
 
@@ -61,16 +61,16 @@ export default class TransationController {
         }
 
         // devolve
-        if (transationForEdit.type === TRANSATION_TYPE_MODEL.EXPENSE) {
-            BalanceController.deposit(transationForEdit.value);
+        if (transactionForEdit.type === TRANSACTION_TYPE_MODEL.EXPENSE) {
+            BalanceController.deposit(transactionForEdit.value);
         } else {
-            BalanceController.withdraw(transationForEdit.value);
+            BalanceController.withdraw(transactionForEdit.value);
         }
 
-        TransationRepository.editTransaction(id, newTransaction);
+        TransactionRepository.editTransaction(id, newTransaction);
 
         // transfere
-        if (newTransaction.type === TRANSATION_TYPE_MODEL.EXPENSE) {
+        if (newTransaction.type === TRANSACTION_TYPE_MODEL.EXPENSE) {
             BalanceController.withdraw(newTransaction.value);
         } else {
             BalanceController.deposit(newTransaction.value);
@@ -78,33 +78,33 @@ export default class TransationController {
     }
     
     // recebe um id da transação e apaga a transação
-    static deleteTransation(id) {
+    static deleteTransaction(id) {
         if (typeof id !== "number" || id < 0) {
             throw new Error("O id deve ser um número maior do que zero!");
         }
 
-        const transationForDelete = TransationRepository.getTransactionById(id);
+        const transactionForDelete = TransactionRepository.getTransactionById(id);
 
-        if (!transationForDelete) {
+        if (!transactionForDelete) {
             throw new Error("Transação não encontrada!");
         }
 
-        if (transationForDelete.type === TRANSATION_TYPE_MODEL.EXPENSE) {
-            BalanceController.deposit(transationForDelete.value);
+        if (transactionForDelete.type === TRANSACTION_TYPE_MODEL.EXPENSE) {
+            BalanceController.deposit(transactionForDelete.value);
         } else {
-            BalanceController.withdraw(transationForDelete.value);
+            BalanceController.withdraw(transactionForDelete.value);
         }
 
-        TransationRepository.deleteTransaction(id);
+        TransactionRepository.deleteTransaction(id);
     }
     
     // recebe um id e retorna a transação
-    static getTransationById(id) {
+    static getTransactionById(id) {
         if (typeof id !== "number" || id < 0) {
             throw new Error("O id deve ser um número maior do que zero!");
         }
 
-        const transaction = TransationRepository.getTransactionById(id);
+        const transaction = TransactionRepository.getTransactionById(id);
 
         if (transaction === null) {
             throw new Error("Transação não encontrada")
