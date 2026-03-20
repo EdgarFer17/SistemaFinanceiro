@@ -4,10 +4,11 @@ import Header from './ui/header.js';
 import SideNav from './ui/sidenav.js';
 import PageState from '../repository/pageState.js';
 import Category from './ui/category.js'
-import Transaction from './ui/transaction.js';
+import Transaction from './ui/Transaction.js';
 import Dashboard from './ui/dashboard.js';
-import ModalReport from './ui/modal/report.js';
 import CreateCategoriesDefault from '../db/createDefaultCategories.js';
+import CategoryModal from './ui/modal/categoryModal.js';
+import TransactionModal from './ui/modal/TransactionModal.js';
 
 CreateCategoriesDefault.create();
 
@@ -42,7 +43,7 @@ class App {
                         icon_src: './assets/Dashboard.png',
                         icon_alt: 'Botão de Dashboard',
                         function: () => {
-                            this.buildPage("Dashboard", 0);
+                            this.buildPage("Dashboard");
                             PageState.save("Dashboard");
                         },
                     },
@@ -52,7 +53,7 @@ class App {
                         icon_src: './assets/Category.png',
                         icon_alt: 'Botão de Categorias',
                         function: () => {
-                            this.buildPage("Category", 1);
+                            this.buildPage("Category");
                             PageState.save("Category");
                         },
                     },
@@ -62,7 +63,7 @@ class App {
                         icon_src: './assets/Transaction.png',
                         icon_alt: 'Botão de Transações',
                         function: () => {
-                            this.buildPage("Transaction", 2);
+                            this.buildPage("Transaction");
                             PageState.save("Transaction");
                         },
                     },
@@ -70,13 +71,13 @@ class App {
                 style_config: {
                     inactive: {
                         main: ["nav-link", "d-flex", "rounded-3", "p-1"],
-                        button: ["d-flex", "align-items-center", "bg-transparent", "border-0", "text-white", "gap-3", "p-0"],
+                        button: ["d-flex", "align-items-center", "bg-transparent", "border-0", "text-white", "gap-3", "p-0", "w-100"],
                         icon: ["tabIcon"],
                         text: ["tabText", "fw-medium", "mb-0"] 
                     },
                     active: {
                         main: ["nav-link", "bg-white", "rounded-3", "p-1"],
-                        button: ["d-flex", "align-items-center", "bg-white", "border-0", "text-primary", "gap-3", "p-0"],
+                        button: ["d-flex", "align-items-center", "bg-white", "border-0", "text-primary", "gap-3", "p-0", "w-100"],
                         icon: ["tabIcon"],
                         text: ["tabText", "fw-bold", "mb-0"],
                     }
@@ -150,7 +151,8 @@ class App {
             Transaction: new Transaction(),
         }
         this.modals = {
-            Report: new ModalReport(),
+            Transaction: new TransactionModal(),
+            Category: new CategoryModal()
         }
         
         this.header = new Header(this.header_config, this.header_style_config);
@@ -158,23 +160,23 @@ class App {
     }
 
     setup() {
-        this.pages["Dashboard"].setReportFunction(()=>{this.toggleModal("Report")});
-        this.modal_wrapper.addEventListener('click', this.toggleModal);
+        this.modal_wrapper.addEventListener('click', ()=>{this.toggleModal()});
         this.pages.Dashboard.updateTitle("Bem-vindo, Nome do Usuário");
-
-
+        
+        
         window.addEventListener('resize', () => {
-            this.pages.Dashboard.elements.bar_component.resize();
-            this.pages.Dashboard.elements.donut_1_component.resize();
-            this.pages.Dashboard.elements.donut_2_component.resize();
+            this.pages.Dashboard.elements.bar_component.bar.resize();
+            this.pages.Dashboard.elements.donut_1_component.donut.resize();
+            this.pages.Dashboard.elements.donut_2_component.donut.resize();
         });
-
-        this.pages["Transaction"].setAddTransactionFunction((dataDaLinha) => { 
-                this.modals["Report"].prepareModal(dataDaLinha); 
-                this.toggleModal("Report");
-            });
-        this.modal_wrapper.addEventListener('click', () => this.toggleModal)
-        this.modal_wrapper.addEventListener('fecharModal', () => this.toggleModal());
+        
+        this.pages["Transaction"].setModal((_, dataDaLinha) => { 
+            this.modals["Transaction"].prepareModal(dataDaLinha); 
+            this.toggleModal("Transaction");
+        });
+        
+        this.pages["Dashboard"].setModal(()=>{this.toggleModal("Report")});
+        this.pages["Category"].setModal(()=>{this.toggleModal("Category")});
     }
 
     build() {
@@ -183,12 +185,14 @@ class App {
         this.body.replaceChildren(this.header.header, this.wrapper, this.modal_wrapper);
     }
 
-    buildPage(page, index) {
+    buildPage(page) {
         const PAGE = this.pages[page];
         if (PAGE) {
             for (const TAB of this.sidenav.tabs) {
                 TAB.changeStatus(false);
             }
+            const index = Object.keys(this.pages).indexOf(page)
+
             this.sidenav.tabs.at(index).changeStatus(true);
             this.page.replaceChildren(PAGE.main);
         }

@@ -1,10 +1,10 @@
 import BaseComponent from "../components/baseComponent.js";
 import CategoryController from "../../../controller/categoryController.js";
-import TransationModel from "../../../model/transationModel.js";
-import TRANSATION_TYPE_MODEL from "../../../model/transationTypeModel.js";
-import TransationController from "../../../controller/transationController.js";
+import TransactionModel from "../../../model/TransactionModel.js";
+import TRANSACTION_TYPE_MODEL from "../../../model/TransactionTypeModel.js";
+import TransactionController from "../../../controller/TransactionController.js";
 
-export default class ModalReport extends BaseComponent {
+export default class TransactionModal extends BaseComponent {
     constructor(config = {}, style_config = {}) {
         super(config, style_config);
     }
@@ -97,6 +97,7 @@ export default class ModalReport extends BaseComponent {
 
     prepareModal(dadosDaLinha) {
         this.editingData = dadosDaLinha;
+        console.log(dadosDaLinha)
 
         if (dadosDaLinha) {
             this.title.textContent = "Editar Transação";
@@ -105,7 +106,7 @@ export default class ModalReport extends BaseComponent {
 
             this.value_group.querySelector('input').value = Math.abs(dadosDaLinha.value);
   
-            const isExpense = dadosDaLinha.type === TRANSATION_TYPE_MODEL.EXPENSE;
+            const isExpense = dadosDaLinha.type === TRANSACTION_TYPE_MODEL.EXPENSE;
             this.type_group.querySelector('select').value = isExpense ? "DESPESA" : "RECEITA";
             
             const catSelect = this.category_group.querySelector('select');
@@ -149,22 +150,22 @@ export default class ModalReport extends BaseComponent {
 
                 const dataAtual = this.editingData ? new Date(this.editingData.date) : new Date();
 
-                const typeEnum = typeStr === "DESPESA" ? TRANSATION_TYPE_MODEL.EXPENSE : TRANSATION_TYPE_MODEL.INCOME;
+                const typeEnum = typeStr === "DESPESA" ? TRANSACTION_TYPE_MODEL.EXPENSE : TRANSACTION_TYPE_MODEL.INCOME;
 
-                if (typeEnum === TRANSATION_TYPE_MODEL.EXPENSE && value > 0) value = -value;
-                else if (typeEnum === TRANSATION_TYPE_MODEL.INCOME && value < 0) value = Math.abs(value);
+                if (typeEnum === TRANSACTION_TYPE_MODEL.EXPENSE && value > 0) value = -value;
+                else if (typeEnum === TRANSACTION_TYPE_MODEL.INCOME && value < 0) value = Math.abs(value);
 
                 const categoryObj = CategoryController.getCategories().find(c => c.categoryName === categoryName);
 
-                const newTransaction = new TransationModel(dataAtual, categoryObj, typeEnum, value, desc);
+                const newTransaction = new TransactionModel(dataAtual, categoryObj, typeEnum, value, desc);
 
                 if (this.editingData && this.editingData.id) {
 
-                    TransationController.editTransaction(this.editingData.id, newTransaction);
+                    TransactionController.editTransaction(this.editingData.id, newTransaction);
                     alert("Transação Atualizada com Sucesso!");
                 } else {
 
-                    TransationController.createTransaction(newTransaction);
+                    TransactionController.createTransaction(newTransaction);
                     alert("Transação Adicionada com Sucesso!");
                 }
 

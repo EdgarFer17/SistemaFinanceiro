@@ -1,7 +1,7 @@
 import ComponentBar from "./components/bar.js";
 import BaseComponent from "./components/baseComponent.js";
 import ComponentDonut from "./components/donut.js";
-import ComponentTransactionList from "./components/transactionList.js";
+import ComponentTransactionList from "./components/TransactionList.js";
 
 export default class Dashboard extends BaseComponent {
     constructor(config = {}, style_config = {}) {
@@ -9,7 +9,6 @@ export default class Dashboard extends BaseComponent {
         this.currency = -1000.00
         this.income = 1000.00
         this.expense = 2000.00
-        this.health_status = "a";
         this.hide_backup = [];
     }
 
@@ -209,9 +208,11 @@ export default class Dashboard extends BaseComponent {
             const HIDE_ELEMENTS = [];
             for (let i = 0; i < 4; i++) {
                 this.hide_backup.push([...TO_HIDE.at(i).children]);
-                HIDE_ELEMENTS.push(document.createElement("img"));
-                HIDE_ELEMENTS.at(i).src = "./assets/Hide.svg";
-                HIDE_ELEMENTS.at(i).alt = "Elemento Escondido Pelo Usuário!";
+                const IMG = document.createElement("img")
+                IMG.src = "./assets/Hide.svg";
+                IMG.alt = "Elemento Escondido Pelo Usuário!";
+                IMG.classList.add("img-fluid")
+                HIDE_ELEMENTS.push(IMG);
                 TO_HIDE.at(i).replaceChildren(HIDE_ELEMENTS.at(i));
             }
     
@@ -222,7 +223,7 @@ export default class Dashboard extends BaseComponent {
         }
     };
 
-    setReportFunction(_function) {
+    setModal(_function) {
         this.setFunction('click', _function, this.elements.ope_report_button);
     }
 

@@ -1,4 +1,4 @@
-import BaseComponent from "./baseComponent.js";
+import BaseComponent from "../components/baseComponent.js";
 
 export default class CategoryModal extends BaseComponent {
     constructor(config = {}, style_config = {}) {
@@ -11,7 +11,6 @@ export default class CategoryModal extends BaseComponent {
 
     spawn() {
         this.main = document.createElement('div');
-        this.content = document.createElement('div');
         this.title = document.createElement('h2');
         this.labelName = document.createElement('label');
         this.inputName = document.createElement('input');
@@ -44,18 +43,11 @@ export default class CategoryModal extends BaseComponent {
                 id: isEdit ? config.category.id : null
             });
         };
-
-        this.main.onclick = (e) => {
-            if (e.target === this.main) config.onClose();
-        };
     }
 
     style() {
-        this.main.className = "position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center";
-        this.main.style.backgroundColor = "rgba(0,0,0,0.5)";
-        this.main.style.zIndex = "9999"; 
-        this.content.className = "bg-white p-5 rounded-4 shadow-lg";
-        this.content.style.width = "400px";
+        this.main.className = "bg-white p-5 rounded-4 shadow-lg";
+        this.main.style.width = "400px";
         this.labelName.className = "form-label d-block mb-1 fw-bold";
         this.labelLimit.className = "form-label d-block mb-1 fw-bold";
 
@@ -66,11 +58,6 @@ export default class CategoryModal extends BaseComponent {
     }
 
     build() {
-        this.content.append(this.title, this.labelName, this.inputName, this.labelLimit, this.inputLimit, this.saveButton);
-        this.main.append(this.content);
-    }
-
-    getElement() {
-        return this.main;
+        this.main.replaceChildren(this.title, this.labelName, this.inputName, this.labelLimit, this.inputLimit, this.saveButton);
     }
 }
