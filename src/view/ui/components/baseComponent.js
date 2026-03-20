@@ -27,6 +27,10 @@ export default class BaseComponent {
     build() {
         throw new Error('Implemente o método build()!');
     }
+
+    getElement() {
+        return this.main;
+    }
 }
 
 // eslint-disable-next-line

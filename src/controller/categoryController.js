@@ -48,7 +48,11 @@ export default class CategoryController {
 
         const categoriesNames = []
 
-        CategoryRepository.getCategories().forEach(c => categoriesNames.push(c.categoryName));
+        CategoryRepository.getCategories().forEach(c => {
+            if (c.id !== id) {
+                categoriesNames.push(c.categoryName);
+            }
+        });
 
         if (categoriesNames.includes(newCategory.categoryName)) {
             throw new Error("Nome da categoria já está cadastrado!");

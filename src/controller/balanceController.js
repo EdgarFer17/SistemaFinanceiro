@@ -1,4 +1,4 @@
-import BalanceRepository from "../repository/balanceRepository";
+import BalanceRepository from "../repository/balanceRepository.js";
 
 export default class BalanceController {
     

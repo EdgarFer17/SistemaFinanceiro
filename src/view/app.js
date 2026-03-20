@@ -7,6 +7,9 @@ import Category from './ui/category.js'
 import Transaction from './ui/transaction.js';
 import Dashboard from './ui/dashboard.js';
 import ModalReport from './ui/modal/report.js';
+import CreateCategoriesDefault from '../db/createDefaultCategories.js';
+
+CreateCategoriesDefault.create();
 
 class App {
     constructor() {
@@ -165,6 +168,13 @@ class App {
             this.pages.Dashboard.elements.donut_1_component.resize();
             this.pages.Dashboard.elements.donut_2_component.resize();
         });
+
+        this.pages["Transaction"].setAddTransactionFunction((dataDaLinha) => { 
+                this.modals["Report"].prepareModal(dataDaLinha); 
+                this.toggleModal("Report");
+            });
+        this.modal_wrapper.addEventListener('click', () => this.toggleModal)
+        this.modal_wrapper.addEventListener('fecharModal', () => this.toggleModal());
     }
 
     build() {
@@ -206,6 +216,13 @@ class App {
         this.wrapper.classList.add(...["d-flex", "min-vh-100","h-auto"]);
         this.page.classList.add(...["d-flex", "flex-grow-1"]);
         this.modal_wrapper.classList.add(...["modal-1"]);
+        this.body.style.backgroundColor = "#f4f7f6"; 
+        this.body.style.margin = "0";
+        this.body.style.minHeight = "100vh";
+        this.wrapper.style.backgroundColor = "transparent";
+        this.page.style.backgroundColor = "transparent";
+        this.page.style.marginTop = "20px";
+        this.page.classList.add("flex-grow-1");
     }
 }
 

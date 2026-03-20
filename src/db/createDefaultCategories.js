@@ -29,7 +29,6 @@ export default class CreateCategoriesDefault {
             
         }
 
-        console.log(
-            "Categorias padrão inseridas!");
+        console.log("Categorias padrão inseridas!");
     }
 }
