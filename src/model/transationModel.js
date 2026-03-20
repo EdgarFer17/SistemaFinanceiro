@@ -5,7 +5,7 @@ export default class TransationModel {
 
     // o atributo date de ser um objeto contendo day, month e year;
     // o atributo type deve ser um TRANSACTION_TYPE;
-    constructor(date, category, type, value) {
+    constructor(date, category, type, value, desc) {
         if (!Object.values(TRANSATION_TYPE_MODEL).includes(type)) {
             throw new Error("O type deve estar contido em TRANSACTION_TYPE_MODEL!");
         }
@@ -27,6 +27,7 @@ export default class TransationModel {
         this.category = category;
         this.type = type;
         this.value = value;
+        this.desc = desc;
 
     }
 }

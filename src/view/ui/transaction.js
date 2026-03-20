@@ -1,5 +1,8 @@
 import BaseComponent from "./components/baseComponent.js";
 
+
+
+
 export default class Transaction extends BaseComponent {
     constructor(config = {}, style_config = {}) {
         super(config, style_config);
@@ -10,27 +13,17 @@ export default class Transaction extends BaseComponent {
         this.header_wrapper = document.createElement('div');
         this.title = document.createElement('h2');
         this.button = document.createElement('button');
-        
-        // Container que vai segurar as linhas de transação
         this.list_container = document.createElement('section');
-        
-        // Cabeçalho das colunas
         this.table_header_row = document.createElement('div');
     }
 
     setup(config) {
         this.title.textContent = config['title'] || "Transações";
-        this.button.textContent = config['button_title'] || "Adicionar Transação";
-        
-        // Exemplo de dados
-        const transactions = config.transactions || [
-            { data: '04/02/2026', categoria: 'Lazer', tipo: 'DESPESA', valor: -1000.00 },
-            { data: '16/01/2026', categoria: 'Outros', tipo: 'RECEITA', valor: 750.00 }
-        ];
+        this.button.textContent = config['button_title'] || "Adicionar Transação"
 
-        // Criar os nomes das colunas
-        this.table_header_row.innerHTML = '';
-        const headers = ['Data', 'Categoria', 'Tipo', 'Valor', 'Editar', 'Deletar'];
+        const transactions = config.transactions || [];
+        const headers = ['Data', 'Categoria', 'Tipo', 'Valor', "Descrição","Editar/Excluir"];
+        
         headers.forEach(text => {
             const span = document.createElement('span');
             span.textContent = text;
@@ -46,6 +39,48 @@ export default class Transaction extends BaseComponent {
             const row = this.createTransactionRow(trans);
             this.list_container.appendChild(row);
         });
+
+
+        document.addEventListener('newTransaction', (event) => {
+            const transacaoSalva = event.detail;
+
+
+
+            const dataObjeto = new Date(transacaoSalva.date);
+            const dia = String(dataObjeto.getDate()).padStart(2, '0');
+            const mes = String(dataObjeto.getMonth() + 1).padStart(2, '0');
+            const ano = dataObjeto.getFullYear();
+            const dataString = `${dia}/${mes}/${ano}`;
+
+            let nomeCategoria = "Sem Categoria";
+            if (transacaoSalva.category && transacaoSalva.category.categoryName) {
+                nomeCategoria = transacaoSalva.category.categoryName;
+            } else if (typeof transacaoSalva.category === 'string') {
+                nomeCategoria = transacaoSalva.category;
+            }
+
+            const transacaoFormatada = {
+                data: dataString,
+                categoria: nomeCategoria,
+                tipo: transacaoSalva.type,
+                valor: Number(transacaoSalva.value), 
+                desc: transacaoSalva.desc || "" 
+            };
+
+            console.log("Objeto pronto para a tabela:", transacaoFormatada);
+
+            const novaLinha = this.createTransactionRow(transacaoFormatada);
+            this.list_container.prepend(novaLinha);
+        });
+
+
+
+
+        
+    }
+
+    setAddTransactionFunction(func) {
+        this.button.onclick = func;
     }
 
     createTransactionRow(data) {
@@ -63,6 +98,7 @@ export default class Transaction extends BaseComponent {
             <span style="flex: 1; text-align: center; color: ${isNegative ? '#e74c3c' : '#27ae60'}; font-weight: bold;">
                 ${valorFormatado}
             </span>
+            <span style="flex: 1; text-align: center; font-weight: bold;">${data.desc || ''}</span>
             <div style="flex: 1; display: flex; justify-content: center; gap: 10px;">
                 <img src="./assets/gray-edit-icon.png" style="width: 20px; cursor: pointer;">
                 <img src="./assets/gray-delete-icon.png" style="width: 20px; cursor: pointer;">
@@ -144,5 +180,6 @@ export default class Transaction extends BaseComponent {
         this.main.appendChild(this.header_wrapper);
         this.main.appendChild(this.table_header_row);
         this.main.appendChild(this.list_container);
+        
     }
 }

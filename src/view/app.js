@@ -7,6 +7,9 @@ import Category from './ui/category.js'
 import Transaction from './ui/transaction.js';
 import Dashboard from './ui/dashboard.js';
 import ModalReport from './ui/modal/report.js';
+import CreateCategoriesDefault from '../db/createDefaultCategories.js';
+
+CreateCategoriesDefault.create();
 
 class App {
     constructor() {
@@ -120,7 +123,9 @@ class App {
 
     setup() {
         this.pages["Dashboard"].setReportFunction(()=>{this.toggleModal("Report")})
-        this.modal_wrapper.addEventListener('click', this.toggleModal)
+        this.pages["Transaction"].setAddTransactionFunction(() => { this.toggleModal("Report") });
+        this.modal_wrapper.addEventListener('click', () => this.toggleModal)
+        this.modal_wrapper.addEventListener('fecharModal', () => this.toggleModal());
     }
 
     build() {
