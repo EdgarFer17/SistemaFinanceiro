@@ -1,5 +1,4 @@
 import BaseComponent from "./components/baseComponent.js";
-// IMPORTAMOS O CONTROLLER PARA LER E DELETAR DO BANCO
 import TransationController from "../../controller/transationController.js";
 
 export default class Transaction extends BaseComponent {
@@ -30,10 +29,9 @@ export default class Transaction extends BaseComponent {
             this.table_header_row.appendChild(span);
         });
 
-        // Chama a função que desenha a lista puxando do banco
         this.renderList();
 
-        // Quando o modal avisar que salvou/editou no banco, a gente recarrega a lista!
+
         document.addEventListener('transactionSaved', () => {
             this.renderList(); 
         });
@@ -42,7 +40,6 @@ export default class Transaction extends BaseComponent {
     renderList() {
         this.list_container.innerHTML = '';
 
-        // 1. Busca os dados REAIS direto do banco
         let transacoesDoBanco = [];
         try {
             transacoesDoBanco = TransationController.getTransactions() || [];
@@ -50,7 +47,7 @@ export default class Transaction extends BaseComponent {
             console.error("Erro ao buscar transações:", e);
         }
 
-        // 2. Inverte o array para as mais novas aparecerem no topo (se quiser a ordem inversa, remova o .reverse())
+
         transacoesDoBanco.reverse().forEach(trans => {
             const row = this.createTransactionRow(trans);
             this.list_container.appendChild(row);
@@ -60,9 +57,9 @@ export default class Transaction extends BaseComponent {
     setAddTransactionFunction(func) {
         this.openModalFunc = func; 
 
-        // Botão verde de "Adicionar Nova"
+
         this.button.onclick = () => {
-            this.openModalFunc(null); // Null significa que não há dados de edição
+            this.openModalFunc(null);
         };
     }
 
@@ -70,18 +67,17 @@ export default class Transaction extends BaseComponent {
         const row = document.createElement('div');
         row.className = 'transaction-row';
 
-        // O valor agora vem de data.value (nome oficial do modelo) em vez de data.valor
         const isNegative = data.value < 0;
         const valorFormatado = `R$ ${data.value.toFixed(2).replace('.', ',')}`;
 
-        // Tratamento da data que vem do banco
+
         const dataObj = new Date(data.date);
         const dia = String(dataObj.getDate()).padStart(2, '0');
         const mes = String(dataObj.getMonth() + 1).padStart(2, '0');
         const ano = dataObj.getFullYear();
         const dataFormatadaStr = `${dia}/${mes}/${ano}`;
 
-        // Tradução do tipo para exibição
+
         const tipoDisplay = data.type === "EXPENSE" ? "DESPESA" : "RECEITA";
 
         row.innerHTML = `
@@ -104,10 +100,9 @@ export default class Transaction extends BaseComponent {
         row.querySelector('.delete-btn').addEventListener('click', () => {
             if (confirm(`Deseja realmente excluir a transação de ${valorFormatado}?`)) {
                 try {
-                    // Manda deletar no BANCO usando o ID
+
                     TransationController.deleteTransation(data.id);
-                    
-                    // Recarrega a tela para a linha sumir
+
                     this.renderList();
                 } catch (e) {
                     alert("Erro ao excluir: " + e.message);
@@ -118,7 +113,7 @@ export default class Transaction extends BaseComponent {
         // --- BOTÃO EDITAR ---
         row.querySelector('.edit-btn').addEventListener('click', () => {
             if (this.openModalFunc) {
-                // Passa o objeto completo (com id) para o modal saber que é edição
+
                 this.openModalFunc(data);
             }
         });

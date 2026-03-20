@@ -102,15 +102,14 @@ export default class ModalReport extends BaseComponent {
             this.title.textContent = "Editar Transação";
             this.submit_btn.textContent = "Salvar Alterações";
             
-            // Agora lemos dadosDaLinha.value (nome real no seu DB)
+
             this.value_group.querySelector('input').value = Math.abs(dadosDaLinha.value);
-            
-            // Ajusta o select baseado no Enum (EXPENSE / INCOME)
+  
             const isExpense = dadosDaLinha.type === TRANSATION_TYPE_MODEL.EXPENSE;
             this.type_group.querySelector('select').value = isExpense ? "DESPESA" : "RECEITA";
             
             const catSelect = this.category_group.querySelector('select');
-            // Como usamos o modelo real, acessamos o nome da categoria assim:
+
             catSelect.value = dadosDaLinha.category.categoryName;
             if (!catSelect.value) catSelect.value = ""; 
 
@@ -147,36 +146,28 @@ export default class ModalReport extends BaseComponent {
                 const categoryName = this.category_group.querySelector('select').value;
                 const desc = this.desc_group.querySelector('input').value;
 
-                // Usa a data original da transação se estiver editando, senão pega a data de hoje
+
                 const dataAtual = this.editingData ? new Date(this.editingData.date) : new Date();
 
-                // Converte o texto do select para o seu Enum oficial do banco de dados
                 const typeEnum = typeStr === "DESPESA" ? TRANSATION_TYPE_MODEL.EXPENSE : TRANSATION_TYPE_MODEL.INCOME;
 
-                // Transforma o valor em negativo se for despesa (como você já fazia)
                 if (typeEnum === TRANSATION_TYPE_MODEL.EXPENSE && value > 0) value = -value;
                 else if (typeEnum === TRANSATION_TYPE_MODEL.INCOME && value < 0) value = Math.abs(value);
 
-                // Busca o CategoryModel completo
                 const categoryObj = CategoryController.getCategories().find(c => c.categoryName === categoryName);
 
-                // Instancia o TransationModel EXATAMENTE como o Controller exige
                 const newTransaction = new TransationModel(dataAtual, categoryObj, typeEnum, value, desc);
-                
-                // ==========================================
-                // MAGICA ACONTECENDO AQUI: USANDO SEU CONTROLLER
-                // ==========================================
+
                 if (this.editingData && this.editingData.id) {
-                    // Edita direto no seu LocalStorage via Controller!
+
                     TransationController.editTransaction(this.editingData.id, newTransaction);
                     alert("Transação Atualizada com Sucesso!");
                 } else {
-                    // Cria direto no seu LocalStorage via Controller!
+
                     TransationController.createTransaction(newTransaction);
                     alert("Transação Adicionada com Sucesso!");
                 }
 
-                // Dispara um evento vazio apenas para o transaction.js saber que o banco atualizou
                 const transactionEvent = new CustomEvent('transactionSaved', { bubbles: true });
                 this.main.dispatchEvent(transactionEvent);
 
