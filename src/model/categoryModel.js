@@ -2,9 +2,7 @@ import CATEGORY_TYPE_MODEL from "./categoryTypeModel.js";
 
 export default class CategoryModel {
 
-    // o atributo categoryName deve receber uma String com nome da categoria
-    // o atrbuto limit é um Number e refere-se ao limite da categoria
-    constructor(categoryName, limit, type) {    
+    constructor(categoryName, limit, type = CATEGORY_TYPE_MODEL.CUSTOM) {    
         if (typeof categoryName !== "string") {
             throw new Error("O categoryName deve ser uma String!");
         }

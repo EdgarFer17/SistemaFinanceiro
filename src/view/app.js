@@ -171,6 +171,13 @@ class App {
         this.page.classList.add(...["flex-grow-1", "w-100"]);
         this.page.classList.add(...[]);
         this.modal_wrapper.classList.add(...["modal-1"]);
+        this.body.style.backgroundColor = "#f4f7f6"; 
+        this.body.style.margin = "0";
+        this.body.style.minHeight = "100vh";
+        this.wrapper.style.backgroundColor = "transparent";
+        this.page.style.backgroundColor = "transparent";
+        this.page.style.marginTop = "20px";
+        this.page.classList.add("flex-grow-1");
     }
 }
 
