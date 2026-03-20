@@ -17,7 +17,6 @@ export default class ModalReport extends BaseComponent {
         this.form = document.createElement('form');
         this.form.id = "transaction-form";
 
-        // Criação dos grupos de input
         this.value_group = this.createFormGroup("Valor", "number", "valor-input", "Digite o valor da transação", "any");
         
         this.type_group = this.createSelectGroup("Tipo", "type-select", [
@@ -94,11 +93,36 @@ export default class ModalReport extends BaseComponent {
         return this.createSelectGroup("Categoria", "category-select", options);
     }
 
-    setup(config) {
-        this.title.textContent = "Fazer Transação";
-        this.close_btn.innerHTML = "&times;";
+    prepareModal(dadosDaLinha) {
+        this.editingData = dadosDaLinha;
 
-        // Lógica de Fechar Modal
+        if (dadosDaLinha) {
+
+            this.title.textContent = "Editar Transação";
+            this.submit_btn.textContent = "Salvar Alterações";
+            
+            this.value_group.querySelector('input').value = Math.abs(dadosDaLinha.valor);
+            this.type_group.querySelector('select').value = dadosDaLinha.tipo;
+            
+            const catSelect = this.category_group.querySelector('select');
+            catSelect.value = dadosDaLinha.categoria;
+            if (!catSelect.value) catSelect.value = ""; 
+
+            this.desc_group.querySelector('input').value = dadosDaLinha.desc || "";
+        } else {
+
+            this.title.textContent = "Fazer Transação";
+            this.submit_btn.textContent = "Adicionar Transação";
+            this.form.reset();
+
+            this.type_group.querySelector('select').value = "";
+            this.category_group.querySelector('select').value = "";
+        }
+    }
+
+    setup(config) {
+        this.close_btn.innerHTML = "&times;";
+        
         const closeModal = () => {
             const event = new CustomEvent('fecharModal', { bubbles: true });
             this.main.dispatchEvent(event);
@@ -108,7 +132,6 @@ export default class ModalReport extends BaseComponent {
         this.close_btn.onmouseover = () => this.close_btn.style.color = '#6ca09d';
         this.close_btn.onmouseout = () => this.close_btn.style.color = '#a4c4c1';
 
-        // Lógica de Salvar
         this.form.addEventListener('submit', (event) => {
             event.preventDefault();
 
@@ -117,8 +140,8 @@ export default class ModalReport extends BaseComponent {
                 const type = this.type_group.querySelector('select').value;
                 const categoryName = this.category_group.querySelector('select').value;
                 const desc = this.desc_group.querySelector('input').value;
-                
-                const dataAtual = new Date();
+
+                const dataAtual = this.editingData ? this.editingData.dataObj || new Date() : new Date();
 
                 if (type === "DESPESA" && value > 0) value = -value;
                 else if (type === "RECEITA" && value < 0) value = Math.abs(value);
@@ -126,12 +149,16 @@ export default class ModalReport extends BaseComponent {
                 const categoryObj = CategoryController.getCategories().find(c => c.categoryName === categoryName);
 
                 const newTransaction = new TransationModel(dataAtual, categoryObj, type, value, desc);
+                
+                if (this.editingData && this.editingData.temp_id) {
+                    newTransaction.temp_id = this.editingData.temp_id;
+                }
 
                 const transactionEvent = new CustomEvent('newTransaction', { bubbles: true, detail: newTransaction });
                 this.main.dispatchEvent(transactionEvent);
 
                 this.form.reset();
-                alert("Transação Adicionada com Sucesso!");
+                alert(this.editingData ? "Transação Atualizada!" : "Transação Adicionada com Sucesso!");
                 closeModal();
 
             } catch (error) {
@@ -141,7 +168,7 @@ export default class ModalReport extends BaseComponent {
     }
 
     style(style_config) {
-        // Estilos principais transferidos do HTML inline para cá
+
         this.main.style.width = "100%";
         this.main.style.display = "flex";
         this.main.style.justifyContent = "center";
@@ -189,7 +216,6 @@ export default class ModalReport extends BaseComponent {
             gap: "25px"
         });
 
-        // Estilos comuns para inputs e selects
         const inputStyles = {
             padding: "15px",
             border: "1px solid #a4c4c1",

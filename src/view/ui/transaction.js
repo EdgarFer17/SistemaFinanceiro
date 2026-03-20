@@ -1,8 +1,5 @@
 import BaseComponent from "./components/baseComponent.js";
 
-
-
-
 export default class Transaction extends BaseComponent {
     constructor(config = {}, style_config = {}) {
         super(config, style_config);
@@ -19,11 +16,11 @@ export default class Transaction extends BaseComponent {
 
     setup(config) {
         this.title.textContent = config['title'] || "Transações";
-        this.button.textContent = config['button_title'] || "Adicionar Transação"
+        this.button.textContent = config['button_title'] || "Adicionar Transação";
 
-        const transactions = config.transactions || [];
-        const headers = ['Data', 'Categoria', 'Tipo', 'Valor', "Descrição","Editar/Excluir"];
+        this.transactions = (config.transactions || []).map(t => ({...t, temp_id: Math.random().toString(36).substr(2, 9)}));
         
+        const headers = ['Data', 'Categoria', 'Tipo', 'Valor', "Descrição", "Editar/Excluir"];
         headers.forEach(text => {
             const span = document.createElement('span');
             span.textContent = text;
@@ -33,24 +30,15 @@ export default class Transaction extends BaseComponent {
             this.table_header_row.appendChild(span);
         });
 
-        // Limpar e popular a lista
-        this.list_container.innerHTML = '';
-        transactions.forEach(trans => {
-            const row = this.createTransactionRow(trans);
-            this.list_container.appendChild(row);
-        });
-
+        this.renderList();
 
         document.addEventListener('newTransaction', (event) => {
             const transacaoSalva = event.detail;
-
-
 
             const dataObjeto = new Date(transacaoSalva.date);
             const dia = String(dataObjeto.getDate()).padStart(2, '0');
             const mes = String(dataObjeto.getMonth() + 1).padStart(2, '0');
             const ano = dataObjeto.getFullYear();
-            const dataString = `${dia}/${mes}/${ano}`;
 
             let nomeCategoria = "Sem Categoria";
             if (transacaoSalva.category && transacaoSalva.category.categoryName) {
@@ -60,34 +48,51 @@ export default class Transaction extends BaseComponent {
             }
 
             const transacaoFormatada = {
-                data: dataString,
+                data: `${dia}/${mes}/${ano}`,
                 categoria: nomeCategoria,
                 tipo: transacaoSalva.type,
                 valor: Number(transacaoSalva.value), 
-                desc: transacaoSalva.desc || "" 
+                desc: transacaoSalva.desc || "",
+                temp_id: transacaoSalva.temp_id 
             };
 
-            console.log("Objeto pronto para a tabela:", transacaoFormatada);
+            if (transacaoFormatada.temp_id) {
 
-            const novaLinha = this.createTransactionRow(transacaoFormatada);
-            this.list_container.prepend(novaLinha);
+                const index = this.transactions.findIndex(t => t.temp_id === transacaoFormatada.temp_id);
+                if (index > -1) {
+                    this.transactions[index] = transacaoFormatada;
+                }
+            } else {
+
+                transacaoFormatada.temp_id = Math.random().toString(36).substr(2, 9);
+                this.transactions.unshift(transacaoFormatada);
+            }
+
+            this.renderList(); 
         });
+    }
 
-
-
-
-        
+    renderList() {
+        this.list_container.innerHTML = '';
+        this.transactions.forEach(trans => {
+            const row = this.createTransactionRow(trans);
+            this.list_container.appendChild(row);
+        });
     }
 
     setAddTransactionFunction(func) {
-        this.button.onclick = func;
+        this.openModalFunc = func; 
+        
+
+        this.button.onclick = () => {
+            this.openModalFunc(null);
+        };
     }
 
     createTransactionRow(data) {
         const row = document.createElement('div');
         row.className = 'transaction-row';
 
-        // Lógica de cor para o valor
         const isNegative = data.valor < 0;
         const valorFormatado = `R$ ${data.valor.toFixed(2).replace('.', ',')}`;
 
@@ -100,17 +105,37 @@ export default class Transaction extends BaseComponent {
             </span>
             <span style="flex: 1; text-align: center; font-weight: bold;">${data.desc || ''}</span>
             <div style="flex: 1; display: flex; justify-content: center; gap: 10px;">
-                <img src="./assets/gray-edit-icon.png" style="width: 20px; cursor: pointer;">
-                <img src="./assets/gray-delete-icon.png" style="width: 20px; cursor: pointer;">
+                <img src="./assets/gray-edit-icon.png" class="edit-btn" style="width: 20px; cursor: pointer;" title="Editar">
+                <img src="./assets/gray-delete-icon.png" class="delete-btn" style="width: 20px; cursor: pointer;" title="Excluir">
             </div>
         `;
 
         this.styleRow(row);
+
+        // --- BOTÃO EXCLUIR ---
+        row.querySelector('.delete-btn').addEventListener('click', () => {
+            if (confirm(`Deseja realmente excluir a transação de ${valorFormatado}?`)) {
+                const index = this.transactions.indexOf(data);
+                if (index > -1) {
+                    this.transactions.splice(index, 1);
+                    this.renderList();
+                }
+            }
+        });
+
+        // --- BOTÃO EDITAR ---
+        row.querySelector('.edit-btn').addEventListener('click', () => {
+            if (this.openModalFunc) {
+
+                this.openModalFunc(data);
+            }
+        });
+
         return row;
     }
 
     style(style_config) {
-        // Estilo do Main
+
         Object.assign(this.main.style, {
             flex: "1",                
             display: "flex",
@@ -122,7 +147,6 @@ export default class Transaction extends BaseComponent {
             width: "100%"
         });
 
-        
         Object.assign(this.header_wrapper.style, {
            display: "flex",
             justifyContent: "center", 
@@ -145,7 +169,7 @@ export default class Transaction extends BaseComponent {
             right: "0"
         });
 
-        // Estilo do Cabeçalho das colunas
+
         Object.assign(this.table_header_row.style, {
             display: "flex",
             padding: "0 20px",
@@ -153,7 +177,6 @@ export default class Transaction extends BaseComponent {
             marginBottom: "10px"
         });
 
-        // Container das linhas
         Object.assign(this.list_container.style, {
             width: "100%",
             display: "flex",
@@ -180,6 +203,5 @@ export default class Transaction extends BaseComponent {
         this.main.appendChild(this.header_wrapper);
         this.main.appendChild(this.table_header_row);
         this.main.appendChild(this.list_container);
-        
     }
 }

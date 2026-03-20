@@ -123,7 +123,10 @@ class App {
 
     setup() {
         this.pages["Dashboard"].setReportFunction(()=>{this.toggleModal("Report")})
-        this.pages["Transaction"].setAddTransactionFunction(() => { this.toggleModal("Report") });
+        this.pages["Transaction"].setAddTransactionFunction((dataDaLinha) => { 
+                this.modals["Report"].prepareModal(dataDaLinha); 
+                this.toggleModal("Report");
+            });
         this.modal_wrapper.addEventListener('click', () => this.toggleModal)
         this.modal_wrapper.addEventListener('fecharModal', () => this.toggleModal());
     }
