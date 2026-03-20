@@ -84,7 +84,7 @@ export default class Transaction extends BaseComponent {
             <span style="flex: 1; text-align: center; color: ${isNegative ? '#e74c3c' : '#27ae60'}; font-weight: bold;">
                 ${valorFormatado}
             </span>
-            <span style="flex: 1; text-align: center; font-weight: bold;">${data.desc || ''}</span>
+            <span style="flex: 1; text-align: center; font-weight: bold;">${this.sanitizeHtml(data.desc) || ''}</span> 
             <div style="flex: 1; display: flex; justify-content: center; gap: 10px;">
                 <img src="./assets/green-edit-icon.png" class="edit-btn" style="width: 20px; cursor: pointer;" title="Editar">
                 <img src="./assets/green-delete-icon.png" class="delete-btn" style="width: 20px; cursor: pointer;" title="Excluir">
@@ -186,5 +186,11 @@ export default class Transaction extends BaseComponent {
         this.main.appendChild(this.header_wrapper);
         this.main.appendChild(this.table_header_row);
         this.main.appendChild(this.list_container);
+    }
+
+    sanitizeHtml(_text) {
+        const P = document.createElement("p");
+        P.textContent = _text;
+        return P.innerHTML;
     }
 }
