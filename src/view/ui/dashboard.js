@@ -2,6 +2,8 @@ import ComponentBar from "./components/bar.js";
 import BaseComponent from "./components/baseComponent.js";
 import ComponentDonut from "./components/donut.js";
 import ComponentTransactionList from "./components/TransactionList.js";
+import DashboardController from "../../controller/dashboardController.js";
+import TRANSACTION_TYPE_MODEL from "../../model/TransactionTypeModel.js";
 
 export default class Dashboard extends BaseComponent {
     constructor(config = {}, style_config = {}) {
@@ -222,6 +224,15 @@ export default class Dashboard extends BaseComponent {
             this.elements.expense_value.textContent = "*".repeat(this.expense.toString().length);
         }
     };
+
+    renderLastTransactions() {
+        this.elements.transaction_component.resetRows();
+        const LastFiveTransactions = DashboardController.getLastFiveTransactions();
+        for (const Transaction of LastFiveTransactions) {
+            this.elements.transaction_component.addRow(Transaction, {td: []});
+        }
+        this.elements.transaction_component.renderList();
+    }
 
     setModal(_function) {
         this.setFunction('click', _function, this.elements.ope_report_button);

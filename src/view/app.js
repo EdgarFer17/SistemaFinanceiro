@@ -165,8 +165,9 @@ class App {
                 this.toggleModal();
             }
         });
+
         this.pages.Dashboard.updateTitle("Bem-vindo, Nome do Usuário");
-        
+        this.pages.Dashboard.renderLastTransactions();
         
         window.addEventListener('resize', () => {
             this.pages.Dashboard.elements.bar_component.bar.resize();
