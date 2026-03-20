@@ -56,6 +56,7 @@ export default class Transaction extends BaseComponent {
 
     setModal(_function) {
         const SIGNAL = this.controller.signal;
+        this.modal_trigger = _function;
         this.button.addEventListener("click", _function, { SIGNAL })
     }
 
@@ -107,14 +108,15 @@ export default class Transaction extends BaseComponent {
         });
 
         // --- BOTÃO EDITAR ---
-        row.querySelector('.edit-btn').addEventListener('click', () => {
-            if (this.openModalFunc) {
-
-                this.openModalFunc(data);
-            }
+        row.querySelector('.edit-btn').addEventListener('click', (event) => {
+            this.modal_trigger(event, data);
         });
 
         return row;
+    }
+
+    openModal(data) {
+        
     }
 
     style(style_config) {

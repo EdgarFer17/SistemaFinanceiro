@@ -11,7 +11,6 @@ export default class TransactionModal extends BaseComponent {
 
     spawn() {
         this.main = document.createElement('div');
-        this.modal_container = document.createElement('div');
         this.header = document.createElement('div');
         this.title = document.createElement('h2');
         this.close_btn = document.createElement('button');
@@ -97,7 +96,6 @@ export default class TransactionModal extends BaseComponent {
 
     prepareModal(dadosDaLinha) {
         this.editingData = dadosDaLinha;
-        console.log(dadosDaLinha)
 
         if (dadosDaLinha) {
             this.title.textContent = "Editar Transação";
@@ -129,12 +127,7 @@ export default class TransactionModal extends BaseComponent {
     setup(config) {
         this.close_btn.innerHTML = "&times;";
         
-        const closeModal = () => {
-            const event = new CustomEvent('fecharModal', { bubbles: true });
-            this.main.dispatchEvent(event);
-        };
-
-        this.close_btn.onclick = closeModal;
+        this.close_btn.onclick = config.toggleModal;
         this.close_btn.onmouseover = () => this.close_btn.style.color = '#6ca09d';
         this.close_btn.onmouseout = () => this.close_btn.style.color = '#a4c4c1';
 
@@ -173,7 +166,7 @@ export default class TransactionModal extends BaseComponent {
                 this.main.dispatchEvent(transactionEvent);
 
                 this.form.reset();
-                closeModal();
+                config.toggleModal();
 
             } catch (error) {
                 alert("Erro: " + error.message);
@@ -184,11 +177,7 @@ export default class TransactionModal extends BaseComponent {
 
     style(style_config) {
 
-        this.main.style.width = "100%";
-        this.main.style.display = "flex";
-        this.main.style.justifyContent = "center";
-
-        Object.assign(this.modal_container.style, {
+        Object.assign(this.main.style, {
             backgroundColor: "white",
             borderRadius: "20px",
             border: "1px solid #6ca09d",
@@ -270,9 +259,9 @@ export default class TransactionModal extends BaseComponent {
     }
 
     build() {
-        this.header.append(this.title, this.close_btn);
+        this.header.replaceChildren(this.title, this.close_btn);
         
-        this.form.append(
+        this.form.replaceChildren(
             this.value_group, 
             this.type_group, 
             this.category_group, 
@@ -280,7 +269,6 @@ export default class TransactionModal extends BaseComponent {
             this.submit_btn
         );
         
-        this.modal_container.append(this.header, this.form);
-        this.main.appendChild(this.modal_container);
+        this.main.replaceChildren(this.header, this.form);
     }
 }

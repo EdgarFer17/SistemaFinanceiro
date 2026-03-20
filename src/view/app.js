@@ -151,7 +151,7 @@ class App {
             Transaction: new Transaction(),
         }
         this.modals = {
-            Transaction: new TransactionModal(),
+            Transaction: new TransactionModal({toggleModal: ()=>{this.toggleModal()}}),
             Category: new CategoryModal()
         }
         
@@ -160,7 +160,11 @@ class App {
     }
 
     setup() {
-        this.modal_wrapper.addEventListener('click', ()=>{this.toggleModal()});
+        this.modal_wrapper.addEventListener('click', (e)=>{
+            if (e.target === this.modal_wrapper) {
+                this.toggleModal();
+            }
+        });
         this.pages.Dashboard.updateTitle("Bem-vindo, Nome do Usuário");
         
         
@@ -170,8 +174,8 @@ class App {
             this.pages.Dashboard.elements.donut_2_component.donut.resize();
         });
         
-        this.pages["Transaction"].setModal((_, dataDaLinha) => { 
-            this.modals["Transaction"].prepareModal(dataDaLinha); 
+        this.pages["Transaction"].setModal((_, data) => {
+            this.modals["Transaction"].prepareModal(data); 
             this.toggleModal("Transaction");
         });
         
