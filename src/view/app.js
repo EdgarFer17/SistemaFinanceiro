@@ -139,25 +139,33 @@ class App {
     }
 
     spawn() {
-        this.html = document.querySelector('html');
-        this.body = document.querySelector('body');
-        this.wrapper = document.createElement('div');
-        this.page = document.createElement('div');
-        this.modal_wrapper = document.createElement('div');
+    this.html = document.querySelector('html');
+    this.body = document.querySelector('body');
+    this.wrapper = document.createElement('div');
+    this.page = document.createElement('div');
+    this.modal_wrapper = document.createElement('div');
 
-        this.pages = {
-            Dashboard: new Dashboard({}, this.dashboard_style_config),
-            Category: new Category(),
-            Transaction: new Transaction(),
-        }
-        this.modals = {
-            Transaction: new TransactionModal({toggleModal: ()=>{this.toggleModal()}}),
-            Category: new CategoryModal()
-        }
-        
-        this.header = new Header(this.header_config, this.header_style_config);
-        this.sidenav = new SideNav(this.sidenav_config, this.sidenav_style_config);
+    this.pages = {
+        Dashboard: new Dashboard({}, this.dashboard_style_config),
+        Category: new Category(),
+        Transaction: new Transaction(),
     }
+    this.modals = {
+        Transaction: new TransactionModal({ 
+            toggleModal: () => this.toggleModal() 
+        }),
+        Category: new CategoryModal({
+            toggleModal: () => this.toggleModal(),
+            onSave: (data) => {
+                console.log("Categoria para salvar:", data);
+                this.toggleModal(); 
+            }
+        })
+    };
+
+    this.header = new Header(this.header_config, this.header_style_config);
+    this.sidenav = new SideNav(this.sidenav_config, this.sidenav_style_config);
+}
 
     setup() {
         this.modal_wrapper.addEventListener('click', (e)=>{

@@ -20,10 +20,7 @@ export default class Category extends BaseComponent {
     setup(config) {
         this.title.textContent = config['title'] || "Categorias Cadastradas";
         this.button.textContent = config['button_title'] || "Adicionar Categoria";
-        
-        // Abre o modal para CRIAR
         this.button.onclick = () => this.handleOpenModal();
-
         this.renderCategories();
     }
 
@@ -32,33 +29,42 @@ export default class Category extends BaseComponent {
         this.button.addEventListener("click", _function, { SIGNAL })
     }
 
-    handleOpenModal(categoryData = null) {
-        const modal = new CategoryModal({
-            category: categoryData,
-            onSave: (data) => {
-                try {
-                    const name = data.name ? data.name.trim() : "";
-                    if (!name) throw new Error("O nome da categoria não pode estar vazio!");
-                    const limit = parseFloat(data.limit);
-                    if (Number.isNaN(limit) || limit < 0) {
-                        throw new Error("O limite deve ser um número válido e maior ou igual a zero!");
-                    }
-                    const type = categoryData ? categoryData.type : CATEGORY_TYPE_MODEL.CUSTOM;
-                    
+    handleOpenModal(categoryData = null) { 
+    const modal = new CategoryModal({
+        category: categoryData,
+        onSave: (data) => {
+            try {
+                const name = data.name ? data.name.trim() : "";
+                if (!name) throw new Error("Nome vazio!");
+
+                const limit = parseFloat(data.limit) || 0;
+                const type = categoryData ? categoryData.type : CATEGORY_TYPE_MODEL.CUSTOM;
+
+                if (data.id) {
+                    const editedCat = new CategoryModel(name, limit, type);
+                    CategoryController.editCategory(data.id, editedCat);
+                } else {
                     const newCat = new CategoryModel(name, limit, type);
-                    if (data.id) {
-                        CategoryController.editCategory(data.id, newCat);
-                    } else {
-                        CategoryController.createCategory(newCat);
-                    }
-                    document.body.removeChild(modal.getElement());
-                    this.renderCategories();
-                } catch (error) {
-                    alert(error.message);
+                    CategoryController.createCategory(newCat);
                 }
+                const wrapper = document.querySelector('.modal-1');
+                if (wrapper) {
+                    wrapper.innerHTML = '';
+                    wrapper.classList.remove('show_modal');
+                }
+
+                this.renderCategories();
+            } catch (error) {
+                alert(error.message);
             }
-        });
+        }
+    });
+    const wrapper = document.querySelector('.modal-1');
+    if (wrapper) {
+        wrapper.replaceChildren(modal.main);
+        wrapper.classList.add('show_modal');
     }
+}
 
     renderCategories() {
         this.cards_container.innerHTML = ''; 
