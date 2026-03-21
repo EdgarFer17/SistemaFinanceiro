@@ -33,9 +33,7 @@ export default class Transaction extends BaseComponent {
 
         this.renderList();
 
-        document.addEventListener('transactionSaved', () => {
-            this.renderList();
-        });
+        this.setFunction('transaction_saved', ()=>{this.renderList()}, document);
     }
 
     // Carrega todas as transações do controller e renderiza linhas
@@ -58,9 +56,8 @@ export default class Transaction extends BaseComponent {
 
     // Registra função para abrir modal de transação
     setModal(_function) {
-        const SIGNAL = this.controller.signal;
         this.modal_trigger = _function;
-        this.button.addEventListener("click", _function, { SIGNAL })
+        this.setFunction('click', ()=>{_function()}, this.button);
     }
 
     // Cria linha de tabela com dados da transação e botões edit/delete
@@ -98,7 +95,7 @@ export default class Transaction extends BaseComponent {
         this.styleRow(row);
 
         // --- BOTÃO EXCLUIR ---
-        row.querySelector('.delete-btn').addEventListener('click', () => {
+        this.setFunction('click', () => {
             if (confirm(`Deseja realmente excluir a transação de ${valorFormatado}?`)) {
                 try {
 
@@ -109,22 +106,16 @@ export default class Transaction extends BaseComponent {
                     alert("Erro ao excluir: " + e.message);
                 }
             }
-        });
+        }, row.querySelector('.delete-btn'))
 
         // --- BOTÃO EDITAR ---
-        row.querySelector('.edit-btn').addEventListener('click', (event) => {
+        this.setFunction('click', (event) => {
             this.modal_trigger(event, data);
-        });
+        }, row.querySelector('.edit-btn'))
 
         return row;
     }
 
-    // Espaço para abrir modal (não implementado)
-    openModal(data) {
-
-    }
-
-    // Aplica estilos Bootstrap e inline aos elementos da página
     style(style_config) {
         Object.assign(this.main.style, {
             flex: "1",                
@@ -174,7 +165,6 @@ export default class Transaction extends BaseComponent {
         });
     }
 
-    // Estiliza linha individual com flexbox e sombra
     styleRow(row) {
         Object.assign(row.style, {
             display: "flex",

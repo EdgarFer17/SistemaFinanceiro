@@ -137,7 +137,7 @@ export default class TransactionModal extends BaseComponent {
         this.close_btn.onmouseover = () => this.close_btn.style.color = '#6ca09d';
         this.close_btn.onmouseout = () => this.close_btn.style.color = '#a4c4c1';
 
-        this.form.addEventListener('submit', (event) => {
+        this.setFunction('submit', (event) => {
             event.preventDefault();
 
             try {
@@ -167,8 +167,8 @@ export default class TransactionModal extends BaseComponent {
                     alert("Transação Adicionada com Sucesso!");
                 }
 
-                const transactionEvent = new CustomEvent('transactionSaved', { bubbles: true });
-                this.main.dispatchEvent(transactionEvent);
+                const TRANSACTION_EVENT = new CustomEvent('transaction_saved', { bubbles: true });
+                this.main.dispatchEvent(TRANSACTION_EVENT);
 
                 this.form.reset();
                 config.toggleModal();
@@ -176,7 +176,7 @@ export default class TransactionModal extends BaseComponent {
             } catch (error) {
                 alert("Erro: " + error.message);
             }
-        });
+        }, this.form);
     }
 
 

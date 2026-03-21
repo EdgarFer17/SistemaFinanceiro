@@ -1,6 +1,6 @@
 html, body {
     width: 100%;
-    overflow-x: hidden; /* Impede o scroll horizontal "fantasma" */
+    overflow-x: hidden;
     margin: 0;
     padding: 0;
 }
@@ -67,6 +67,7 @@ html, body {
         z-index: 1000
     }
 }
+
 .modal-1.show_modal {
     display: flex; /* Mostra quando o App.js adicionar a classe */
 }

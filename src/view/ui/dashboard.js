@@ -335,14 +335,6 @@ export default class Dashboard extends BaseComponent {
 
     // Registra função para abrir modal de relatório
     setModal(_function) {
-        this.setFunction('click', _function, this.elements.ope_report_button);
-    }
-
-    // Adiciona listener genérico com AbortSignal
-    setFunction(_event, _function, _element) {
-        const SIGNAL = this.controller.signal;
-        if (_element instanceof HTMLElement) {
-            _element.addEventListener(_event, ()=>{_function()}, { SIGNAL });
-        }
+        this.setFunction('click', ()=>{_function()}, this.elements.ope_report_button);
     }
 }

@@ -1,8 +1,6 @@
 import BaseComponent from "./components/baseComponent.js";
 import CategoryController from "../../controller/categoryController.js";
-import CategoryModel from "../../model/categoryModel.js";
 import CATEGORY_TYPE_MODEL from "../../model/categoryTypeModel.js";
-import CategoryModal from "./modal/categoryModal.js";
 
 // Página de gestão de categorias (CRUD)
 export default class Category extends BaseComponent {
@@ -22,46 +20,14 @@ export default class Category extends BaseComponent {
     setup(config) {
         this.title.textContent = config['title'] || "Categorias Cadastradas";
         this.button.textContent = config['button_title'] || "Adicionar Categoria";
-
-        // Abre o modal para CRIAR
-        this.button.onclick = () => this.handleOpenModal();
-
         this.renderCategories();
+        this.setFunction('category_saved', ()=>{this.renderCategories()}, document)
     }
 
     // Registra função para abrir modal de categoria
     setModal(_function) {
-        const SIGNAL = this.controller.signal;
-        this.button.addEventListener("click", _function, { SIGNAL })
-    }
-
-    // Abre modal para criar/editar categoria com validação e persistência
-    handleOpenModal(categoryData = null) {
-        const modal = new CategoryModal({
-            category: categoryData,
-            onSave: (data) => {
-                try {
-                    const name = data.name ? data.name.trim() : "";
-                    if (!name) throw new Error("O nome da categoria não pode estar vazio!");
-                    const limit = parseFloat(data.limit);
-                    if (Number.isNaN(limit) || limit < 0) {
-                        throw new Error("O limite deve ser um número válido e maior ou igual a zero!");
-                    }
-                    const type = categoryData ? categoryData.type : CATEGORY_TYPE_MODEL.CUSTOM;
-                    
-                    const newCat = new CategoryModel(name, limit, type);
-                    if (data.id) {
-                        CategoryController.editCategory(data.id, newCat);
-                    } else {
-                        CategoryController.createCategory(newCat);
-                    }
-                    document.body.removeChild(modal.getElement());
-                    this.renderCategories();
-                } catch (error) {
-                    alert(error.message);
-                }
-            }
-        });
+        this.modal_trigger_function = _function;
+        this.setFunction('click', (event)=> {_function()}, this.button);
     }
 
     // Carrega todas as categorias do controller e renderiza cards
@@ -104,7 +70,9 @@ export default class Category extends BaseComponent {
         
         if (!isDefault) {
             editIcon.style.cursor = 'pointer';
-            editIcon.onclick = () => this.handleOpenModal(categoryData);
+            this.setFunction('click', (event)=>{
+                this.modal_trigger_function(event, categoryData);
+            }, editIcon)
         } else {
             editIcon.style.opacity = "0.5";
             editIcon.title = "Categorias padrão não podem ser editadas";

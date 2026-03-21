@@ -33,9 +33,12 @@ export default class BaseComponent {
         throw new Error('Implemente o método build()!');
     }
 
-    // Retorna o elemento raiz do componente
-    getElement() {
-        return this.main;
+    // Adiciona listener genérico com AbortSignal
+    setFunction(_event, _function, _element) {
+        const SIGNAL = this.controller.signal;
+        if (_element instanceof HTMLElement || _element instanceof Document) {
+            _element.addEventListener(_event, (event)=>{_function(event)}, { signal: SIGNAL });
+        }
     }
 }
 

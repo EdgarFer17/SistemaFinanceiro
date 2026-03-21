@@ -23,11 +23,9 @@ export default class Header extends BaseComponent {
 
     // Configura nome da aplicação, usuário, ícones e função de clique no perfil
     setup(config) {
-        const SIGNAL = this.controller.signal;
-
         this.brand_name.textContent = config['app_name'];
         this.user_name.textContent = config['username'];
-        this.user_wrapper.addEventListener('click', ()=>{config['user_modal_function']}, { SIGNAL } );
+        this.setFunction('click', ()=>{config['user_modal_function']()}, this.user_wrapper)
 
         this.brand_icon.src = "./assets/BrandIcon.png"
         this.brand_icon.alt = "Icone da marca"

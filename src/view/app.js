@@ -170,7 +170,7 @@ class App {
         }
         this.modals = {
             Transaction: new TransactionModal({toggleModal: ()=>{this.toggleModal()}}),
-            Category: new CategoryModal()
+            Category: new CategoryModal({toggleModal: ()=>{this.toggleModal()}})
         }
         
         this.header = new Header(this.header_config, this.header_style_config);
@@ -213,9 +213,12 @@ class App {
             this.modals["Transaction"].prepareModal(data); 
             this.toggleModal("Transaction");
         });
+        this.pages["Category"].setModal((_, data) => {
+            this.modals["Category"].prepareModal(data); 
+            this.toggleModal("Category");
+        });
         
         this.pages["Dashboard"].setModal(()=>{this.toggleModal("Report")});
-        this.pages["Category"].setModal(()=>{this.toggleModal("Category")});
     }
 
     // Monta a estrutura completa no DOM
