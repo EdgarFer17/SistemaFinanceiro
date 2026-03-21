@@ -8,9 +8,6 @@ import TRANSACTION_TYPE_MODEL from "../../model/TransactionTypeModel.js";
 export default class Dashboard extends BaseComponent {
     constructor(config = {}, style_config = {}) {
         super(config, style_config)
-        this.currency = -1000.00
-        this.income = 1000.00
-        this.expense = 2000.00
         this.hide_backup = [];
     }
 
@@ -101,9 +98,10 @@ export default class Dashboard extends BaseComponent {
         this.elements.ope_show_icon.alt = "Icone do botao para esconder dados sensiveis";
         this.setFunction('click', ()=>{this.toggleShow()}, this.elements.ope_show_button)
 
-        this.currency = -1000.00
-        this.income = 1000.00
-        this.expense = 2000.00
+        this.income = DashboardController.getTotalIncome();
+        this.expense = DashboardController.getTotalExpense();
+        this.currency = this.income - this.expense;
+
         this.elements.balance_title.textContent = "Saldo";
         this.elements.balance_currency.prepend("R$ ");
         this.elements.balance_value.textContent = this.currency;
@@ -225,13 +223,101 @@ export default class Dashboard extends BaseComponent {
         }
     };
 
-    renderLastTransactions() {
+    renderFiveLastTransactions() {
         this.elements.transaction_component.resetRows();
         const LastFiveTransactions = DashboardController.getLastFiveTransactions();
         for (const Transaction of LastFiveTransactions) {
             this.elements.transaction_component.addRow(Transaction, {td: []});
         }
         this.elements.transaction_component.renderList();
+    }
+
+    renderExpenseIncomeForLastSixMonth() {
+        const DATA = {
+            labels: [],
+            datasets: [
+                {
+                    label: 'Final',
+                    data: [],
+                    borderColor: '#FCD34D',
+                    borderWidth: 2,
+                    type: 'line',
+                    tension: 0.2
+                },
+                {
+                    label: 'Receitas',
+                    data: [],
+                    backgroundColor: '#3B82F6',
+                },
+                {
+                    label: 'Despesas',
+                    data: [],
+                    backgroundColor: '#f63b3b',
+                }
+            ]
+        }
+        try {
+            const RawData = DashboardController.getExpenseIncomeForLastSixMonth();
+            RawData.reverse();
+            RawData.map((MONTH)=> {
+                DATA.labels.push(MONTH.date);
+                DATA.datasets[1].data.push(MONTH.income);
+                DATA.datasets[2].data.push(MONTH.expense);
+                DATA.datasets[0].data.push(MONTH.income + MONTH.expense);
+            })
+        } catch (error) {
+            console.error(error);
+            return;
+        }
+        
+        this.elements.bar_component.updateData(DATA);
+    }
+    
+    renderMonthExpenseIncome() {
+        const DATA = {
+            labels: ["Receita", "Despesa"],
+            datasets: [{
+                label: 'R$',
+                data: [],
+                backgroundColor: [
+                    'rgb(54, 162, 235)',
+                    'rgb(255, 99, 132)',
+                ],
+                hoverOffset: 4,
+            }]
+        }
+        try {
+            const MonthExpenseIncome = DashboardController.getMonthExpenseIncome();
+            DATA.datasets[0].data = [MonthExpenseIncome.income, MonthExpenseIncome.expense]
+        } catch (error) {
+            console.error(error);
+            return;
+        }
+        
+        this.elements.donut_1_component.updateData(DATA);
+    }
+
+    renderExpensiveForCategory() {
+        const DATA = {
+            labels: [],
+            datasets: [{
+                label: 'R$',
+                hoverOffset: 4,
+                data: [],
+            }]
+        }
+        try {
+            const ExpensiveForCategory = DashboardController.getExpensiveForCategories();
+            Object.entries(ExpensiveForCategory).map((value)=>{
+                DATA.labels.push(value[0]);
+                DATA.datasets[0].data.push(value[1].expense);
+            })
+        } catch (error) {
+            console.error(error);
+            return;
+        }
+        
+        this.elements.donut_2_component.updateData(DATA);
     }
 
     setModal(_function) {

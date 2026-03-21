@@ -12,7 +12,7 @@ export default class ComponentDonut extends BaseComponent {
     }
 
     setup(config) {
-        const LABELS = config.labels || ['Arrecadação', 'Gastos'];
+        const LABELS = config.labels || ['Receita', 'Despesa'];
         const DATASETS = config.datasets || [{
             label: 'R$',
             data: [300, 50],

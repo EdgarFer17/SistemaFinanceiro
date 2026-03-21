@@ -51,7 +51,7 @@ export default class ComponentBar extends BaseComponent {
 
     style(style_config = { main: [], title: [], chart: [] }) {
         this.main.classList.add(...[
-            "w-75", "d-flex", "justify-content-center"
+            "col-12", "col-md-9", "d-flex", "justify-content-center"
         ], ...style_config.main);
         this.chart.classList.add(...[], ...style_config.chart);
     }

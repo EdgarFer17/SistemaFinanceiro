@@ -1,5 +1,6 @@
 import TransactionRepository from "../repository/TransactionRepository.js";
 import TRANSACTION_TYPE_MODEL from '../model/TransactionTypeModel.js';
+import BalanceController from "./balanceController.js";
 
 export default class DashboardController {
 
@@ -28,7 +29,7 @@ export default class DashboardController {
                 }
             }
 
-            if (t.type === "income") {
+            if (t.type === TRANSACTION_TYPE_MODEL.INCOME) {
                 expenseIncomeForMonth[key].income += t.value;
             } else {
                 expenseIncomeForMonth[key].expense += t.value;
@@ -46,6 +47,38 @@ export default class DashboardController {
         }));
 
         return expenseIncomeForLastSixMonth;
+    }
+
+    // retorna o gasto e a arrecadação do ultimo mês
+    static getMonthExpenseIncome() {
+        const expenseIncome = {};
+
+        const allTransactions = TransactionRepository.getTransactions();
+
+        allTransactions.forEach(t => {
+            const month = new Date(t.date).getMonth();
+            const year = new Date(t.date).getFullYear();
+            const key = `${year}-${month}`;
+
+            if (!expenseIncome[key]) {
+                expenseIncome[key] = {
+                    expense: 0,
+                    income: 0
+                }
+            }
+
+            if (t.type === TRANSACTION_TYPE_MODEL.INCOME) {
+                expenseIncome[key].income += t.value;
+            } else {
+                expenseIncome[key].expense += t.value;
+            }
+        });
+
+        const expenseIncomeForLastMonth = Object.entries(expenseIncome)
+        .sort((a,b) => new Date(b[0].split("-")[0], b[0].split("-")[1]) - new Date(a[0].split("-")[0], a[0].split("-")[1]))
+        .at(0)[1];
+        
+        return expenseIncomeForLastMonth;
     }
 
     static getExpensiveForCategories() {
@@ -69,7 +102,25 @@ export default class DashboardController {
         return expensiveForCategories;
     }
 
-    static getExpensiveAndIncomePerMonth() {
+    static getTotalIncome() {
+        const allTransactions = TransactionRepository.getTransactions();
+        let total_income = 0;
+        allTransactions.forEach(t => {
+            if (t.type === TRANSACTION_TYPE_MODEL.INCOME) {
+                total_income += t.value;
+            }
+        });
+        return total_income;
+    }
 
+    static getTotalExpense() {
+        const allTransactions = TransactionRepository.getTransactions();
+        let total_expense = 0;
+        allTransactions.forEach(t => {
+            if (t.type === TRANSACTION_TYPE_MODEL.EXPENSE) {
+                total_expense += t.value;
+            }
+        });
+        return total_expense;
     }
 }
