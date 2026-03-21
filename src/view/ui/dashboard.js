@@ -5,12 +5,14 @@ import ComponentTransactionList from "./components/TransactionList.js";
 import DashboardController from "../../controller/dashboardController.js";
 import TRANSACTION_TYPE_MODEL from "../../model/TransactionTypeModel.js";
 
+// Página inicial com resumo financeiro, gráficos e últimas transações
 export default class Dashboard extends BaseComponent {
     constructor(config = {}, style_config = {}) {
         super(config, style_config)
         this.hide_backup = [];
     }
 
+    // Cria estrutura DOM recursiva a partir de schema de objetos aninhados
     spawn() {
         const SCHEMA_FINAL = {
             _tag: "main",
@@ -91,6 +93,7 @@ export default class Dashboard extends BaseComponent {
         delete this.elements.main;
     }
 
+    // Configura ícones, valores iniciais (receita, despesa, saldo) e textos das seções
     setup() {
         this.elements.ope_report_icon.src = "./assets/ReportIcon.png";
         this.elements.ope_report_icon.alt = "Icone do botao para gerar um relatório";
@@ -120,6 +123,7 @@ export default class Dashboard extends BaseComponent {
         this.elements.transaction_title.textContent = "Últimas Transações";
     }
 
+    // Aplica estilos Bootstrap aos elementos do dashboard
     style(style_config) {
         const MAIN_CLASSES = style_config.main;
         if (MAIN_CLASSES !== undefined) {
@@ -132,10 +136,10 @@ export default class Dashboard extends BaseComponent {
             }
         }
     }
-    build() {
-        // Ja fiz o build com o parse, n vou escrever 25 linhas de replaceChildren KK
-    }
+    // O build já foi feito no parseSchema
+    build() {}
 
+    // Constrói DOM recursivamente a partir de schema com suporte a BaseComponent
     parseSchema(NAME, SCHEMA) {
         const IS_OBJECT = typeof SCHEMA === "object" && SCHEMA !== null;
         if (IS_OBJECT) {
@@ -158,22 +162,26 @@ export default class Dashboard extends BaseComponent {
         return EL;
     }
 
+    // Altera o título de boas-vindas do dashboard
     updateTitle(_text){
         this.elements.title.textContent = _text;
     };
 
+    // Atualiza valor de receita
     updateIncome(_value){
         if (typeof _value === "number") {
             this.income = _value;
         }
     };
 
+    // Atualiza valor de despesa
     updateExpense(_value){
         if (typeof _value === "number") {
             this.expense = _value;
         }
     };
 
+    // Recalcula receita e atualiza valores exibidos
     reloadStatus() {
         this.balance = this.income - this.expense;
         this.elements.balance_value.textContent = this.balance;
@@ -181,6 +189,7 @@ export default class Dashboard extends BaseComponent {
         this.elements.expense_value.textContent = this.expense;
     };
 
+    // Alterna exibição/ocultação de gráficos e valores sensíveis (com asteriscos)
     toggleShow(){
         if (this.hide_backup.length > 0) {
             const TO_SHOW = [
@@ -223,6 +232,7 @@ export default class Dashboard extends BaseComponent {
         }
     };
 
+    // Carrega e renderiza as 5 últimas transações na tabela
     renderFiveLastTransactions() {
         this.elements.transaction_component.resetRows();
         const LastFiveTransactions = DashboardController.getLastFiveTransactions();
@@ -232,6 +242,7 @@ export default class Dashboard extends BaseComponent {
         this.elements.transaction_component.renderList();
     }
 
+    // Popula gráfico de barras com evolução de receita e despesa dos últimos 6 meses
     renderExpenseIncomeForLastSixMonth() {
         const DATA = {
             labels: [],
@@ -273,6 +284,7 @@ export default class Dashboard extends BaseComponent {
         this.elements.bar_component.updateData(DATA);
     }
     
+    // Popula donut com proporção receita vs despesa do mês atual
     renderMonthExpenseIncome() {
         const DATA = {
             labels: ["Receita", "Despesa"],
@@ -293,10 +305,11 @@ export default class Dashboard extends BaseComponent {
             console.error(error);
             return;
         }
-        
+
         this.elements.donut_1_component.updateData(DATA);
     }
 
+    // Popula donut com distribuição de despesas por categoria
     renderExpensiveForCategory() {
         const DATA = {
             labels: [],
@@ -320,10 +333,12 @@ export default class Dashboard extends BaseComponent {
         this.elements.donut_2_component.updateData(DATA);
     }
 
+    // Registra função para abrir modal de relatório
     setModal(_function) {
         this.setFunction('click', _function, this.elements.ope_report_button);
     }
 
+    // Adiciona listener genérico com AbortSignal
     setFunction(_event, _function, _element) {
         const SIGNAL = this.controller.signal;
         if (_element instanceof HTMLElement) {

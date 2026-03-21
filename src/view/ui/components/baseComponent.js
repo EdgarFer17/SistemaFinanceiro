@@ -1,3 +1,4 @@
+// Classe abstrata que padroniza a construção de componentes UI
 export default class BaseComponent {
     constructor(config, style_config) {
         if (!config) throw new Error('Um objeto config é obrigatório');
@@ -12,22 +13,27 @@ export default class BaseComponent {
         this.build();
     }
 
+    // Cria os elementos DOM necessários para o componente
     spawn() {
         throw new Error('Implemente o método spawn()!');
     }
 
+    // Configura dados, lógica e event listeners do componente
     setup() {
         throw new Error('Implemente o método setup(config)!');
     }
 
+    // Aplica estilos CSS (classes Bootstrap ou inline) aos elementos
     style() {
         throw new Error('Implemente o método style(config)!');
     }
 
+    // Monta a estrutura hierárquica dos elementos DOM
     build() {
         throw new Error('Implemente o método build()!');
     }
 
+    // Retorna o elemento raiz do componente
     getElement() {
         return this.main;
     }

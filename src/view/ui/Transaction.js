@@ -1,6 +1,7 @@
 import BaseComponent from "./components/baseComponent.js";
 import TransactionController from "../../controller/TransactionController.js";
 
+// Página de gestão de transações (CRUD)
 export default class Transaction extends BaseComponent {
     constructor(config = {}, style_config = {}) {
         super(config, style_config);
@@ -15,10 +16,11 @@ export default class Transaction extends BaseComponent {
         this.table_header_row = document.createElement('div');
     }
 
+    // Configura título, colunas da tabela e carrega transações
     setup(config) {
         this.title.textContent = config['title'] || "Transações";
         this.button.textContent = config['button_title'] || "Adicionar Transação";
-        
+
         const headers = ['Data', 'Categoria', 'Tipo', 'Valor', "Descrição", "Editar/Excluir"];
         headers.forEach(text => {
             const span = document.createElement('span');
@@ -31,12 +33,12 @@ export default class Transaction extends BaseComponent {
 
         this.renderList();
 
-
         document.addEventListener('transactionSaved', () => {
-            this.renderList(); 
+            this.renderList();
         });
     }
 
+    // Carrega todas as transações do controller e renderiza linhas
     renderList() {
         this.list_container.innerHTML = '';
 
@@ -54,12 +56,14 @@ export default class Transaction extends BaseComponent {
         });
     }
 
+    // Registra função para abrir modal de transação
     setModal(_function) {
         const SIGNAL = this.controller.signal;
         this.modal_trigger = _function;
         this.button.addEventListener("click", _function, { SIGNAL })
     }
 
+    // Cria linha de tabela com dados da transação e botões edit/delete
     createTransactionRow(data) {
         const row = document.createElement('div');
         row.className = 'transaction-row';
@@ -115,10 +119,12 @@ export default class Transaction extends BaseComponent {
         return row;
     }
 
+    // Espaço para abrir modal (não implementado)
     openModal(data) {
-        
+
     }
 
+    // Aplica estilos Bootstrap e inline aos elementos da página
     style(style_config) {
         Object.assign(this.main.style, {
             flex: "1",                
@@ -168,6 +174,7 @@ export default class Transaction extends BaseComponent {
         });
     }
 
+    // Estiliza linha individual com flexbox e sombra
     styleRow(row) {
         Object.assign(row.style, {
             display: "flex",
@@ -180,6 +187,7 @@ export default class Transaction extends BaseComponent {
         });
     }
 
+    // Monta layout: header + colunas + container de linhas
     build() {
         this.header_wrapper.appendChild(this.title);
         this.header_wrapper.appendChild(this.button);
@@ -188,6 +196,7 @@ export default class Transaction extends BaseComponent {
         this.main.appendChild(this.list_container);
     }
 
+    // Sanitiza HTML para prevenir XSS em descrições de transações
     sanitizeHtml(_text) {
         const P = document.createElement("p");
         P.textContent = _text;

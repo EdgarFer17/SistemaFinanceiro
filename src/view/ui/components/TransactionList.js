@@ -1,6 +1,7 @@
 import TRANSACTION_TYPE_MODEL from "../../../model/TransactionTypeModel.js";
 import BaseComponent from "./baseComponent.js"
 
+// Tabela de transações reutilizável para o dashboard
 export default class ComponentTransactionList extends BaseComponent {
     constructor(config = {}, style_config) {
         super(config, style_config);
@@ -15,6 +16,7 @@ export default class ComponentTransactionList extends BaseComponent {
         this.table_body = document.createElement("tbody");
     };
 
+    // Cria colunas de cabeçalho (Data, Categoria, Tipo, Valor)
     setup(config) {
         const COLUNAS = [
             "Data", "Categoria", "Tipo", "Valor"
@@ -27,6 +29,7 @@ export default class ComponentTransactionList extends BaseComponent {
         }
     };
 
+    // Aplica estilos Bootstrap à tabela
     style(style_config = {main: [], table_head: [], table_head_row: [], table_body: []}) {
         this.main.classList.add(...["table", "table-borderless", "text-center", "align-middle", "w-75", "mt-3"], ...style_config.main);
         this.table_head.classList.add(...[], ...style_config.table_head);
@@ -34,11 +37,13 @@ export default class ComponentTransactionList extends BaseComponent {
         this.table_body.classList.add(...[], ...style_config.table_body);
     };
 
+    // Monta tabela com cabeçalho e corpo
     build() {
         this.table_head.replaceChildren(this.table_head_row);
         this.main.replaceChildren(this.table_head, this.table_body);
     };
 
+    // Adiciona linha com dados de transação à fila (não renderiza imediatamente)
     addRow(data = {date: "date-default", category: "category-default", type: "type-default", value: "value-default"}, style_config = {}) {
         const ROW = document.createElement("tr");
         ROW.classList.add()
@@ -52,10 +57,12 @@ export default class ComponentTransactionList extends BaseComponent {
         this.rows.push(ROW);
     };
 
+    // Limpa array de linhas
     resetRows() {
         this.rows = [];
     }
 
+    // Renderiza todas as linhas no corpo da tabela
     renderList() {
         this.table_body.replaceChildren(...this.rows);
     }

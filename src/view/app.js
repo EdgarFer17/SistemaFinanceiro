@@ -15,9 +15,10 @@ CreateCategoriesDefault.create();
 
 getMockTransaction(7500, 10, 1000, 730)
 
+// Classe principal que inicializa e gerencia toda a aplicação
 class App {
     constructor() {
-
+        // Configuração do setup do header
         this.header_config = {
             brand_icon: null,
             app_name: 'TargetFinance',
@@ -26,6 +27,8 @@ class App {
                 'funcão que ativa o modal do usuario';
             },
         }
+
+        // bootstrap do header
         this.header_style_config = {
             header: ["bg-light", "py-3", "shadow", "vw-100"],
             header_wrapper: ["container-fluid", "d-flex", "justify-content-between", "gap-2"],
@@ -37,8 +40,11 @@ class App {
             user_name: ["fs-6", "m-0", "text-primary", "fw-medium"],
             user_post_icon: ["img-fluid"],
         }
+
+        // Configuração do setup do sidenav
         this.sidenav_config = {
             tab: {
+                //configuração do setup de cada TAB
                 config: [
                     {
                         name: 'Dashboard',
@@ -71,6 +77,7 @@ class App {
                         },
                     },
                 ],
+                // bootstrap geral de todas as tabs
                 style_config: {
                     inactive: {
                         main: ["nav-link", "d-flex", "rounded-3", "p-1"],
@@ -88,6 +95,8 @@ class App {
             },
             footer: ['© 2026 TargetFinance', 'Todos os direitos reservados.'],
         }
+        
+        // bootstrap do sidenav
         this.sidenav_style_config = {
             main: ["navbar", "d-flex", "flex-column", "p-0", "bg-primary", "flex-shrink-0"],
             toggle_wrapper: ["toggleWrapper", "btn", "border-0", "align-self-end", "w-25", "p-2"],
@@ -96,6 +105,7 @@ class App {
             footer: ["navbarFooter", "d-md-flex", "flex-column", "mt-auto", "text-white-50", "text-center", "mb-3", "w-100", "px-2", "small"],
         }
 
+        // bootstrap do dashboard
         this.dashboard_style_config = {
             main: ["d-flex", "flex-column", "align-items-center", "w-100", "gap-4", "gap-md-5", "text-primary"],
 
@@ -145,6 +155,7 @@ class App {
         this.build()
     }
 
+    // Instancia os componentes principais da aplicação
     spawn() {
         this.html = document.querySelector('html');
         this.body = document.querySelector('body');
@@ -166,6 +177,7 @@ class App {
         this.sidenav = new SideNav(this.sidenav_config, this.sidenav_style_config);
     }
 
+    // Configura event listeners, renderiza gráficos iniciais e prepara modais
     setup() {
         this.modal_wrapper.addEventListener('click', (e)=>{
             if (e.target === this.modal_wrapper) {
@@ -206,12 +218,14 @@ class App {
         this.pages["Category"].setModal(()=>{this.toggleModal("Category")});
     }
 
+    // Monta a estrutura completa no DOM
     build() {
         this.buildPage(PageState.load())
         this.wrapper.replaceChildren(this.sidenav.main, this.page);
         this.body.replaceChildren(this.header.header, this.wrapper, this.modal_wrapper);
     }
 
+    // Renderiza a página selecionada e marca sua tab no sidenav como ativa
     buildPage(page) {
         const PAGE = this.pages[page];
         if (PAGE) {
@@ -225,7 +239,7 @@ class App {
         }
     }
     
-    
+    // Exibe ou oculta modais na tela
     toggleModal(modal) {
         if (modal === undefined) {
             this.modal_wrapper.replaceChildren();
@@ -240,6 +254,7 @@ class App {
         }
     }
 
+    // Estiliza os elementos raiz da aplicação com classes Bootstrap
     style() {
         // BOOTSTRAP
         this.body.classList.add(...["overflow-x-hidden"]);
@@ -247,10 +262,6 @@ class App {
         this.wrapper.classList.add(...["d-flex", "min-vh-100", "h-auto"]);
         this.page.classList.add(...["d-flex", "flex-grow-1", "w-100"]);
         this.modal_wrapper.classList.add(...["modal-1"]);
-    }
-
-    reloadAll() {
-
     }
 }
 

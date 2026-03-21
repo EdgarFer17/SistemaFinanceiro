@@ -4,6 +4,7 @@ import TransactionModel from "../../../model/TransactionModel.js";
 import TRANSACTION_TYPE_MODEL from "../../../model/TransactionTypeModel.js";
 import TransactionController from "../../../controller/TransactionController.js";
 
+// Modal para criar/editar transações
 export default class TransactionModal extends BaseComponent {
     constructor(config = {}, style_config = {}) {
         super(config, style_config);
@@ -14,19 +15,19 @@ export default class TransactionModal extends BaseComponent {
         this.header = document.createElement('div');
         this.title = document.createElement('h2');
         this.close_btn = document.createElement('button');
-        
+
         this.form = document.createElement('form');
         this.form.id = "transaction-form";
 
         this.value_group = this.createFormGroup("Valor", "number", "valor-input", "Digite o valor da transação", "any");
-        
+
         this.type_group = this.createSelectGroup("Tipo", "type-select", [
             { value: "RECEITA", text: "Receita" },
             { value: "DESPESA", text: "Despesa" }
         ]);
 
         this.category_group = this.createCategorySelectGroup();
-        
+
         this.desc_group = this.createFormGroup("", "text", "desc-input", "Descrição (opcional)", null, false);
         this.desc_group.querySelector('label').remove();
 
@@ -35,6 +36,7 @@ export default class TransactionModal extends BaseComponent {
         this.submit_btn.textContent = "Adicionar Transação";
     }
 
+    // Factory para criar grupo de input com label
     createFormGroup(labelText, type, id, placeholder, step = null, required = true) {
         const group = document.createElement('div');
         group.style.display = "flex";
@@ -55,6 +57,7 @@ export default class TransactionModal extends BaseComponent {
         return group;
     }
 
+    // Factory para criar grupo de select com label
     createSelectGroup(labelText, id, options) {
         const group = document.createElement('div');
         group.style.display = "flex";
@@ -85,6 +88,7 @@ export default class TransactionModal extends BaseComponent {
         return group;
     }
 
+    // Factory para criar select dinâmico de categorias do controller
     createCategorySelectGroup() {
         const categoryList = CategoryController.getCategories();
         const options = categoryList.map(cat => ({
@@ -94,6 +98,7 @@ export default class TransactionModal extends BaseComponent {
         return this.createSelectGroup("Categoria", "category-select", options);
     }
 
+    // Prepara modal para modo criar (vazio) ou editar (preenchido com dados)
     prepareModal(dadosDaLinha) {
         this.editingData = dadosDaLinha;
 
@@ -124,9 +129,10 @@ export default class TransactionModal extends BaseComponent {
     }
 
 
+    // Configura botão fechar, valida e persiste transação ao submeter
     setup(config) {
         this.close_btn.innerHTML = "&times;";
-        
+
         this.close_btn.onclick = config.toggleModal;
         this.close_btn.onmouseover = () => this.close_btn.style.color = '#6ca09d';
         this.close_btn.onmouseout = () => this.close_btn.style.color = '#a4c4c1';
@@ -139,7 +145,6 @@ export default class TransactionModal extends BaseComponent {
                 const typeStr = this.type_group.querySelector('select').value;
                 const categoryName = this.category_group.querySelector('select').value;
                 const desc = this.desc_group.querySelector('input').value;
-
 
                 const dataAtual = this.editingData ? new Date(this.editingData.date) : new Date();
 
@@ -175,6 +180,7 @@ export default class TransactionModal extends BaseComponent {
     }
 
 
+    // Aplica estilos inline e Bootstrap aos elementos do modal
     style(style_config) {
 
         Object.assign(this.main.style, {
@@ -237,7 +243,7 @@ export default class TransactionModal extends BaseComponent {
         [this.value_group, this.type_group, this.category_group, this.desc_group].forEach(group => {
             const label = group.querySelector('label');
             const inputOrSelect = group.querySelector('input, select');
-            
+
             if (label) Object.assign(label.style, labelStyles);
             if (inputOrSelect) Object.assign(inputOrSelect.style, inputStyles);
             if (inputOrSelect && inputOrSelect.tagName === 'SELECT') inputOrSelect.style.cursor = "pointer";
@@ -258,17 +264,18 @@ export default class TransactionModal extends BaseComponent {
         });
     }
 
+    // Monta layout: header com título e fechar, formulário com campos
     build() {
         this.header.replaceChildren(this.title, this.close_btn);
-        
+
         this.form.replaceChildren(
-            this.value_group, 
-            this.type_group, 
-            this.category_group, 
-            this.desc_group, 
+            this.value_group,
+            this.type_group,
+            this.category_group,
+            this.desc_group,
             this.submit_btn
         );
-        
+
         this.main.replaceChildren(this.header, this.form);
     }
 }

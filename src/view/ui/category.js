@@ -1,9 +1,10 @@
 import BaseComponent from "./components/baseComponent.js";
-import CategoryController from "../../controller/categoryController.js"; 
+import CategoryController from "../../controller/categoryController.js";
 import CategoryModel from "../../model/categoryModel.js";
 import CATEGORY_TYPE_MODEL from "../../model/categoryTypeModel.js";
 import CategoryModal from "./modal/categoryModal.js";
 
+// Página de gestão de categorias (CRUD)
 export default class Category extends BaseComponent {
     constructor(config = {}, style_config = {}) {
         super(config, style_config);
@@ -17,21 +18,24 @@ export default class Category extends BaseComponent {
         this.cards_container = document.createElement('section');
     }
 
+    // Configura título, botão e lista inicial de categorias
     setup(config) {
         this.title.textContent = config['title'] || "Categorias Cadastradas";
         this.button.textContent = config['button_title'] || "Adicionar Categoria";
-        
+
         // Abre o modal para CRIAR
         this.button.onclick = () => this.handleOpenModal();
 
         this.renderCategories();
     }
 
+    // Registra função para abrir modal de categoria
     setModal(_function) {
         const SIGNAL = this.controller.signal;
         this.button.addEventListener("click", _function, { SIGNAL })
     }
 
+    // Abre modal para criar/editar categoria com validação e persistência
     handleOpenModal(categoryData = null) {
         const modal = new CategoryModal({
             category: categoryData,
@@ -60,9 +64,10 @@ export default class Category extends BaseComponent {
         });
     }
 
+    // Carrega todas as categorias do controller e renderiza cards
     renderCategories() {
-        this.cards_container.innerHTML = ''; 
-        
+        this.cards_container.innerHTML = '';
+
         let categories = [];
         try {
             categories = CategoryController.getCategories();
@@ -76,6 +81,7 @@ export default class Category extends BaseComponent {
         });
     }
 
+    // Cria card visual com nome, botões edit/delete (desabilitados para DEFAULT)
     createCategoryCard(categoryData) {
         const isDefault = categoryData.type === CATEGORY_TYPE_MODEL.DEFAULT;
         const col = document.createElement('div');
@@ -129,15 +135,16 @@ export default class Category extends BaseComponent {
         return col;
     }
 
+    // Aplica estilos Bootstrap aos elementos da página
     style() {
         this.main.className = "container-fluid px-5 py-4 w-100 mt-5";
         this.header_wrapper.className = "d-flex flex-column align-items-center mb-5 w-100 position-relative";
-        this.title.className = "h2 fw-light m-0 mb-3"; 
+        this.title.className = "h2 fw-light m-0 mb-3";
         this.title.style.color = "#6ca09d";
         this.button.className = "btn px-4 py-2 text-white fw-medium rounded-3 border-0 shadow-sm";
         this.button.style.backgroundColor = "#6ca09d";
         this.button.style.position = "absolute";
-        this.button.style.right = "10%"; 
+        this.button.style.right = "10%";
         this.button.style.top = "50%";
 
         this.cards_container.className = "row g-4 justify-content-center";
@@ -145,6 +152,7 @@ export default class Category extends BaseComponent {
         this.cards_container.style.margin = "0 auto";
     }
 
+    // Monta layout: header com título e botão, container de cards
     build() {
         this.header_wrapper.append(this.title, this.button);
         this.main.append(this.header_wrapper, this.cards_container);

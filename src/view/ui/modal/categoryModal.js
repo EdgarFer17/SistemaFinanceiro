@@ -1,5 +1,6 @@
 import BaseComponent from "../components/baseComponent.js";
 
+// Modal para criar/editar categorias
 export default class CategoryModal extends BaseComponent {
     constructor(config = {}, style_config = {}) {
         super(config, style_config);
@@ -19,14 +20,15 @@ export default class CategoryModal extends BaseComponent {
         this.saveButton = document.createElement('button');
     }
 
+    // Prepara campos para modo criar (vazio) ou editar (preenchido com dados)
     setup(config) {
         const isEdit = !!config.category;
         this.title.textContent = isEdit ? "Editar Categoria" : "Criar Categoria";
-        
+
         this.labelName.textContent = "Nome da categoria";
         this.inputName.placeholder = "Digite o nome da categoria";
         this.inputName.value = isEdit ? config.category.categoryName : "";
-        
+
         this.labelLimit.textContent = "Limite de gastos";
         this.inputLimit.type = "number";
         this.inputLimit.min = "0";
@@ -35,7 +37,7 @@ export default class CategoryModal extends BaseComponent {
         this.inputLimit.value = isEdit ? (config.category.limit || "") : "";
 
         this.saveButton.textContent = isEdit ? "Salvar Alterações" : "Adicionar Categoria";
-        
+
         this.saveButton.onclick = () => {
             config.onSave({
                 name: this.inputName.value,
@@ -45,6 +47,7 @@ export default class CategoryModal extends BaseComponent {
         };
     }
 
+    // Aplica estilos Bootstrap ao modal
     style() {
         this.main.className = "bg-white p-5 rounded-4 shadow-lg";
         this.main.style.width = "400px";
@@ -57,6 +60,7 @@ export default class CategoryModal extends BaseComponent {
         this.saveButton.style.backgroundColor = "#6ca09d";
     }
 
+    // Monta layout do modal com título, campos e botão salvar
     build() {
         this.main.replaceChildren(this.title, this.labelName, this.inputName, this.labelLimit, this.inputLimit, this.saveButton);
     }

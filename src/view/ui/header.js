@@ -1,6 +1,6 @@
 import BaseComponent from './components/baseComponent.js';
 
-// Criação do header da aplicação
+// Barra superior com marca da aplicação e perfil do usuário
 export default class Header extends BaseComponent {
     constructor(config, style_config) {
         super(config, style_config);
@@ -13,14 +13,15 @@ export default class Header extends BaseComponent {
         this.brand_wrapper = document.createElement('div');
         this.user_wrapper = document.createElement('button');
 
-        this.brand_icon = document.createElement('img'); // Implement
+        this.brand_icon = document.createElement('img');
         this.brand_name = document.createElement('h1');
 
-        this.user_icon = document.createElement('img'); // Implement
+        this.user_icon = document.createElement('img');
         this.user_name = document.createElement('h2');
-        this.user_post_icon = document.createElement('img'); // Implement
+        this.user_post_icon = document.createElement('img');
     }
 
+    // Configura nome da aplicação, usuário, ícones e função de clique no perfil
     setup(config) {
         const SIGNAL = this.controller.signal;
 
@@ -35,7 +36,8 @@ export default class Header extends BaseComponent {
         this.user_post_icon.src = "./assets/Back.png"
         this.user_post_icon.alt = "Icone de seta para expandir"
     }
-    
+
+    // Aplica estilos Bootstrap aos elementos do header
     style(style_config = {
             header: [],
             header_wrapper: [],
@@ -47,7 +49,6 @@ export default class Header extends BaseComponent {
             user_name: [],
             user_post_icon: [],
         }) {
-        // BOOTSTRAP
 
         this.header.classList.add(...[], ...style_config.header);
         this.header_wrapper.classList.add(...[], ...style_config.header_wrapper);
@@ -64,6 +65,7 @@ export default class Header extends BaseComponent {
         );
     }
 
+    // Monta o layout do header: marca à esquerda, perfil à direita
     build() {
         this.brand_wrapper.replaceChildren(this.brand_icon, this.brand_name);
         this.user_wrapper.replaceChildren(
