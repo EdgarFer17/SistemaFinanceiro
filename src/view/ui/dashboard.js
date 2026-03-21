@@ -103,7 +103,7 @@ export default class Dashboard extends BaseComponent {
 
         this.income = DashboardController.getTotalIncome();
         this.expense = DashboardController.getTotalExpense();
-        this.currency = this.income - this.expense;
+        this.currency = this.income + this.expense;
 
         this.elements.balance_title.textContent = "Saldo";
         this.elements.balance_currency.prepend("R$ ");
@@ -183,8 +183,11 @@ export default class Dashboard extends BaseComponent {
 
     // Recalcula receita e atualiza valores exibidos
     reloadStatus() {
-        this.balance = this.income - this.expense;
-        this.elements.balance_value.textContent = this.balance;
+        this.income = DashboardController.getTotalIncome();
+        this.expense = DashboardController.getTotalExpense();
+        this.currency = this.income + this.expense;
+
+        this.elements.balance_value.textContent = this.currency;
         this.elements.income_value.textContent = this.income;
         this.elements.expense_value.textContent = this.expense;
     };
@@ -232,6 +235,14 @@ export default class Dashboard extends BaseComponent {
         }
     };
 
+    renderCharts() {
+        this.renderMonthExpenseIncome();
+        this.renderExpensiveForCategory();
+        this.renderExpenseIncomeForLastSixMonth();
+        this.renderFiveLastTransactions();
+        this.reloadStatus();
+    }
+
     // Carrega e renderiza as 5 últimas transações na tabela
     renderFiveLastTransactions() {
         this.elements.transaction_component.resetRows();
@@ -273,7 +284,7 @@ export default class Dashboard extends BaseComponent {
             RAW_DATA.map((month)=> {
                 DATA.labels.push(month.date);
                 DATA.datasets[1].data.push(month.income);
-                DATA.datasets[2].data.push(month.expense);
+                DATA.datasets[2].data.push(-month.expense);
                 DATA.datasets[0].data.push(month.income + month.expense);
             })
         } catch (error) {

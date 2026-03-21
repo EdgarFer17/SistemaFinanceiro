@@ -98,7 +98,6 @@ export default class DashboardController {
                 EXPENSE_BY_CATEGORY[category].expense += t.value;
             }
         });
-
         return EXPENSE_BY_CATEGORY;
     }
 

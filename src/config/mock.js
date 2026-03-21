@@ -35,7 +35,7 @@ export function getMockTransaction(quantity = 1000, min_value = 25, max_value = 
                 getRandomDate(), 
                 RANDOM_CATEGORY, 
                 RANDOM_TYPE, 
-                RANDOM_AMOUNT
+                (RANDOM_TYPE === TRANSACTION_TYPE_MODEL.EXPENSE) ? -RANDOM_AMOUNT : RANDOM_AMOUNT
             );
 
             TransactionController.createTransaction(transaction);
