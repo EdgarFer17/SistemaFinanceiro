@@ -208,6 +208,13 @@ class App {
             this.pages.Dashboard.elements.donut_1_component.donut.resize();
             this.pages.Dashboard.elements.donut_2_component.donut.resize();
         });
+
+        window.addEventListener('reload', () => {
+            this.pages.Dashboard.elements.bar_component.bar.resize();
+            this.pages.Dashboard.elements.donut_1_component.donut.resize();
+            this.pages.Dashboard.elements.donut_2_component.donut.resize();
+        });
+        
         
         this.pages["Transaction"].setModal((_, data) => {
             this.modals["Transaction"].prepareModal(data); 

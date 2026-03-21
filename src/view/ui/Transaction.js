@@ -1,5 +1,6 @@
 import BaseComponent from "./components/baseComponent.js";
 import TransactionController from "../../controller/TransactionController.js";
+import TRANSACTION_TYPE_MODEL from "../../model/TransactionTypeModel.js";
 
 // Página de gestão de transações (CRUD)
 export default class Transaction extends BaseComponent {
@@ -52,118 +53,115 @@ export default class Transaction extends BaseComponent {
         this.filter_container.className = "d-flex justify-content-end mb-3 w-100 px-3 px-md-4";
         this.filter_container.replaceChildren(); // Limpa conteúdo antigo com segurança
         
-        const select = document.createElement('select');
-        select.className = "form-select shadow-sm cursor-pointer";
-        select.style.maxWidth = "200px";
-        select.style.borderColor = "#6ca09d";
-        select.style.color = "#6ca09d";
-        select.style.fontWeight = "bold";
+        const SELECT = document.createElement('select');
+        SELECT.className = "form-select shadow-sm cursor-pointer";
+        SELECT.style.maxWidth = "200px";
+        SELECT.style.borderColor = "#6ca09d";
+        SELECT.style.color = "#6ca09d";
+        SELECT.style.fontWeight = "bold";
 
-        const optionAll = document.createElement('option');
-        optionAll.value = "ALL";
-        optionAll.textContent = "Todas as Transações";
+        const OPTION_ALL = document.createElement('option');
+        OPTION_ALL.value = "ALL";
+        OPTION_ALL.textContent = "Todas as Transações";
 
-        const optionIn = document.createElement('option');
-        optionIn.value = "RECEITA";
-        optionIn.textContent = "Apenas Entradas";
+        const OPTION_IN = document.createElement('option');
+        OPTION_IN.value = TRANSACTION_TYPE_MODEL.INCOME;
+        OPTION_IN.textContent = "Apenas Entradas";
 
-        const optionOut = document.createElement('option');
-        optionOut.value = "DESPESA";
-        optionOut.textContent = "Apenas Saídas";
+        const OPTION_OUT = document.createElement('option');
+        OPTION_OUT.value = TRANSACTION_TYPE_MODEL.EXPENSE;
+        OPTION_OUT.textContent = "Apenas Saídas";
 
-        select.append(optionAll, optionIn, optionOut);
-        select.value = this.currentFilter; // Mantém a opção que estava selecionada
+        SELECT.append(OPTION_ALL, OPTION_IN, OPTION_OUT);
+        SELECT.value = this.currentFilter; // Mantém a opção que estava selecionada
         
-        select.addEventListener('change', (e) => {
+        SELECT.addEventListener('change', (e) => {
             this.currentFilter = e.target.value;
             this.currentPage = 1;
             this.renderList();
         });
 
-        this.filter_container.appendChild(select);
+        this.filter_container.appendChild(SELECT);
     }
 
     renderList() {
         this.list_container.replaceChildren(); // Forma moderna de limpar o elemento
         this.pagination_container.replaceChildren();
 
-        let transacoesDoBanco = [];
+        let transacoes_do_banco = [];
         try {
-            transacoesDoBanco = TransactionController.getTransactions() || [];
+            transacoes_do_banco = TransactionController.getTransactions() || [];
         } catch (e) {
             console.error("Erro ao buscar transações:", e);
         }
 
-        transacoesDoBanco.reverse();
+        transacoes_do_banco.reverse();
 
-        if (this.currentFilter === 'RECEITA') {
-            transacoesDoBanco = transacoesDoBanco.filter(t => t.value >= 0);
-        } else if (this.currentFilter === 'DESPESA') {
-            transacoesDoBanco = transacoesDoBanco.filter(t => t.value < 0);
+        if (this.currentFilter !== "ALL") {
+            transacoes_do_banco = transacoes_do_banco.filter(t => t.type === this.currentFilter); 
         }
 
-        const totalItems = transacoesDoBanco.length;
-        const totalPages = Math.ceil(totalItems / this.itemsPerPage);
+        const TOTAL_ITEMS = transacoes_do_banco.length;
+        const TOTAL_PAGES = Math.ceil(TOTAL_ITEMS / this.itemsPerPage);
 
-        if (this.currentPage > totalPages && totalPages > 0) {
-            this.currentPage = totalPages;
+        if (this.currentPage > TOTAL_PAGES && TOTAL_PAGES > 0) {
+            this.currentPage = TOTAL_PAGES;
         }
 
-        const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-        const endIndex = startIndex + this.itemsPerPage;
-        const transacoesDaPagina = transacoesDoBanco.slice(startIndex, endIndex);
+        const START_INDEX = (this.currentPage - 1) * this.itemsPerPage;
+        const END_INDEX = START_INDEX + this.itemsPerPage;
+        const PAGE_TRANSACTIONS = transacoes_do_banco.slice(START_INDEX, END_INDEX);
 
-        if (transacoesDaPagina.length === 0) {
-            // --- REMOVIDO INNERHTML: MENSAGEM NATIVA DE LISTA VAZIA ---
-            const emptyMessage = document.createElement('div');
-            emptyMessage.className = "text-center text-muted p-5 w-100 fw-bold border bg-white rounded-3 shadow-sm";
-            emptyMessage.textContent = "Nenhuma transação encontrada para este filtro.";
+        if (PAGE_TRANSACTIONS.length === 0) {
+            const EMPTY_MESSAGE = document.createElement('div');
+            EMPTY_MESSAGE.className = "text-center text-muted p-5 w-100 fw-bold border bg-white rounded-3 shadow-sm";
+            EMPTY_MESSAGE.textContent = "Nenhuma transação encontrada para este filtro.";
             
-            this.list_container.appendChild(emptyMessage);
+            this.list_container.appendChild(EMPTY_MESSAGE);
             return;
         }
 
-        transacoesDaPagina.forEach(trans => {
-            const row = this.createTransactionRow(trans);
-            this.list_container.appendChild(row);
+        PAGE_TRANSACTIONS.forEach(trans => {
+            const ROW = this.createTransactionRow(trans);
+            this.list_container.appendChild(ROW);
         });
 
-        if (totalPages > 1) {
-            this.renderPagination(totalPages);
+        if (TOTAL_PAGES > 1) {
+            this.renderPagination(TOTAL_PAGES);
         }
     }
 
     renderPagination(totalPages) {
         this.pagination_container.className = "d-flex justify-content-center align-items-center gap-3 my-4 flex-wrap";
 
-        const btnPrev = document.createElement('button');
-        btnPrev.textContent = "Anterior";
-        btnPrev.className = `btn text-white shadow-sm ${this.currentPage === 1 ? 'disabled' : ''}`;
-        btnPrev.style.backgroundColor = this.currentPage === 1 ? "#ccc" : "#6ca09d";
-        btnPrev.onclick = () => {
+        const PREV_BUTTON = document.createElement('button');
+        PREV_BUTTON.textContent = "Anterior";
+        PREV_BUTTON.className = `btn text-white shadow-sm ${this.currentPage === 1 ? 'disabled' : ''}`;
+        PREV_BUTTON.style.backgroundColor = this.currentPage === 1 ? "#ccc" : "#6ca09d";
+        PREV_BUTTON.onclick = () => {
             if (this.currentPage > 1) {
                 this.currentPage--;
                 this.renderList();
             }
         };
 
-        const infoText = document.createElement('span');
-        infoText.textContent = `Página ${this.currentPage} de ${totalPages}`;
-        infoText.className = "fw-bold";
-        infoText.style.color = "#6ca09d";
+        const INFO_TEXT = document.createElement('span');
+        INFO_TEXT.textContent = `Página ${this.currentPage} de ${totalPages}`;
+        INFO_TEXT.className = "fw-bold";
+        INFO_TEXT.style.color = "#6ca09d";
 
-        const btnNext = document.createElement('button');
-        btnNext.textContent = "Próxima";
-        btnNext.className = `btn text-white shadow-sm ${this.currentPage === totalPages ? 'disabled' : ''}`;
-        btnNext.style.backgroundColor = this.currentPage === totalPages ? "#ccc" : "#6ca09d";
-        btnNext.onclick = () => {
+        const NEXT_BUTTON = document.createElement('button');
+        NEXT_BUTTON.textContent = "Próxima";
+        NEXT_BUTTON.className = `btn text-white shadow-sm ${this.currentPage === totalPages ? 'disabled' : ''}`;
+        NEXT_BUTTON.style.backgroundColor = this.currentPage === totalPages ? "#ccc" : "#6ca09d";
+        NEXT_BUTTON.onclick = () => {
             if (this.currentPage < totalPages) {
                 this.currentPage++;
                 this.renderList();
             }
         };
 
-        this.pagination_container.append(btnPrev, infoText, btnNext);
+        this.pagination_container.append(PREV_BUTTON, INFO_TEXT, NEXT_BUTTON);
     }
 
     // Registra função para abrir modal de transação
@@ -176,7 +174,6 @@ export default class Transaction extends BaseComponent {
     createTransactionRow(data) {
         const ROW = document.createElement('div');
         ROW.className = 'row align-items-center px-4 py-3 bg-white rounded-3 shadow-sm border w-100 m-0 transaction-row';
-        ROW.className = 'transaction-row';
 
         const IS_NEGATIVE = data.value < 0;
         const VALOR_FORMATADO = `R$ ${data.value.toFixed(2).replace('.', ',')}`;
@@ -240,12 +237,12 @@ export default class Transaction extends BaseComponent {
                     alert("Erro ao excluir: " + e.message);
                 }
             }
-        }, ROW.querySelector('.delete-btn'))
+        }, DELETE_BUTTON)
 
         // --- BOTÃO EDITAR ---
         this.setFunction('click', (event) => {
             this.modal_trigger(event, data);
-        }, ROW.querySelector('.edit-btn'))
+        }, EDIT_BUTTON)
 
         return ROW;
     }
