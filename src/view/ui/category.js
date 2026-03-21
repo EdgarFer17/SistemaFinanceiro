@@ -42,48 +42,48 @@ export default class Category extends BaseComponent {
         }
 
         categories.forEach(cat => {
-            const card = this.createCategoryCard(cat);
-            this.cards_container.appendChild(card);
+            const CARD = this.createCategoryCard(cat);
+            this.cards_container.appendChild(CARD);
         });
     }
 
     // Cria card visual com nome, botões edit/delete (desabilitados para DEFAULT)
     createCategoryCard(categoryData) {
-        const isDefault = categoryData.type === CATEGORY_TYPE_MODEL.DEFAULT;
-        const col = document.createElement('div');
-        col.className = "col-12 col-md-6 col-lg-4";
+        const IS_DEFAULT = categoryData.type === CATEGORY_TYPE_MODEL.DEFAULT;
+        const COL = document.createElement('div');
+        COL.className = "col-12 col-md-6 col-lg-4";
 
-        const cardBody = document.createElement('div');
-        cardBody.className = "d-flex justify-content-between align-items-center p-4 bg-white border border-info-subtle rounded-3 shadow-sm";
-        cardBody.style.minHeight = "120px";
+        const CARD_BODY = document.createElement('div');
+        CARD_BODY.className = "d-flex justify-content-between align-items-center p-4 bg-white border border-info-subtle rounded-3 shadow-sm";
+        CARD_BODY.style.minHeight = "120px";
         
-        const name = document.createElement('span');
-        name.className = "fs-3 fw-normal mb-0";
-        name.textContent = categoryData.categoryName;
-        name.style.color = "#6ca09d";
+        const NAME = document.createElement('span');
+        NAME.className = "fs-3 fw-normal mb-0";
+        NAME.textContent = categoryData.categoryName;
+        NAME.style.color = "#6ca09d";
 
-        const actions = document.createElement('div');
-        actions.className = "d-flex gap-3 align-self-start";
-        const editIcon = document.createElement('img');
-        editIcon.src = isDefault ? './assets/gray-edit-icon.png' : './assets/green-edit-icon.png'; 
-        editIcon.style.width = '18px';
+        const ACTIONS = document.createElement('div');
+        ACTIONS.className = "d-flex gap-3 align-self-start";
+        const EDIT_ICON = document.createElement('img');
+        EDIT_ICON.src = IS_DEFAULT ? './assets/gray-edit-icon.png' : './assets/green-edit-icon.png'; 
+        EDIT_ICON.style.width = '18px';
         
-        if (!isDefault) {
-            editIcon.style.cursor = 'pointer';
+        if (!IS_DEFAULT) {
+            EDIT_ICON.style.cursor = 'pointer';
             this.setFunction('click', (event)=>{
                 this.modal_trigger_function(event, categoryData);
-            }, editIcon)
+            }, EDIT_ICON)
         } else {
-            editIcon.style.opacity = "0.5";
-            editIcon.title = "Categorias padrão não podem ser editadas";
+            EDIT_ICON.style.opacity = "0.5";
+            EDIT_ICON.title = "Categorias padrão não podem ser editadas";
         }
-        const deleteIcon = document.createElement('img');
-        deleteIcon.src = isDefault ? './assets/gray-delete-icon.png' : './assets/green-delete-icon.png';
-        deleteIcon.style.width = '18px';
+        const DELETE_ICON = document.createElement('img');
+        DELETE_ICON.src = IS_DEFAULT ? './assets/gray-delete-icon.png' : './assets/green-delete-icon.png';
+        DELETE_ICON.style.width = '18px';
 
-        if (!isDefault) {
-            deleteIcon.style.cursor = 'pointer';
-            deleteIcon.onclick = () => {
+        if (!IS_DEFAULT) {
+            DELETE_ICON.style.cursor = 'pointer';
+            DELETE_ICON.onclick = () => {
                 if (confirm(`Deseja excluir ${categoryData.categoryName}?`)) {
                     try {
                         CategoryController.deleteCategory(categoryData.id);
@@ -92,15 +92,15 @@ export default class Category extends BaseComponent {
                 }
             };
         } else {
-            deleteIcon.style.opacity = "0.5";
-            deleteIcon.title = "Categorias padrão não podem ser excluídas";
+            DELETE_ICON.style.opacity = "0.5";
+            DELETE_ICON.title = "Categorias padrão não podem ser excluídas";
         }
 
-        actions.append(editIcon, deleteIcon);
-        cardBody.append(name, actions);
-        col.appendChild(cardBody);
+        ACTIONS.append(EDIT_ICON, DELETE_ICON);
+        CARD_BODY.append(NAME, ACTIONS);
+        COL.appendChild(CARD_BODY);
 
-        return col;
+        return COL;
     }
 
     // Aplica estilos Bootstrap aos elementos da página

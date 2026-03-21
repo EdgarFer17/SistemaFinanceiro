@@ -6,37 +6,37 @@ export default class DashboardController {
 
     // retorna as últimas 5 transações
     static getLastFiveTransactions() {
-        const allTransactions = TransactionRepository.getTransactions();
+        const ALL_TRANSACTIONS = TransactionRepository.getTransactions();
         
-        return allTransactions.sort((a, b) => b.id - a.id).slice(0, 5);
+        return ALL_TRANSACTIONS.sort((a, b) => b.id - a.id).slice(0, 5);
     }
 
     // retorna o gasto e a arrecadação dos últimos 6 meses
-    static getExpenseIncomeForLastSixMonth() {
-        const expenseIncomeForMonth = {};
+    static getExpenseIncomeOfLastSixMonths() {
+        const EXPENSE_INCOME_PER_MONTH = {};
 
-        const allTransactions = TransactionRepository.getTransactions();
+        const ALL_TRANSACTIONS = TransactionRepository.getTransactions();
 
-        allTransactions.forEach(t => {
-            const month = new Date(t.date).getMonth();
-            const year = new Date(t.date).getFullYear();
-            const key = `${year}-${month}`;
+        ALL_TRANSACTIONS.forEach(t => {
+            const MONTH = new Date(t.date).getMonth();
+            const YEAR = new Date(t.date).getFullYear();
+            const KEY = `${YEAR}-${MONTH}`;
 
-            if (!expenseIncomeForMonth[key]) {
-                expenseIncomeForMonth[key] = {
+            if (!EXPENSE_INCOME_PER_MONTH[KEY]) {
+                EXPENSE_INCOME_PER_MONTH[KEY] = {
                     expense: 0,
                     income: 0
                 }
             }
 
             if (t.type === TRANSACTION_TYPE_MODEL.INCOME) {
-                expenseIncomeForMonth[key].income += t.value;
+                EXPENSE_INCOME_PER_MONTH[KEY].income += t.value;
             } else {
-                expenseIncomeForMonth[key].expense += t.value;
+                EXPENSE_INCOME_PER_MONTH[KEY].expense += t.value;
             }
         });
 
-        const expenseIncomeForLastSixMonth = Object.entries(expenseIncomeForMonth)
+        const EXPENSE_INCOME_OF_LAST_SIX_MONTHS = Object.entries(EXPENSE_INCOME_PER_MONTH)
         .sort((a,b) => new Date(b[0].split("-")[0], b[0].split("-")[1]) - new Date(a[0].split("-")[0], a[0].split("-")[1]))
         .slice(0, 6)
         .map(([date, data]) => ({
@@ -46,66 +46,66 @@ export default class DashboardController {
             ...data
         }));
 
-        return expenseIncomeForLastSixMonth;
+        return EXPENSE_INCOME_OF_LAST_SIX_MONTHS;
     }
 
     // retorna o gasto e a arrecadação do ultimo mês
     static getMonthExpenseIncome() {
-        const expenseIncome = {};
+        const EXPENSE_INCOME = {};
 
-        const allTransactions = TransactionRepository.getTransactions();
+        const ALL_TRANSACTIONS = TransactionRepository.getTransactions();
 
-        allTransactions.forEach(t => {
-            const month = new Date(t.date).getMonth();
-            const year = new Date(t.date).getFullYear();
-            const key = `${year}-${month}`;
+        ALL_TRANSACTIONS.forEach(t => {
+            const MONTH = new Date(t.date).getMonth();
+            const YEAR = new Date(t.date).getFullYear();
+            const KEY = `${YEAR}-${MONTH}`;
 
-            if (!expenseIncome[key]) {
-                expenseIncome[key] = {
+            if (!EXPENSE_INCOME[KEY]) {
+                EXPENSE_INCOME[KEY] = {
                     expense: 0,
                     income: 0
                 }
             }
 
             if (t.type === TRANSACTION_TYPE_MODEL.INCOME) {
-                expenseIncome[key].income += t.value;
+                EXPENSE_INCOME[KEY].income += t.value;
             } else {
-                expenseIncome[key].expense += t.value;
+                EXPENSE_INCOME[KEY].expense += t.value;
             }
         });
 
-        const expenseIncomeForLastMonth = Object.entries(expenseIncome)
+        const expenseIncomeForLastMonth = Object.entries(EXPENSE_INCOME)
         .sort((a,b) => new Date(b[0].split("-")[0], b[0].split("-")[1]) - new Date(a[0].split("-")[0], a[0].split("-")[1]))
         .at(0)[1];
         
         return expenseIncomeForLastMonth;
     }
 
-    static getExpensiveForCategories() {
-        const expensiveForCategories = {}
-        const allTransactions = TransactionRepository.getTransactions();
+    static getExpenseByCategories() {
+        const EXPENSE_BY_CATEGORY = {}
+        const ALL_TRANSACTIONS = TransactionRepository.getTransactions();
 
-        allTransactions.forEach(t => {
+        ALL_TRANSACTIONS.forEach(t => {
             const category = t.category.categoryName.toUpperCase();
 
-            if (!expensiveForCategories[category]) {
-                expensiveForCategories[category] = {
+            if (!EXPENSE_BY_CATEGORY[category]) {
+                EXPENSE_BY_CATEGORY[category] = {
                     expense: 0
                 }
             }
 
             if (t.type === TRANSACTION_TYPE_MODEL.EXPENSE) {
-                expensiveForCategories[category].expense += t.value;
+                EXPENSE_BY_CATEGORY[category].expense += t.value;
             }
         });
 
-        return expensiveForCategories;
+        return EXPENSE_BY_CATEGORY;
     }
 
     static getTotalIncome() {
-        const allTransactions = TransactionRepository.getTransactions();
+        const ALL_TRANSACTIONS = TransactionRepository.getTransactions();
         let total_income = 0;
-        allTransactions.forEach(t => {
+        ALL_TRANSACTIONS.forEach(t => {
             if (t.type === TRANSACTION_TYPE_MODEL.INCOME) {
                 total_income += t.value;
             }
@@ -114,9 +114,9 @@ export default class DashboardController {
     }
 
     static getTotalExpense() {
-        const allTransactions = TransactionRepository.getTransactions();
+        const ALL_TRANSACTIONS = TransactionRepository.getTransactions();
         let total_expense = 0;
-        allTransactions.forEach(t => {
+        ALL_TRANSACTIONS.forEach(t => {
             if (t.type === TRANSACTION_TYPE_MODEL.EXPENSE) {
                 total_expense += t.value;
             }

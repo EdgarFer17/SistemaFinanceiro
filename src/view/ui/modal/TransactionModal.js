@@ -38,64 +38,65 @@ export default class TransactionModal extends BaseComponent {
 
     // Factory para criar grupo de input com label
     createFormGroup(labelText, type, id, placeholder, step = null, required = true) {
-        const group = document.createElement('div');
-        group.style.display = "flex";
-        group.style.flexDirection = "column";
-        group.style.gap = "8px";
+        const GROUP = document.createElement('div');
+        GROUP.style.display = "flex";
+        GROUP.style.flexDirection = "column";
+        GROUP.style.gap = "8px";
 
-        const label = document.createElement('label');
-        label.textContent = labelText;
+        const LABEL = document.createElement('label');
+        LABEL.textContent = labelText;
 
-        const input = document.createElement('input');
-        input.type = type;
-        input.id = id;
-        input.placeholder = placeholder;
-        if (step) input.step = step;
-        if (required) input.required = true;
+        const INPUT = document.createElement('input');
+        INPUT.type = type;
+        INPUT.id = id;
+        INPUT.placeholder = placeholder;
+        if (step) INPUT.step = step;
+        if (required) INPUT.required = true;
 
-        group.append(label, input);
-        return group;
+        GROUP.append(LABEL, INPUT);
+        return GROUP;
     }
 
     // Factory para criar grupo de select com label
     createSelectGroup(labelText, id, options) {
-        const group = document.createElement('div');
-        group.style.display = "flex";
-        group.style.flexDirection = "column";
-        group.style.gap = "8px";
+        const GROUP = document.createElement('div');
+        GROUP.style.display = "flex";
+        GROUP.style.flexDirection = "column";
+        GROUP.style.gap = "8px";
 
-        const label = document.createElement('label');
-        label.textContent = labelText;
+        const LABEL = document.createElement('label');
+        LABEL.textContent = labelText;
 
-        const select = document.createElement('select');
-        select.id = id;
-        select.required = true;
+        const SELECT = document.createElement('select');
+        SELECT.id = id;
+        SELECT.required = true;
 
-        const defaultOption = document.createElement('option');
-        defaultOption.value = "";
-        defaultOption.disabled = true;
-        defaultOption.selected = true;
-        select.appendChild(defaultOption);
+        const DEFAULT_OPTION = document.createElement('option');
+        DEFAULT_OPTION.value = "";
+        DEFAULT_OPTION.disabled = true;
+        DEFAULT_OPTION.selected = true;
 
-        options.forEach(opt => {
-            const optionElement = document.createElement('option');
-            optionElement.value = opt.value;
-            optionElement.textContent = opt.text;
-            select.appendChild(optionElement);
+        const CUSTOM_OPTIONS = options.map(opt => {
+            const OPTION_ELEMENT = document.createElement('option');
+            OPTION_ELEMENT.value = opt.value;
+            OPTION_ELEMENT.textContent = opt.text;
+            return OPTION_ELEMENT
         });
 
-        group.append(label, select);
-        return group;
+        SELECT.replaceChildren(DEFAULT_OPTION, ...CUSTOM_OPTIONS)
+
+        GROUP.append(LABEL, SELECT);
+        return GROUP;
     }
 
     // Factory para criar select dinâmico de categorias do controller
     createCategorySelectGroup() {
-        const categoryList = CategoryController.getCategories();
-        const options = categoryList.map(cat => ({
+        const CATEGORY_LIST = CategoryController.getCategories();
+        const OPTIONS = CATEGORY_LIST.map(cat => ({
             value: cat.categoryName,
             text: cat.categoryName
         }));
-        return this.createSelectGroup("Categoria", "category-select", options);
+        return this.createSelectGroup("Categoria", "category-select", OPTIONS);
     }
 
     // Prepara modal para modo criar (vazio) ou editar (preenchido com dados)
@@ -109,13 +110,13 @@ export default class TransactionModal extends BaseComponent {
 
             this.value_group.querySelector('input').value = Math.abs(dadosDaLinha.value);
   
-            const isExpense = dadosDaLinha.type === TRANSACTION_TYPE_MODEL.EXPENSE;
-            this.type_group.querySelector('select').value = isExpense ? "DESPESA" : "RECEITA";
+            const IS_EXPENSE = dadosDaLinha.type === TRANSACTION_TYPE_MODEL.EXPENSE;
+            this.type_group.querySelector('select').value = IS_EXPENSE ? "DESPESA" : "RECEITA";
             
-            const catSelect = this.category_group.querySelector('select');
+            const CAT_SELECT = this.category_group.querySelector('select');
 
-            catSelect.value = dadosDaLinha.category.categoryName;
-            if (!catSelect.value) catSelect.value = ""; 
+            CAT_SELECT.value = dadosDaLinha.category.categoryName;
+            if (!CAT_SELECT.value) CAT_SELECT.value = ""; 
 
             this.desc_group.querySelector('input').value = dadosDaLinha.desc || "";
         } else {
@@ -142,28 +143,28 @@ export default class TransactionModal extends BaseComponent {
 
             try {
                 let value = parseFloat(this.value_group.querySelector('input').value);
-                const typeStr = this.type_group.querySelector('select').value;
-                const categoryName = this.category_group.querySelector('select').value;
-                const desc = this.desc_group.querySelector('input').value;
+                const TYPE_STR = this.type_group.querySelector('select').value;
+                const CATEGORY_NAME = this.category_group.querySelector('select').value;
+                const DESC = this.desc_group.querySelector('input').value;
 
-                const dataAtual = this.editingData ? new Date(this.editingData.date) : new Date();
+                const DATA_ATUAL = this.editingData ? new Date(this.editingData.date) : new Date();
 
-                const typeEnum = typeStr === "DESPESA" ? TRANSACTION_TYPE_MODEL.EXPENSE : TRANSACTION_TYPE_MODEL.INCOME;
+                const TYPE_ENUM = TYPE_STR === "DESPESA" ? TRANSACTION_TYPE_MODEL.EXPENSE : TRANSACTION_TYPE_MODEL.INCOME;
 
-                if (typeEnum === TRANSACTION_TYPE_MODEL.EXPENSE && value > 0) value = -value;
-                else if (typeEnum === TRANSACTION_TYPE_MODEL.INCOME && value < 0) value = Math.abs(value);
+                if (TYPE_ENUM === TRANSACTION_TYPE_MODEL.EXPENSE && value > 0) value = -value;
+                else if (TYPE_ENUM === TRANSACTION_TYPE_MODEL.INCOME && value < 0) value = Math.abs(value);
 
-                const categoryObj = CategoryController.getCategories().find(c => c.categoryName === categoryName);
+                const CATEGORY_OBJECT = CategoryController.getCategories().find(c => c.categoryName === CATEGORY_NAME);
 
-                const newTransaction = new TransactionModel(dataAtual, categoryObj, typeEnum, value, desc);
+                const NEW_TRANSACTION = new TransactionModel(DATA_ATUAL, CATEGORY_OBJECT, TYPE_ENUM, value, DESC);
 
                 if (this.editingData && this.editingData.id) {
 
-                    TransactionController.editTransaction(this.editingData.id, newTransaction);
+                    TransactionController.editTransaction(this.editingData.id, NEW_TRANSACTION);
                     alert("Transação Atualizada com Sucesso!");
                 } else {
 
-                    TransactionController.createTransaction(newTransaction);
+                    TransactionController.createTransaction(NEW_TRANSACTION);
                     alert("Transação Adicionada com Sucesso!");
                 }
 
@@ -226,7 +227,7 @@ export default class TransactionModal extends BaseComponent {
             gap: "25px"
         });
 
-        const inputStyles = {
+        const INPUT_STYLES = {
             padding: "15px",
             border: "1px solid #a4c4c1",
             borderRadius: "8px",
@@ -238,15 +239,15 @@ export default class TransactionModal extends BaseComponent {
             backgroundColor: "white"
         };
 
-        const labelStyles = { color: "#6ca09d", fontSize: "1.2rem" };
+        const LABEL_STYLES = { color: "#6ca09d", fontSize: "1.2rem" };
 
         [this.value_group, this.type_group, this.category_group, this.desc_group].forEach(group => {
-            const label = group.querySelector('label');
-            const inputOrSelect = group.querySelector('input, select');
+            const LABEL = group.querySelector('label');
+            const INPUT_OR_SELECT = group.querySelector('input, select');
 
-            if (label) Object.assign(label.style, labelStyles);
-            if (inputOrSelect) Object.assign(inputOrSelect.style, inputStyles);
-            if (inputOrSelect && inputOrSelect.tagName === 'SELECT') inputOrSelect.style.cursor = "pointer";
+            if (LABEL) Object.assign(LABEL.style, LABEL_STYLES);
+            if (INPUT_OR_SELECT) Object.assign(INPUT_OR_SELECT.style, INPUT_STYLES);
+            if (INPUT_OR_SELECT && INPUT_OR_SELECT.tagName === 'SELECT') INPUT_OR_SELECT.style.cursor = "pointer";
         });
 
         Object.assign(this.submit_btn.style, {

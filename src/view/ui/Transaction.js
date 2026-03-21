@@ -21,14 +21,14 @@ export default class Transaction extends BaseComponent {
         this.title.textContent = config['title'] || "Transações";
         this.button.textContent = config['button_title'] || "Adicionar Transação";
 
-        const headers = ['Data', 'Categoria', 'Tipo', 'Valor', "Descrição", "Editar/Excluir"];
-        headers.forEach(text => {
-            const span = document.createElement('span');
-            span.textContent = text;
-            span.style.flex = "1";
-            span.style.textAlign = "center";
-            span.style.fontWeight = "bold";
-            this.table_header_row.appendChild(span);
+        const HEADERS = ['Data', 'Categoria', 'Tipo', 'Valor', "Descrição", "Editar/Excluir"];
+        HEADERS.forEach(text => {
+            const SPAN = document.createElement('span');
+            SPAN.textContent = text;
+            SPAN.style.flex = "1";
+            SPAN.style.textAlign = "center";
+            SPAN.style.fontWeight = "bold";
+            this.table_header_row.appendChild(SPAN);
         });
 
         this.renderList();
@@ -49,8 +49,8 @@ export default class Transaction extends BaseComponent {
 
 
         transacoesDoBanco.reverse().forEach(trans => {
-            const row = this.createTransactionRow(trans);
-            this.list_container.appendChild(row);
+            const ROW = this.createTransactionRow(trans);
+            this.list_container.appendChild(ROW);
         });
     }
 
@@ -62,28 +62,25 @@ export default class Transaction extends BaseComponent {
 
     // Cria linha de tabela com dados da transação e botões edit/delete
     createTransactionRow(data) {
-        const row = document.createElement('div');
-        row.className = 'transaction-row';
+        const ROW = document.createElement('div');
+        ROW.className = 'transaction-row';
 
-        const isNegative = data.value < 0;
-        const valorFormatado = `R$ ${data.value.toFixed(2).replace('.', ',')}`;
-
-
-        const dataObj = new Date(data.date);
-        const dia = String(dataObj.getDate()).padStart(2, '0');
-        const mes = String(dataObj.getMonth() + 1).padStart(2, '0');
-        const ano = dataObj.getFullYear();
-        const dataFormatadaStr = `${dia}/${mes}/${ano}`;
+        const IS_NEGATIVE = data.value < 0;
+        const VALOR_FORMATADO = `R$ ${data.value.toFixed(2).replace('.', ',')}`;
 
 
-        const tipoDisplay = data.type === "EXPENSE" ? "DESPESA" : "RECEITA";
+        const DATA_OBJECT = new Date(data.date);
+        const DATAFORMATADA = DATA_OBJECT.toLocaleDateString('pt-BR');
 
-        row.innerHTML = `
-            <span style="flex: 1; text-align: center; font-weight: bold;">${dataFormatadaStr}</span>
+
+        const TYPE = data.type === "EXPENSE" ? "DESPESA" : "RECEITA";
+
+        ROW.innerHTML = `
+            <span style="flex: 1; text-align: center; font-weight: bold;">${DATAFORMATADA}</span>
             <span style="flex: 1; text-align: center; font-style: italic; font-weight: bold;">${data.category.categoryName}</span>
-            <span style="flex: 1; text-align: center; font-weight: bold;">${tipoDisplay}</span>
-            <span style="flex: 1; text-align: center; color: ${isNegative ? '#e74c3c' : '#27ae60'}; font-weight: bold;">
-                ${valorFormatado}
+            <span style="flex: 1; text-align: center; font-weight: bold;">${TYPE}</span>
+            <span style="flex: 1; text-align: center; color: ${IS_NEGATIVE ? '#e74c3c' : '#27ae60'}; font-weight: bold;">
+                ${VALOR_FORMATADO}
             </span>
             <span style="flex: 1; text-align: center; font-weight: bold;">${this.sanitizeHtml(data.desc) || ''}</span> 
             <div style="flex: 1; display: flex; justify-content: center; gap: 10px;">
@@ -92,11 +89,11 @@ export default class Transaction extends BaseComponent {
             </div>
         `;
 
-        this.styleRow(row);
+        this.styleRow(ROW);
 
         // --- BOTÃO EXCLUIR ---
         this.setFunction('click', () => {
-            if (confirm(`Deseja realmente excluir a transação de ${valorFormatado}?`)) {
+            if (confirm(`Deseja realmente excluir a transação de ${VALOR_FORMATADO}?`)) {
                 try {
 
                     TransactionController.deleteTransaction(data.id);
@@ -106,14 +103,14 @@ export default class Transaction extends BaseComponent {
                     alert("Erro ao excluir: " + e.message);
                 }
             }
-        }, row.querySelector('.delete-btn'))
+        }, ROW.querySelector('.delete-btn'))
 
         // --- BOTÃO EDITAR ---
         this.setFunction('click', (event) => {
             this.modal_trigger(event, data);
-        }, row.querySelector('.edit-btn'))
+        }, ROW.querySelector('.edit-btn'))
 
-        return row;
+        return ROW;
     }
 
     style(style_config) {

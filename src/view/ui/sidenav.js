@@ -38,8 +38,6 @@ export default class SideNav extends BaseComponent {
             this.tabs.push(new ComponentTab(TAB, config.tab.style_config));
         }
 
-        const SIGNAL = this.controller.signal;
-
         this.setFunction('click', ()=>{this.collapse()}, this.toggle_wrapper)
         this.toggle_icon.src = './assets/Menu.png';
         this.toggle_icon.alt = 'Botão para minimizar/expandir o sidenav';

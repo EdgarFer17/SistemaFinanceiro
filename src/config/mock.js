@@ -10,33 +10,32 @@ export function getMockTransaction(quantity = 1000, min_value = 25, max_value = 
         const getRandomValue = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
         const getRandomDate = () => {
-            const date = new Date();
-            date.setDate(date.getDate() - getRandomValue(1, date_range));
-            console.log(date)
-            return date;
+            const DATE = new Date();
+            DATE.setDate(DATE.getDate() - getRandomValue(1, date_range));
+            return DATE;
         };
 
         const categories = [];
         for (let i = 1; i <= 9; i++) {
-            const category = new CategoryModel(String(i), 1000, CATEGORY_TYPE_MODEL.CUSTOM);
-            CategoryController.createCategory(category);
-            categories.push(category);
+            const CATEGORY = new CategoryModel(String(i), 1000, CATEGORY_TYPE_MODEL.CUSTOM);
+            CategoryController.createCategory(CATEGORY);
+            categories.push(CATEGORY);
         }
 
-        const transactionTypes = [TRANSACTION_TYPE_MODEL.EXPENSE, TRANSACTION_TYPE_MODEL.INCOME];
+        const TRANSACTION_TYPES = [TRANSACTION_TYPE_MODEL.EXPENSE, TRANSACTION_TYPE_MODEL.INCOME];
 
         for (let i = 0; i < quantity; i++) {
-            const randomCategory = categories[getRandomValue(0, categories.length - 1)];
+            const RANDOM_CATEGORY = categories[getRandomValue(0, categories.length - 1)];
             
-            const randomType = transactionTypes[getRandomValue(0, 1)];
+            const RANDOM_TYPE = TRANSACTION_TYPES[getRandomValue(0, 1)];
             
-            const randomAmount = getRandomValue(min_value, max_value); 
+            const RANDOM_AMOUNT = getRandomValue(min_value, max_value); 
             
             const transaction = new TransactionModel(
                 getRandomDate(), 
-                randomCategory, 
-                randomType, 
-                randomAmount
+                RANDOM_CATEGORY, 
+                RANDOM_TYPE, 
+                RANDOM_AMOUNT
             );
 
             TransactionController.createTransaction(transaction);

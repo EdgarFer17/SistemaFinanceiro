@@ -235,9 +235,9 @@ class App {
             for (const TAB of this.sidenav.tabs) {
                 TAB.changeStatus(false);
             }
-            const index = Object.keys(this.pages).indexOf(page)
+            const INDEX = Object.keys(this.pages).indexOf(page)
 
-            this.sidenav.tabs.at(index).changeStatus(true);
+            this.sidenav.tabs.at(INDEX).changeStatus(true);
             this.page.replaceChildren(PAGE.main);
         }
     }
