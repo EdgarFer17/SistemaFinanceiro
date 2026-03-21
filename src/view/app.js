@@ -13,7 +13,7 @@ import { getMockTransaction } from '../config/mock.js';
 
 CreateCategoriesDefault.create();
 
-getMockTransaction(7500, 10, 1000, 730)
+// getMockTransaction(500, 10, 1000, 730)
 
 // Classe principal que inicializa e gerencia toda a aplicação
 class App {
