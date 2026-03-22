@@ -5,9 +5,9 @@ import CategoryRepository from "../repository/categoryRepository.js";
 // esta classe e método tem como finalidade injetar as categorias padão no localStorage
 export default class CreateCategoriesDefault {
     static create() {
-        const categoriesList = CategoryRepository.getCategories();
+        const CATEGORIES_LIST = CategoryRepository.getCategories();
 
-        const nameForCategories = [
+        const CATEGORIES_NAMES = [
             'Alimentação', 
             'Saúde', 
             'Transporte', 
@@ -19,10 +19,10 @@ export default class CreateCategoriesDefault {
 
         for (let i = 1; i <= 7; i++) {
             
-            const exists = categoriesList.find(c => c.id === i);
+            const EXISTS = CATEGORIES_LIST.find(c => c.id === i);
             
-            if (!exists) {
-                const category = new CategoryModel(nameForCategories[i - 1], 1000, CATEGORY_TYPE_MODEL.DEFAULT);
+            if (!EXISTS) {
+                const category = new CategoryModel(CATEGORIES_NAMES[i - 1], 1000, CATEGORY_TYPE_MODEL.DEFAULT);
 
                 CategoryRepository.createCategory(category);
             }

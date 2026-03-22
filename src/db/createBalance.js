@@ -1,9 +1,9 @@
 export default class CreateBalance {
     static create() {
-        const balance = localStorage.getItem('balance');
+        const BALANCE = localStorage.getItem('TARGET_FINANCE-balance');
 
-        if (balance === null) {
-            localStorage.setItem('balance', JSON.stringify(0.0));
+        if (BALANCE === null) {
+            localStorage.setItem('TARGET_FINANCE-balance', JSON.stringify(0.0));
         }
 
         console.log("Saldo criado!")
