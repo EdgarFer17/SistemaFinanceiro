@@ -1,16 +1,17 @@
 import CategoryModel from '../model/categoryModel.js'
 import CATEGORY_TYPE_MODEL from '../model/categoryTypeModel.js';
+import TransactionRepository from './TransactionRepository.js';
 
 export default class CategoryRepository {
 
     // método utilitário para pegar as categorias do localStorage
     static _getCategoriesList() {
-        return JSON.parse(localStorage.getItem('categories')) || [];
+        return JSON.parse(localStorage.getItem('TARGET_FINANCE-categories')) || [];
     }
 
     // método utilitário para salvar as categorias do localStorage
     static _saveCategoriesList(categoriesList) {
-        localStorage.setItem('categories', JSON.stringify(categoriesList));
+        localStorage.setItem('TARGET_FINANCE-categories', JSON.stringify(categoriesList));
     }
 
     // método utilitário que gera id auto incrementado
@@ -21,71 +22,79 @@ export default class CategoryRepository {
     
     // receber um CategoryModel e insere no localStorage
     static createCategory(category) {
-        const categoriesList = this._getCategoriesList();
+        const CATEGORIES_LIST = this._getCategoriesList();
 
-        category.id = this._generateId(categoriesList);
+        category.id = this._generateId(CATEGORIES_LIST);
 
-        categoriesList.push(category);
+        CATEGORIES_LIST.push(category);
 
-        this._saveCategoriesList(categoriesList);
+        this._saveCategoriesList(CATEGORIES_LIST);
     }
 
     // retorna uma lista de CategoryModel do localStorage
     static getCategories() {
-        const categoriesList = this._getCategoriesList();
+        const CATEGORIES_LIST = this._getCategoriesList();
 
-        return categoriesList.map(c => {
-            const category = new CategoryModel(c.categoryName, c.limit, c.type === "PADRÃO" ? CATEGORY_TYPE_MODEL.DEFAULT : CATEGORY_TYPE_MODEL.CUSTOM);
-            category.id = c.id;
-            return category;
+        return CATEGORIES_LIST.map(c => {
+            const CATEGORY = new CategoryModel(c.categoryName, c.limit, c.type === "PADRÃO" ? CATEGORY_TYPE_MODEL.DEFAULT : CATEGORY_TYPE_MODEL.CUSTOM);
+            CATEGORY.id = c.id;
+            return CATEGORY;
         });
     }
 
     // recebe o id da categoria que deseja editar e a categoria para modificação
     static editCategory(id, newCategory) {
-        const categoriesList = this._getCategoriesList();
+        const CATEGORIES_LIST = this._getCategoriesList();
+        const NEW_CATEGORY = new CategoryModel(newCategory.categoryName, newCategory.limit, newCategory.type);
+        NEW_CATEGORY.id = id;
+        let old_category_name = null;
 
-        categoriesList.forEach(c => {
+        CATEGORIES_LIST.forEach(c => {
             if (c.id === id) {
+                old_category_name = c.categoryName;
                 c.categoryName = newCategory.categoryName;
                 c.limit = newCategory.limit;
                 c.type = newCategory.type;
+                return;
+
             }
         })
 
-        this._saveCategoriesList(categoriesList);
+        this._saveCategoriesList(CATEGORIES_LIST);
+
+        TransactionRepository.updateCategory(old_category_name, NEW_CATEGORY);
     }
     
     // recebe um id da categoria e apaga a categoria do localStorage
     static deleteCategory(id) {
-        const categoriesList =  this._getCategoriesList();
+        const CATEGORIES_LIST =  this._getCategoriesList();
 
-        const index = categoriesList.findIndex(c => c.id === id);
+        const INDEX = CATEGORIES_LIST.findIndex(c => c.id === id);
 
-        if (index >= 0) {
-            categoriesList.splice(index, 1);
-            this._saveCategoriesList(categoriesList);
+        if (INDEX >= 0) {
+            CATEGORIES_LIST.splice(INDEX, 1);
+            this._saveCategoriesList(CATEGORIES_LIST);
         }
     }
     
     // recebe um id e retorna a categoria
     static getCategoryById(id) {
-        const categoriesList =  this._getCategoriesList();
+        const CATEGORIES_LIST =  this._getCategoriesList();
 
-        const categoryStorage = categoriesList.find(c => c.id === id);
+        const CATEGORY_STORAGE = CATEGORIES_LIST.find(c => c.id === id);
 
-        if (!categoryStorage) {
+        if (!CATEGORY_STORAGE) {
             return null;
         }
 
-        const category = new CategoryModel(
-            categoryStorage.categoryName, 
-            categoryStorage.limit,
-            categoryStorage.type === "PADRÃO" ? CATEGORY_TYPE_MODEL.DEFAULT : CATEGORY_TYPE_MODEL.CUSTOM
+        const CATEGORY = new CategoryModel(
+            CATEGORY_STORAGE.categoryName, 
+            CATEGORY_STORAGE.limit,
+            CATEGORY_STORAGE.type === "PADRÃO" ? CATEGORY_TYPE_MODEL.DEFAULT : CATEGORY_TYPE_MODEL.CUSTOM
         );
 
-        category.id = categoryStorage.id;
+        CATEGORY.id = CATEGORY_STORAGE.id;
 
-        return category;
+        return CATEGORY;
     }
 }

@@ -10,11 +10,11 @@ export default class CategoryController {
             throw new Error("O parâmetro passado precisa ser um CategoryModel!");
         }
 
-        const categoriesNames = []
+        const CATEGORIES_NAMES = []
 
-        CategoryRepository.getCategories().forEach(c => categoriesNames.push(c.categoryName));
+        CategoryRepository.getCategories().forEach(c => CATEGORIES_NAMES.push(c.categoryName));
 
-        if (categoriesNames.includes(category.categoryName)) {
+        if (CATEGORIES_NAMES.includes(category.categoryName)) {
             throw new Error("Nome da categoria já está cadastrado!");
         }
 
@@ -36,21 +36,25 @@ export default class CategoryController {
             throw new Error("O parâmetro passado precisa ser um CategoryModel!");
         }
 
-        const categoryForEdit = CategoryRepository.getCategoryById(id);
+        const CATEGORY_TO_EDIT = CategoryRepository.getCategoryById(id);
 
-        if (!categoryForEdit) {
+        if (!CATEGORY_TO_EDIT) {
             throw new Error("Categoria não encontrada!");
         }
 
-        if (categoryForEdit.type === CATEGORY_TYPE_MODEL.DEFAULT && categoryForEdit.categoryName !== newCategory.categoryName) {
+        if (CATEGORY_TO_EDIT.type === CATEGORY_TYPE_MODEL.DEFAULT && CATEGORY_TO_EDIT.categoryName !== newCategory.categoryName) {
             throw new Error("Não pode editar o nome de uma categoria padrão!");
         }
 
-        const categoriesNames = []
+        const CATEGORIES_NAMES = []
 
-        CategoryRepository.getCategories().forEach(c => categoriesNames.push(c.categoryName));
+        CategoryRepository.getCategories().forEach(c => {
+            if (c.id !== id) {
+                CATEGORIES_NAMES.push(c.categoryName);
+            }
+        });
 
-        if (categoriesNames.includes(newCategory.categoryName)) {
+        if (CATEGORIES_NAMES.includes(newCategory.categoryName)) {
             throw new Error("Nome da categoria já está cadastrado!");
         }
 
@@ -63,13 +67,13 @@ export default class CategoryController {
             throw new Error("O id deve ser um número maior do que zero!");
         }
 
-        const categoryForDelete = CategoryRepository.getCategoryById(id);
+        const CATEGORY_TO_DELETE = CategoryRepository.getCategoryById(id);
 
-        if (!categoryForDelete) {
+        if (!CATEGORY_TO_DELETE) {
             throw new Error("Categoria não encontrada!");
         }
 
-        if (categoryForDelete.type === CATEGORY_TYPE_MODEL.DEFAULT) {
+        if (CATEGORY_TO_DELETE.type === CATEGORY_TYPE_MODEL.DEFAULT) {
             throw new Error("Não pode editar uma categoria padrão!");
         }
 
@@ -82,12 +86,12 @@ export default class CategoryController {
             throw new Error("O id deve ser um número maior do que zero!");
         }
 
-        const category = CategoryRepository.getCategoryById(id);
+        const CATEGORY = CategoryRepository.getCategoryById(id);
 
-        if (category === null) {
+        if (CATEGORY === null) {
             throw new Error("Categoria não encontrada")
         }
 
-        return category;
+        return CATEGORY;
     }
 }
