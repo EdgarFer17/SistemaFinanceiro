@@ -132,7 +132,7 @@ export default class Transaction extends BaseComponent {
     }
 
     renderPagination(totalPages) {
-        this.pagination_container.className = "d-flex justify-content-center align-items-center gap-3 my-4 flex-wrap";
+        this.pagination_container.className = "d-flex justify-content-center align-items-center gap-3 my-4 flex-column flex-md-row";
 
         const PREV_BUTTON = document.createElement('button');
         PREV_BUTTON.textContent = "Anterior";

@@ -18,13 +18,12 @@ html, body {
 }
 
 .navbar {
-    width: 250px; 
-    transition: width 0.3s ease-in-out;
+    transition: width 0.2s ease-in-out;
     overflow-x: hidden;
 }
 
 .navbar.navbarCollapsed {
-    width: 80px;
+    width: 60px;
     justify-content: start;
 }
 

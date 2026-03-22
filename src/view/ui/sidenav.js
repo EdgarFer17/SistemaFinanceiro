@@ -4,6 +4,7 @@ import BaseComponent from './components/baseComponent.js';
 export default class SideNav extends BaseComponent {
     constructor(config, style_config) {
         super(config, style_config);
+        this.disable_page = null;
     }
 
     spawn() {
@@ -69,10 +70,16 @@ export default class SideNav extends BaseComponent {
     collapse() {
         if (this.is_collapsed) {
             this.main.classList.remove("navbarCollapsed")
+            this.disable_page(true);
             this.is_collapsed = false;
         } else {
             this.main.classList.add("navbarCollapsed")
+            this.disable_page(false);
             this.is_collapsed = true;
         }
+    }
+
+    setDisablePageFunction(_function) {
+        this.disable_page = _function;
     }
 }

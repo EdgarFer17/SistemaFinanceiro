@@ -99,8 +99,8 @@ class App {
         
         // bootstrap do sidenav
         this.sidenav_style_config = {
-            main: ["navbar", "d-flex", "flex-column", "p-0", "bg-primary", "flex-shrink-0"],
-            toggle_wrapper: ["toggleWrapper", "btn", "border-0", "align-self-end", "w-25", "p-2"],
+            main: ["navbar", "d-flex", "flex-column", "p-0", "bg-primary", "flex-shrink-0", "col-12", "col-md-3"],
+            toggle_wrapper: ["toggleWrapper", "btn", "border-0", "align-self-end", "w-15", "w-md-25", "p-2"],
             toggle_icon: ["img-fluid"], 
             tab_wrapper: ["nav", "flex-column", "w-100", "px-1", "px-md-3", "gap-1"],
             footer: ["navbarFooter", "d-md-flex", "flex-column", "mt-auto", "text-white-50", "text-center", "mb-3", "w-100", "px-2", "small"],
@@ -110,7 +110,7 @@ class App {
         this.dashboard_style_config = {
             main: ["d-flex", "flex-column", "align-items-center", "w-100", "gap-4", "gap-md-5", "text-primary"],
 
-            title_section: ["d-flex", "flex-column", "flex-md-row", "justify-content-between", "align-items-center", "w-100", "mt-4", "mt-md-5", "px-3", "px-md-5"],
+            title_section: ["d-flex", "flex-column", "flex-md-row", "justify-content-between", "align-items-center", "w-100", "mt-4", "mt-md-5", "px-1", "px-md-5"],
             title: ["fs-5", "mb-3", "mb-md-0"],
             ope_div: ["d-flex", "justify-content-center", "justify-content-md-end", "w-md-auto"],
             ope_report_button: ["btn", "border-0", "w-25"],
@@ -118,7 +118,7 @@ class App {
             ope_show_button: ["btn", "border-0", "w-25"],
             ope_show_icon: ["img-fluid"],
 
-            status_section: ["d-flex", "flex-column", "flex-md-row", "justify-content-around", "align-items-center", "w-100", "px-3", "px-md-5", "fw-bold", "py-4", "py-md-5", "gap-4", "gap-md-0"],
+            status_section: ["d-flex", "flex-column", "flex-md-row", "justify-content-around", "align-items-center", "w-100", "px-1", "px-md-5", "fw-bold", "py-4", "py-md-5", "gap-4", "gap-md-0"],
             vertical_rule_1: ["vr", "d-none", "d-md-block"],
             vertical_rule_2: ["vr", "d-none", "d-md-block"],
             
@@ -137,18 +137,17 @@ class App {
             expense_currency: ["fs-5"],
             expense_value: ["text-black", "fs-2"],
 
-            donut_section: ["d-flex", "flex-column", "flex-md-row", "justify-content-around", "align-items-center", "w-100", "p-3", "p-md-5", "gap-4", "gap-md-5", "fw-medium"],
-            donut_1_div: ["d-flex", "flex-column", "align-items-center", "w-100"],
+            donut_section: ["d-flex", "flex-column", "flex-md-row", "justify-content-around", "align-items-center", "w-100", "p-1", "p-md-5", "gap-4", "gap-md-5", "fw-medium"],
+            donut_1_div: ["d-flex", "flex-column", "align-items-center", "w-75", "w-md-100"],
             donut_1_title: ["fs-5", "mb-3"],
-            donut_2_div: ["d-flex", "flex-column", "align-items-center", "w-100"],
+            donut_2_div: ["d-flex", "flex-column", "align-items-center", "w-75", "w-md-100"],
             donut_2_title: ["fs-5", "mb-3"],
 
-            bar_section: ["d-flex", "flex-column", "align-items-center", "w-100", "px-3", "px-md-0"],
+            bar_section: ["d-flex", "flex-column", "align-items-center", "w-75", "w-md-100", "px-1", "px-md-5"],
             bar_title: [],
             
-            transaction_section: ["d-flex", "flex-column", "align-items-center", "w-100", "px-3", "px-md-0"],
-            transaction_title: [],
-        }
+            transaction_section: ["d-flex", "flex-column", "align-items-center", "w-75", "w-md-100", "px-1", "px-md-5"],
+            transaction_title: [],        }
 
         this.spawn()
         this.setup()
@@ -180,6 +179,14 @@ class App {
 
     // Configura event listeners, renderiza gráficos iniciais e prepara modais
     setup() {
+        this.sidenav.setDisablePageFunction((_bool)=>{
+            if (_bool) {
+                this.page.classList.add("d-none", "d-md-flex");
+            } else {
+                this.page.classList.remove("d-none", "d-md-flex");
+            }
+        })
+
         this.modal_wrapper.addEventListener('click', (e)=>{
             if (e.target === this.modal_wrapper) {
                 this.toggleModal();
