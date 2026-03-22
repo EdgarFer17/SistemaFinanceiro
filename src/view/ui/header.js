@@ -1,93 +1,77 @@
 import BaseComponent from './components/baseComponent.js';
 
-// Criação do header da aplicação
+// Barra superior com marca da aplicação e perfil do usuário
 export default class Header extends BaseComponent {
-    constructor(style_config = {}) {
-        const STYLE_CONFIG_FINAL = {
-            header: style_config.header || [],
-            user_wrapper: style_config.user_wrapper || [],
-            brand_wrapper: style_config.brand_wrapper || [],
-            brand_icon: style_config.brand_icon || [],
-            brand_name: style_config.brand_name || [],
-            user_icon: style_config.user_icon || [],
-            user_name: style_config.user_name || [],
-            user_post_icon: style_config.user_post_icon || [],
-        };
-
-        super(STYLE_CONFIG_FINAL);
+    constructor(config, style_config) {
+        super(config, style_config);
     }
 
     spawn() {
-        this.main = document.createElement('header');
+        this.header = document.createElement('header');
 
-        this.elements = {
-            brand_wrapper: document.createElement('div'),
-            user_wrapper: document.createElement('button'),
-            brand_icon: document.createElement('i'),
-            brand_name: document.createElement('h1'),
-            user_icon: document.createElement('i'),
-            user_name: document.createElement('h2'),
-            user_post_icon: document.createElement('i'),
-        };
+        this.header_wrapper = document.createElement('div');
+        this.brand_wrapper = document.createElement('div');
+        this.user_wrapper = document.createElement('button');
+
+        this.brand_icon = document.createElement('img');
+        this.brand_name = document.createElement('h1');
+
+        this.user_icon = document.createElement('img');
+        this.user_name = document.createElement('h2');
+        this.user_post_icon = document.createElement('img');
     }
 
-    style(style_config) {
-        // BOOTSTRAP
-        this.main.classList.add(...[], ...style_config.header);
-        this.elements.user_wrapper.classList.add(
-            ...[],
-            ...style_config.user_wrapper
-        );
-        this.elements.brand_wrapper.classList.add(
-            ...[],
-            ...style_config.brand_wrapper
-        );
-        this.elements.brand_icon.classList.add(
-            ...[],
-            ...style_config.brand_icon
-        );
-        this.elements.brand_name.classList.add(
-            ...[],
-            ...style_config.brand_name
-        );
-        this.elements.user_icon.classList.add(...[], ...style_config.user_icon);
-        this.elements.user_name.classList.add(...[], ...style_config.user_name);
-        this.elements.user_post_icon.classList.add(
+    // Configura nome da aplicação, usuário, ícones e função de clique no perfil
+    setup(config) {
+        this.brand_name.textContent = config['app_name'];
+        this.user_name.textContent = config['username'];
+        this.setFunction('click', ()=>{config['user_modal_function']()}, this.user_wrapper)
+
+        this.brand_icon.src = "./assets/BrandIcon.png"
+        this.brand_icon.alt = "Icone da marca"
+        this.user_icon.src = "./assets/Profile.png"
+        this.user_icon.alt = "Icone de perfil"
+        this.user_post_icon.src = "./assets/Back.png"
+        this.user_post_icon.alt = "Icone de seta para expandir"
+    }
+
+    // Aplica estilos Bootstrap aos elementos do header
+    style(style_config = {
+            header: [],
+            header_wrapper: [],
+            user_wrapper: [],
+            brand_wrapper: [],
+            brand_icon: [],
+            brand_name: [],
+            user_icon: [],
+            user_name: [],
+            user_post_icon: [],
+        }) {
+
+        this.header.classList.add(...[], ...style_config.header);
+        this.header_wrapper.classList.add(...[], ...style_config.header_wrapper);
+        this.user_wrapper.classList.add(...[], ...style_config.user_wrapper);
+        this.brand_wrapper.classList.add(...[], ...style_config.brand_wrapper);
+        this.brand_icon.classList.add(...[], ...style_config.brand_icon);
+        this.brand_name.classList.add(...[], ...style_config.brand_name);
+        this.user_icon.classList.add(...[], ...style_config.user_icon);
+        this.user_name.classList.add(...[], ...style_config.user_name);
+
+        this.user_post_icon.classList.add(
             ...[],
             ...style_config.user_post_icon
         );
     }
 
+    // Monta o layout do header: marca à esquerda, perfil à direita
     build() {
-        this.elements.brand_wrapper.replaceChildren(
-            this.elements.brand_icon,
-            this.elements.brand_name
+        this.brand_wrapper.replaceChildren(this.brand_icon, this.brand_name);
+        this.user_wrapper.replaceChildren(
+            this.user_icon,
+            this.user_name,
+            this.user_post_icon
         );
-        this.elements.user_wrapper.replaceChildren(
-            this.elements.user_icon,
-            this.elements.user_name,
-            this.elements.user_post_icon
-        );
-        this.main.replaceChildren(
-            this.elements.brand_wrapper,
-            this.elements.user_wrapper
-        );
-    }
-
-    updateBrandName(_name = 'New Dashboard') {
-        this.elements.brand_name.textContent = _name;
-    }
-    updateUsername(_username = 'New User') {
-        this.elements.user_name.textContent = _username;
-    }
-    setModalFunction(
-        _function = () => {
-            alert('Ainda não foi implementada');
-        }
-    ) {
-        const signal = this.signal;
-        this.elements.user_wrapper.addEventListener('click', _function, {
-            signal,
-        });
+        this.header_wrapper.replaceChildren(this.brand_wrapper, this.user_wrapper);
+        this.header.replaceChildren(this.header_wrapper);
     }
 }

@@ -16,9 +16,9 @@
         - `PI`
         - `EULER`
         - `VARIANT_OF_GOD`
-    3. attribute (cammelCase):
-        - `textContent`
-        - `tabsExistent`
+    3. attribute (snake_case):
+        - `text_content`
+        - `tabs_existent`
 
 ## String
 

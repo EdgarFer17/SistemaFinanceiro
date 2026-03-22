@@ -1,53 +1,60 @@
-// tabs para alternar entre seções
+// Botão abas que alterna entre seções da navegação lateral
 import BaseComponent from './baseComponent.js';
 export default class ComponentTab extends BaseComponent {
-    constructor(style_config = {}) {
-        const STYLE_CONFIG_FINAL = {
-            main: style_config.main || [],
-            button: style_config.button || [],
-            icon: style_config.icon || [],
-            text: style_config.text || [],
-        };
-
-        super(STYLE_CONFIG_FINAL);
+    constructor(config, style_config) {
+        config.style_config = style_config;
+        super(config, style_config.inactive);
     }
 
     spawn() {
         this.main = document.createElement('div');
-
-        this.elements = {
-            button: document.createElement('button'),
-            icon: document.createElement('i'),
-            text: document.createElement('p'),
-        };
+        this.action = document.createElement('button');
+        this.icon = document.createElement('img');
+        this.text = document.createElement('p');
     }
 
-    style(style_config) {
+    // Configura o nome, ícone, ação e estado inicial da aba
+    setup(config) {
+        this.style_config = config.style_config;
+        this.icons = [];
+        this.is_active = false;
+        this.text.textContent = config['name'];
+        this.setFunction('click', ()=>{config['function']()}, this.action);
+        this.icons.push(config.icon_src);
+        this.icons.push(config.icon_src_active);
+        this.icon.src = config.icon_src;
+        this.icon.alt = config.icon_alt;
+    }
+
+    // Aplica estilos Bootstrap para estado inativo ou ativo
+    style(style_config = { main: [], button: [], icon: [], text: [] }) {
+
+        this.main.className = "";
+        this.action.className = "";
+        this.icon.className = "";
+        this.text.className = "";
         this.main.classList.add(...[], ...style_config.main);
-        this.elements.button.classList.add(...[], ...style_config.button);
-        this.elements.icon.classList.add(...[], ...style_config.icon);
-        this.elements.text.classList.add(...[], ...style_config.text);
+        this.action.classList.add(...[], ...style_config.button);
+        this.icon.classList.add(...[], ...style_config.icon);
+        this.text.classList.add(...[], ...style_config.text);
     }
 
+    // Monta botão com ícone e texto
     build() {
-        this.elements.button.replaceChildren(
-            this.elements.icon,
-            this.elements.text
-        );
-        this.main.replaceChildren(this.elements.button);
+        this.action.replaceChildren(this.icon, this.text);
+        this.main.replaceChildren(this.action);
     }
 
-    updateName(_name = 'default') {
-        this.elements.text.textContent = _name;
+    // Altera a imagem do ícone
+    updateIcon(_src, _alt) {
+        this.icon.src = _src
+        this.icon.alt = _alt
     }
 
-    setFunction(
-        _event = 'click',
-        _function = () => {
-            alert('Não foi implementado');
-        }
-    ) {
-        const signal = this.signal;
-        this.elements.button.addEventListener(_event, _function, { signal });
+    // Marca aba como ativa/inativa e atualiza ícone e estilos
+    changeStatus(_status) {
+        this.is_active = _status;
+        this.updateIcon(this.icons[this.is_active?1:0], this.icon.alt);
+        this.style(this.is_active ? this.style_config.active : this.style_config.inactive);
     }
 }
