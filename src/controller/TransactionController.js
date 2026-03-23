@@ -13,11 +13,11 @@ export default class TransactionController {
             throw new Error("O parâmetro passado precisa ser um TransactionModel!")
         }
 
-        const categoriesFromDB = [];
+        const CATEGORIES_FROM_DB = [];
 
-        CategoryRepository.getCategories().forEach(c => categoriesFromDB.push(c.id));
+        CategoryRepository.getCategories().forEach(c => CATEGORIES_FROM_DB.push(c.id));
 
-        if (!categoriesFromDB.includes(transaction.category.id)) {
+        if (!CATEGORIES_FROM_DB.includes(transaction.category.id)) {
             throw new Error("A categoria da transação não existe!");
         }
 
@@ -46,25 +46,25 @@ export default class TransactionController {
             throw new Error("O parâmetro passado precisa ser um TransactionModel!")
         }
 
-        const transactionForEdit = TransactionRepository.getTransactionById(id);
+        const TRANSACTION_TO_EDIT = TransactionRepository.getTransactionById(id);
 
-        if (!transactionForEdit) {
+        if (!TRANSACTION_TO_EDIT) {
             throw new Error("Transação não encontrada!");
         }
 
-        const categoriesFromDB = [];
+        const CATEGORIES_FROM_DB = [];
 
-        CategoryRepository.getCategories().forEach(c => categoriesFromDB.push(c.id));
+        CategoryRepository.getCategories().forEach(c => CATEGORIES_FROM_DB.push(c.id));
 
-        if (!categoriesFromDB.includes(newTransaction.category.id)) {
+        if (!CATEGORIES_FROM_DB.includes(newTransaction.category.id)) {
             throw new Error("A categoria da transação não existe!");
         }
 
         // devolve
-        if (transactionForEdit.type === TRANSACTION_TYPE_MODEL.EXPENSE) {
-            BalanceController.deposit(transactionForEdit.value);
+        if (TRANSACTION_TO_EDIT.type === TRANSACTION_TYPE_MODEL.EXPENSE) {
+            BalanceController.deposit(TRANSACTION_TO_EDIT.value);
         } else {
-            BalanceController.withdraw(transactionForEdit.value);
+            BalanceController.withdraw(TRANSACTION_TO_EDIT.value);
         }
 
         TransactionRepository.editTransaction(id, newTransaction);
@@ -104,12 +104,12 @@ export default class TransactionController {
             throw new Error("O id deve ser um número maior do que zero!");
         }
 
-        const transaction = TransactionRepository.getTransactionById(id);
+        const TRANSACTION = TransactionRepository.getTransactionById(id);
 
-        if (transaction === null) {
+        if (TRANSACTION === null) {
             throw new Error("Transação não encontrada")
         }
 
-        return transaction;
+        return TRANSACTION;
     }
 }

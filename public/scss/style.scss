@@ -1,10 +1,58 @@
 @import "../../node_modules/bootstrap/scss/functions";
 @import "../../node_modules/bootstrap/scss/variables";
+@import "../../node_modules/bootstrap/scss/variables-dark";
 
 $custom_colors: (
     "primary": #5e9a9b
 );
+$theme-colors: map-merge($theme-colors, $custom_colors);
 
-$theme-colors: map-merge($map1: $theme-colors, $map2: $custom_colors);
+@import "../../node_modules/bootstrap/scss/mixins";
+@import "../../node_modules/bootstrap/scss/maps";
+@import "../../node_modules/bootstrap/scss/utilities";
 
-@import "../../node_modules/bootstrap/scss/bootstrap.scss";
+$utilities: map-merge(
+  $utilities,
+  (
+    'width': (
+      property: width,
+      class: w,
+      responsive: true,
+      values: (
+        8: 8%,
+        10: 10%,
+        15: 15%,
+        25: 25%,
+        33: 33%,
+        50: 50%,
+        66: 66%,
+        75: 75%,
+        100: 100%,
+        auto: auto,
+      ),
+    ),
+  )
+);
+
+@import "../../node_modules/bootstrap/scss/bootstrap";
+
+
+$sizes: (
+    8: 8%,
+    10: 10%,
+    15: 15%,
+    25: 25%,
+    33: 33%,
+    50: 50%,
+    66: 66%,
+    75: 75%,
+    100: 100%,
+    auto: auto,
+    );
+@each $breakpoint in map-keys($grid-breakpoints) {
+  @each $size, $length in $sizes {
+    @include media-breakpoint-up($breakpoint) {
+      .w-#{$breakpoint}-#{$size} {width: $length !important;}
+    }
+  }
+}

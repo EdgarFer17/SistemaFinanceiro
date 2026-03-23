@@ -7,12 +7,12 @@ export default class TransactionRepository {
 
     // método utilitário para pegar as transações do localStorage
     static _getTransactionsList() {
-        return JSON.parse(localStorage.getItem('transactions')) || [];
+        return JSON.parse(localStorage.getItem('TARGET_FINANCE-transactions')) || [];
     }
     
     // método utilitário para salvar as transações do localStorage
     static _saveTransactionsList(transactionsList) {
-        localStorage.setItem('transactions', JSON.stringify(transactionsList));
+        localStorage.setItem('TARGET_FINANCE-transactions', JSON.stringify(transactionsList));
     }
 
     // método utilitário que gera id auto incrementado
@@ -23,21 +23,21 @@ export default class TransactionRepository {
     
     // receber um TransactionModel e insere no localStorage
     static createTransaction(transaction) {
-        const transactionsList = this._getTransactionsList();
+        const TRANSACTIONS_LIST = this._getTransactionsList();
 
-        transaction.id = this._generateId(transactionsList);
+        transaction.id = this._generateId(TRANSACTIONS_LIST);
 
-        transactionsList.push(transaction);
+        TRANSACTIONS_LIST.push(transaction);
 
-        this._saveTransactionsList(transactionsList);
+        this._saveTransactionsList(TRANSACTIONS_LIST);
     }
 
     // retorna uma lista de TransactionModel do localStorage
     static getTransactions() {
-        const transactionsList = this._getTransactionsList();
+        const TRANSACTIONS_LIST = this._getTransactionsList();
 
-        return transactionsList.map(t => {
-            const category = new CategoryModel(
+        return TRANSACTIONS_LIST.map(t => {
+            const CATEGORY = new CategoryModel(
                 t.category.categoryName,
                 t.category.limit,
                 t.category.type === "PADRÃO"
@@ -45,25 +45,25 @@ export default class TransactionRepository {
                     : CATEGORY_TYPE_MODEL.CUSTOM
             );
 
-            category.id = t.category.id;
+            CATEGORY.id = t.category.id;
 
-            const transaction = new TransactionModel(
+            const TRANSACTION = new TransactionModel(
                 new Date(t.date), 
-                category, 
+                CATEGORY, 
                 t.type === 'DESPESA' ? TRANSACTION_TYPE_MODEL.EXPENSE : TRANSACTION_TYPE_MODEL.INCOME, 
                 t.value,
                 t.desc || "" // <-- DESCRIÇÃO ADICIONADA AQUI
             );
-            transaction.id = t.id;
-            return transaction; 
+            TRANSACTION.id = t.id;
+            return TRANSACTION; 
         });
     }
 
     // recebe o id da transação que deseja editar e a transação para modificação
     static editTransaction(id, newTransaction) {
-        const transactionsList = this._getTransactionsList();
+        const TRANSACTIONS_LIST = this._getTransactionsList();
 
-        transactionsList.forEach(t => {
+        TRANSACTIONS_LIST.forEach(t => {
             if (t.id === id) {
                 t.date = newTransaction.date;
                 t.category = newTransaction.category;
@@ -73,7 +73,7 @@ export default class TransactionRepository {
             }
         })
 
-        this._saveTransactionsList(transactionsList);
+        this._saveTransactionsList(TRANSACTIONS_LIST);
     }
     
     // recebe um id da transação e apaga a transação do localStorage
@@ -82,13 +82,13 @@ export default class TransactionRepository {
             throw new Error("O id deve ser um número maior do que zero!")
         }
 
-        const transactionsList = this._getTransactionsList();
+        const TRANSACTIONS_LIST = this._getTransactionsList();
 
-        const index = transactionsList.findIndex(t => t.id === id);
+        const INDEX = TRANSACTIONS_LIST.findIndex(t => t.id === id);
 
-        if (index >= 0) {
-            transactionsList.splice(index, 1);
-            this._saveTransactionsList(transactionsList);
+        if (INDEX >= 0) {
+            TRANSACTIONS_LIST.splice(INDEX, 1);
+            this._saveTransactionsList(TRANSACTIONS_LIST);
         }
     }
 
@@ -98,32 +98,32 @@ export default class TransactionRepository {
             throw new Error("O id deve ser um número maior do que zero!")
         }
 
-        const transactionsList =  this._getTransactionsList();
+        const TRANSACTIONS_LIST =  this._getTransactionsList();
 
-        const transactionStorage = transactionsList.find(c => c.id === id);
+        const TRANSACTION_STORAGE = TRANSACTIONS_LIST.find(c => c.id === id);
 
-        if (!transactionStorage) {
+        if (!TRANSACTION_STORAGE) {
             return null;
         }
 
         const category = new CategoryModel(
-            transactionStorage.category.categoryName,
-            transactionStorage.category.limit,
-            transactionStorage.category.type === "PADRÃO" ? CATEGORY_TYPE_MODEL.DEFAULT : CATEGORY_TYPE_MODEL.CUSTOM
+            TRANSACTION_STORAGE.category.categoryName,
+            TRANSACTION_STORAGE.category.limit,
+            TRANSACTION_STORAGE.category.type === "PADRÃO" ? CATEGORY_TYPE_MODEL.DEFAULT : CATEGORY_TYPE_MODEL.CUSTOM
         );
 
-        category.id = transactionStorage.category.id;
+        category.id = TRANSACTION_STORAGE.category.id;
 
-        const transaction = new TransactionModel(
-            new Date(transactionStorage.date),
+        const TRANSACTION = new TransactionModel(
+            new Date(TRANSACTION_STORAGE.date),
             category,
-            transactionStorage.type === 'DESPESA' ? TRANSACTION_TYPE_MODEL.EXPENSE :TRANSACTION_TYPE_MODEL.INCOME,
-            transactionStorage.value,
-            transactionStorage.desc || ""
+            TRANSACTION_STORAGE.type === 'DESPESA' ? TRANSACTION_TYPE_MODEL.EXPENSE :TRANSACTION_TYPE_MODEL.INCOME,
+            TRANSACTION_STORAGE.value,
+            TRANSACTION_STORAGE.desc || ""
         );
 
-        transaction.id = transactionStorage.id;
+        TRANSACTION.id = TRANSACTION_STORAGE.id;
 
-        return transaction;
+        return TRANSACTION;
     }
 }

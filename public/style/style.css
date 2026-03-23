@@ -1,3 +1,10 @@
+html, body {
+    width: 100%;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+}
+
 .brandIcon {
     height: 3rem;
 }
@@ -11,26 +18,21 @@
 }
 
 .navbar {
-    width: 250px; 
-    transition: width 0.3s ease-in-out;
+    transition: width 0.2s ease-in-out;
     overflow-x: hidden;
 }
 
 .navbar.navbarCollapsed {
-    width: 80px;
     justify-content: start;
-}
-
-.navbar.navbarCollapsed .toggleWrapper {
-    align-self: center !important;
-    width: 90% !important;
-    max-width: 50px;
-    text-align: center !important;
 }
 
 .navbar.navbarCollapsed .tabText,
 .navbar.navbarCollapsed .navbarFooter {
     display: none !important;
+}
+
+.navbar.navbarCollapsed .toggleWrapper {
+    align-self: center !important;
 }
 
 .navbar.navbarCollapsed * {
@@ -60,6 +62,7 @@
         z-index: 1000
     }
 }
+
 .modal-1.show_modal {
     display: flex; /* Mostra quando o App.js adicionar a classe */
 }

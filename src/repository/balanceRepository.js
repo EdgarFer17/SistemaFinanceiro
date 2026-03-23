@@ -2,14 +2,14 @@ export default class BalanceRepository {
     
     // retorna o saldo do localStorage
     static getBalance () {
-        const balance = Number(localStorage.getItem('balance')) || 0;
+        const BALANCE = Number(localStorage.getItem('TARGET_FINANCE-balance')) || 0;
 
-        return balance;
+        return BALANCE;
     }
 
     // aumenta o saldo a partir do valor passado e salva no localStorage
     static incrementBalance(value) {
-        let balance = Number(localStorage.getItem('balance')) || 0;
+        let balance = Number(localStorage.getItem('TARGET_FINANCE-balance')) || 0;
 
         balance += Number(value);
 

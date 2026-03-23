@@ -1,9 +1,10 @@
-// Criação da barra de navegação lateral
+// Barra de navegação lateral com abas e botão de colapso
 import ComponentTab from './components/tab.js';
 import BaseComponent from './components/baseComponent.js';
 export default class SideNav extends BaseComponent {
     constructor(config, style_config) {
         super(config, style_config);
+        this.disable_page = null;
     }
 
     spawn() {
@@ -17,6 +18,7 @@ export default class SideNav extends BaseComponent {
         this.tabs = [];
     }
 
+    // Cria abas de navegação e texto do rodapé
     setup(config) {
         // Footer
         for (const TEXT of config.footer) {
@@ -37,15 +39,13 @@ export default class SideNav extends BaseComponent {
             this.tabs.push(new ComponentTab(TAB, config.tab.style_config));
         }
 
-        const SIGNAL = this.controller.signal;
-
-        this.toggle_wrapper.addEventListener('click', ()=>{this.collapse()}, { SIGNAL });
+        this.setFunction('click', ()=>{this.collapse()}, this.toggle_wrapper)
         this.toggle_icon.src = './assets/Menu.png';
         this.toggle_icon.alt = 'Botão para minimizar/expandir o sidenav';
     }
 
+    // Aplica estilos Bootstrap ao sidenav, abas e footer
     style(style_config = { main: [], tab_wrapper: [], footer: [], toggle_icon: [], toggle_wrapper: []}) {
-        // BOOTSTRAP
 
         this.main.classList.add(...[], ...style_config.main);
         this.toggle_wrapper.classList.add(...[], ...style_config.toggle_wrapper);
@@ -54,6 +54,7 @@ export default class SideNav extends BaseComponent {
         this.footer.classList.add(...[], ...style_config.footer);
     }
 
+    // Monta o layout: botão toggle (topo), abas (meio), rodapé (base)
     build() {
         if (this.tabs.length > 0) {
             this.tab_wrapper.replaceChildren(
@@ -65,13 +66,20 @@ export default class SideNav extends BaseComponent {
         this.main.replaceChildren(this.toggle_wrapper, this.tab_wrapper, this.footer);
     }
 
+    // Alterna entre sidenav expandido e colapsado
     collapse() {
         if (this.is_collapsed) {
-            this.main.classList.remove("navbarCollapsed")
+            this.main.classList.remove(...["navbarCollapsed", "justify-content-start", "w-15", "w-sm-15", "w-md-8"])
+            this.disable_page(true);
             this.is_collapsed = false;
         } else {
-            this.main.classList.add("navbarCollapsed")
+            this.main.classList.add(...["navbarCollapsed", "justify-content-start", "w-15", "w-sm-15", "w-md-8"])
+            this.disable_page(false);
             this.is_collapsed = true;
         }
+    }
+
+    setDisablePageFunction(_function) {
+        this.disable_page = _function;
     }
 }
