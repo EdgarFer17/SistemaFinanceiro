@@ -68,13 +68,6 @@ export default class TransactionController {
         }
 
         TransactionRepository.editTransaction(id, newTransaction);
-
-        // transfere
-        if (newTransaction.type === TRANSACTION_TYPE_MODEL.EXPENSE) {
-            BalanceController.withdraw(newTransaction.value);
-        } else {
-            BalanceController.deposit(newTransaction.value);
-        }
     }
     
     // recebe um id da transação e apaga a transação

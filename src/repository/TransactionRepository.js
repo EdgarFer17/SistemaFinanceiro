@@ -70,6 +70,19 @@ export default class TransactionRepository {
                 t.type = newTransaction.type;
                 t.value = newTransaction.value;
                 t.desc = newTransaction.desc; // <-- DESCRIÇÃO ADICIONADA AQUI
+                return;
+            }
+        })
+
+        this._saveTransactionsList(TRANSACTIONS_LIST);
+    }
+
+    static updateCategory(oldCategoryName, newCategory) {
+        const TRANSACTIONS_LIST = this._getTransactionsList();
+
+        TRANSACTIONS_LIST.forEach(t => {
+            if (t.category.categoryName === oldCategoryName) {
+                t.category = newCategory;
             }
         })
 
