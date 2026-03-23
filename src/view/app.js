@@ -100,8 +100,8 @@ class App {
         
         // bootstrap do sidenav
         this.sidenav_style_config = {
-            main: ["navbar", "d-flex", "flex-column", "p-0", "bg-primary", "flex-shrink-0", "col-12", "col-md-2"],
-            toggle_wrapper: ["toggleWrapper", "btn", "border-0", "align-self-end", "w-15", "w-md-25", "p-2"],
+            main: ["navbar", "d-flex", "flex-column", "p-0", "bg-primary", "flex-shrink-0", "col-12", "col-md-3"],
+            toggle_wrapper: ["toggleWrapper", "btn", "border-0", "align-self-end", "w-15", "w-sm-10", "w-md-25", "p-2"],
             toggle_icon: ["img-fluid"], 
             tab_wrapper: ["nav", "flex-column", "w-100", "px-1", "px-md-3", "gap-1"],
             footer: ["navbarFooter", "d-md-flex", "flex-column", "mt-auto", "text-white-50", "text-center", "mb-3", "w-100", "px-2", "small"],

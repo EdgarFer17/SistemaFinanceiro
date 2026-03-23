@@ -136,7 +136,7 @@ export default class ReportModal extends BaseComponent {
     }
 
     style(style_config = {
-        main: ["bg-white", "rounded-4", "w-100", "m-2", "m-md-5", "p-3", "my-md-5", "d-flex", "flex-column", "align-items-center", "gap-3", "gap-md-3", "text-white"],
+        main: ["bg-white", "rounded-4", "w-100", "w-lg-75", "m-2", "m-md-5", "p-3", "my-md-5", "d-flex", "flex-column", "align-items-center", "gap-3", "gap-md-3", "text-white"],
         title: ["text-primary", "h1"],
         report_wraper: ["w-100", "d-flex", "gap-2", "gap-md-5", "justify-content-center", "text-center", "px-1"],
         total_expense_wrapper: ["d-flex", "flex-column","align-items-center", "bg-primary", "rounded-4", "w-100", "justify-content-around", "py-2"],
