@@ -57,7 +57,7 @@ export default class ReportController {
         });
 
         return Object.keys(categoryTotals).reduce((a, b) => 
-            categoryTotals[a] > categoryTotals[b] ? a : b
+            categoryTotals[a] < categoryTotals[b] ? a : b
         );
     }
 
@@ -111,19 +111,19 @@ export default class ReportController {
         const result = { year: [], category: [] };
         
         const dataMap = {}; 
-
+        
         expenses.filter(t => t.date.getMonth() === monthNumber).forEach(t => {
             const year = t.date.getFullYear();
             const nameCat = t.category.categoryName;
             if (!dataMap[year]) dataMap[year] = {};
             dataMap[year][nameCat] = (dataMap[year][nameCat] || 0) + t.value;
         });
-
+        
         Object.keys(dataMap).forEach(year => {
             const categories = dataMap[year];
             const topCategory = Object.keys(categories).reduce((a, b) => 
-                categories[a] > categories[b] ? a : b
-            );
+                categories[a] < categories[b] ? a : b
+        );
             result.year.push(year);
             result.category.push(topCategory);
         });
