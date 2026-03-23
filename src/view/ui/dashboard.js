@@ -86,8 +86,6 @@ export default class Dashboard extends BaseComponent {
                 transaction_title: "h3",
                 transaction_component: new ComponentTransactionList(),
             },
-
-            report_component: "i" // adicionar
         }
         this.main = this.parseSchema("main", SCHEMA_FINAL);
         delete this.elements.main;

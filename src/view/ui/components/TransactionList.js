@@ -31,7 +31,7 @@ export default class ComponentTransactionList extends BaseComponent {
 
     // Aplica estilos Bootstrap à tabela
     style(style_config = {main: [], table_head: [], table_head_row: [], table_body: []}) {
-        this.main.classList.add(...["table", "table-borderless", "text-center", "align-middle", "w-75", "mt-3"], ...style_config.main);
+        this.main.classList.add(...["table", "table-borderless", "text-center", "align-middle", "w-75", "mt-3",], ...style_config.main);
         this.table_head.classList.add(...[], ...style_config.table_head);
         this.table_head_row.classList.add(...[], ...style_config.table_head_row);
         this.table_body.classList.add(...[], ...style_config.table_body);

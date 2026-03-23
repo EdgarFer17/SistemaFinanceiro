@@ -90,7 +90,7 @@ export default class CategoryModal extends BaseComponent {
 
     // Aplica estilos Bootstrap ao modal
     style() {
-        this.main.className = "bg-white p-4 rounded-4 shadow-lg w-50 text-primary";
+        this.main.className = "bg-white p-4 rounded-4 shadow-lg w-100 w-sm-75 w-lg-50 mx-2 text-primary";
 
         this.header.className = "d-flex justify-content-between align-items-center mb-4";
         this.title.className = "m-0";

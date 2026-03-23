@@ -147,8 +147,9 @@ class App {
             bar_section: ["d-flex", "flex-column", "align-items-center", "w-100", "w-md-100", "px-1", "px-md-5"],
             bar_title: [],
             
-            transaction_section: ["d-flex", "flex-column", "align-items-center", "w-75", "w-md-100", "px-1", "px-md-5"],
-            transaction_title: [],        }
+            transaction_section: ["d-flex", "flex-column", "align-items-center", "w-75", "w-md-100", "px-1","px-md-5","overflow-x-scroll"],
+            transaction_title: [],
+        }
 
         this.spawn()
         this.setup()
