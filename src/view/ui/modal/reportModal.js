@@ -213,19 +213,19 @@ export default class ReportModal extends BaseComponent {
     }
 
     renderTotalExpenseDonut(){
-        let raw_data = ReportController.getTotalExpensesOfMonth();
+        let raw_data = ReportController.getTotalExpensesOfMonth(new Date().getMonth());
         raw_data = {labels: raw_data.year, data: raw_data.sum_of_expenses, label: 'R$'}
         this.renderIndividualDonut(raw_data, this.annual_comparison_donut1)
     }
 
     renderHigherExpenseDonut() {
-        let raw_data = ReportController.getHigherExpensesOfMonth();
+        let raw_data = ReportController.getHigherExpensesOfMonth(new Date().getMonth());
         raw_data = {labels: raw_data.year, data: raw_data.expense, label: 'R$'}
         this.renderIndividualDonut(raw_data, this.annual_comparison_donut2)
     }
 
     renderExpensiveCategoryDonut() {
-        const RAW_DATA = ReportController.getExpensiveCategoryOfMonth()
+        const RAW_DATA = ReportController.getExpensiveCategoryOfMonth(new Date().getMonth())
         const PROCESSED = {labels: RAW_DATA.year, data: RAW_DATA.category.map(v=>1)}
         this.renderIndividualDonut(PROCESSED, this.annual_comparison_donut3)
         this.annual_comparison_donut3.donut.options.plugins.tooltip = {callbacks: {label: function(context) {const alimento = RAW_DATA.category[context.dataIndex];return ` ${alimento}`;}}};this.annual_comparison_donut3.donut.update()}

@@ -14,16 +14,13 @@ export default class ReportController {
     }
 
     /**
-    Métod auxiliar para pegar transações do mês passado
+    Método auxiliar para pegar transações do mês passado
      */
     static _getLastMonthTransactions() {
         const now = new Date();
         const expenses = this._getExpenses();
         
-        const firstDayLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-        const lastDayLastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
-
-        return expenses.filter(t => t.date >= firstDayLastMonth && t.date <= lastDayLastMonth);
+        return expenses.filter(t => t.date.getMonth() === now.getMonth());
     }
 
     /*
@@ -42,7 +39,7 @@ export default class ReportController {
     static getLastMonthHigherExpense(){
         const lastMonthTransactions = this._getLastMonthTransactions();
         if (lastMonthTransactions.length === 0) return 0;
-        return Math.max(...lastMonthTransactions.map(t => t.value));
+        return Math.min(...lastMonthTransactions.map(t => t.value));
     }
         
     /*
@@ -71,11 +68,12 @@ export default class ReportController {
     static getTotalExpensesOfMonth(monthNumber){
         const expenses = this._getExpenses();
         const yearGroups = {};
-
+        
         expenses.filter(t => t.date.getMonth() === monthNumber).forEach(t => {
             const year = t.date.getFullYear().toString();
             yearGroups[year] = (yearGroups[year] || 0) + t.value;
         });
+        
 
         return {
             year: Object.keys(yearGroups),
@@ -93,7 +91,7 @@ export default class ReportController {
 
         expenses.filter(t => t.date.getMonth() === monthNumber).forEach(t => {
             const year = t.date.getFullYear().toString();
-            if (!yearGroups[year] || t.value > yearGroups[year]) {
+            if (!yearGroups[year] || t.value < yearGroups[year]) {
                 yearGroups[year] = t.value;
             }
         });

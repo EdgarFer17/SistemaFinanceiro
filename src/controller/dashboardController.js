@@ -1,6 +1,5 @@
 import TransactionRepository from "../repository/TransactionRepository.js";
 import TRANSACTION_TYPE_MODEL from '../model/TransactionTypeModel.js';
-import BalanceController from "./balanceController.js";
 
 export default class DashboardController {
 

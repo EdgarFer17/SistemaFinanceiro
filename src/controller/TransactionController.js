@@ -2,7 +2,6 @@ import TransactionModel from "../model/TransactionModel.js";
 import TRANSACTION_TYPE_MODEL from "../model/TransactionTypeModel.js";
 import CategoryRepository from "../repository/categoryRepository.js";
 import TransactionRepository from "../repository/TransactionRepository.js";
-import BalanceController from "./balanceController.js";
 
 
 export default class TransactionController {
@@ -19,13 +18,6 @@ export default class TransactionController {
 
         if (!CATEGORIES_FROM_DB.includes(transaction.category.id)) {
             throw new Error("A categoria da transação não existe!");
-        }
-
-        // transfere
-        if (transaction.type === TRANSACTION_TYPE_MODEL.EXPENSE) {
-            BalanceController.withdraw(transaction.value);
-        } else {
-            BalanceController.deposit(transaction.value);
         }
 
         TransactionRepository.createTransaction(transaction);
@@ -60,13 +52,6 @@ export default class TransactionController {
             throw new Error("A categoria da transação não existe!");
         }
 
-        // devolve
-        if (TRANSACTION_TO_EDIT.type === TRANSACTION_TYPE_MODEL.EXPENSE) {
-            BalanceController.deposit(TRANSACTION_TO_EDIT.value);
-        } else {
-            BalanceController.withdraw(TRANSACTION_TO_EDIT.value);
-        }
-
         TransactionRepository.editTransaction(id, newTransaction);
     }
     
@@ -80,12 +65,6 @@ export default class TransactionController {
 
         if (!transactionForDelete) {
             throw new Error("Transação não encontrada!");
-        }
-
-        if (transactionForDelete.type === TRANSACTION_TYPE_MODEL.EXPENSE) {
-            BalanceController.deposit(transactionForDelete.value);
-        } else {
-            BalanceController.withdraw(transactionForDelete.value);
         }
 
         TransactionRepository.deleteTransaction(id);

@@ -1,9 +1,7 @@
 import CATEGORY_TYPE_MODEL from "../model/categoryTypeModel.js";
 import CategoryRepository from "../repository/categoryRepository.js";
 import CategoryModel from "../model/categoryModel.js";
-// IMPORTANTE: Certifique-se de que o caminho abaixo existe para buscar as transações
 import TransactionRepository from "../repository/TransactionRepository.js"; 
-import TRANSACTION_TYPE_MODEL from "../model/TransactionTypeModel.js";
 
 export default class CategoryController {
     
