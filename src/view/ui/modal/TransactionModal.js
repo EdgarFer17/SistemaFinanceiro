@@ -15,21 +15,16 @@ export default class TransactionModal extends BaseComponent {
         this.header = document.createElement('div');
         this.title = document.createElement('h2');
         this.close_btn = document.createElement('button');
-
         this.form = document.createElement('form');
         this.form.id = "transaction-form";
-
         this.value_group = this.createFormGroup("Valor", "number", "valor-input", "Digite o valor da transação", "any");
         this.type_group = this.createSelectGroup("Tipo", "type-select", [
             { value: "RECEITA", text: "Receita" },
             { value: "DESPESA", text: "Despesa" }
         ]);
-
         this.category_group = this.createCategorySelectGroup();
-
         this.desc_group = this.createFormGroup("", "text", "desc-input", "Descrição (opcional)", null, false);
-        this.desc_group.querySelector('label').remove();
-
+        this.desc_group.querySelector('label').remove(); 
         this.submit_btn = document.createElement('button');
         this.submit_btn.type = "submit";
         this.submit_btn.textContent = "Adicionar Transação";
@@ -99,12 +94,14 @@ export default class TransactionModal extends BaseComponent {
         return this.createSelectGroup("Categoria", "category-select", OPTIONS);
     }
 
+    // RF03: Injeta payload de edição ou reseta form para criação
     prepareModal(dadosDaLinha) {
         this.editingData = dadosDaLinha;
 
         if (dadosDaLinha) {
             this.title.textContent = "Editar Transação";
             this.submit_btn.textContent = "Salvar Alterações";
+            
             this.value_group.querySelector('input').value = Math.abs(dadosDaLinha.value);
   
             const IS_EXPENSE = dadosDaLinha.type === TRANSACTION_TYPE_MODEL.EXPENSE;
@@ -125,7 +122,9 @@ export default class TransactionModal extends BaseComponent {
     }
 
     setup(config) {
-        this.close_btn.innerHTML = "&times;";
+        // Fallback p/ HTML entity sem innerHTML p/ evitar XSS
+        this.close_btn.textContent = "×"; 
+        
         this.close_btn.onclick = config.toggleModal;
 
         this.setFunction('submit', (event) => {

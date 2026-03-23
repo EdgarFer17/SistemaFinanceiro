@@ -65,7 +65,6 @@ export default class Category extends BaseComponent {
         PERCENT_TAG.className = "badge rounded-2 fw-bold p-2";
         PERCENT_TAG.style.width = "fit-content";
         PERCENT_TAG.textContent = `${budget.percentage}% gasto`;
-        console.log(budget)
         if (budget.limit > 0) {
             if (budget.percentage >= 100) {
                 PERCENT_TAG.classList.add("bg-danger"); 

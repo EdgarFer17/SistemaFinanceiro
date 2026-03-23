@@ -136,7 +136,7 @@ export default class ReportModal extends BaseComponent {
     }
 
     style(style_config = {
-        main: ["bg-white", "rounded-4", "w-100", "m-2", "m-md-5", "p-3", "my-md-5", "d-flex", "flex-column", "align-items-center", "gap-3", "gap-md-3", "text-white"],
+        main: ["bg-white", "rounded-4", "w-100", "w-lg-75", "m-2", "m-md-5", "p-3", "my-md-5", "d-flex", "flex-column", "align-items-center", "gap-3", "gap-md-3", "text-white"],
         title: ["text-primary", "h1"],
         report_wraper: ["w-100", "d-flex", "gap-2", "gap-md-5", "justify-content-center", "text-center", "px-1"],
         total_expense_wrapper: ["d-flex", "flex-column","align-items-center", "bg-primary", "rounded-4", "w-100", "justify-content-around", "py-2"],
@@ -213,19 +213,19 @@ export default class ReportModal extends BaseComponent {
     }
 
     renderTotalExpenseDonut(){
-        let raw_data = ReportController.getTotalExpensesOfMonth();
+        let raw_data = ReportController.getTotalExpensesOfMonth(new Date().getMonth());
         raw_data = {labels: raw_data.year, data: raw_data.sum_of_expenses, label: 'R$'}
         this.renderIndividualDonut(raw_data, this.annual_comparison_donut1)
     }
 
     renderHigherExpenseDonut() {
-        let raw_data = ReportController.getHigherExpensesOfMonth();
+        let raw_data = ReportController.getHigherExpensesOfMonth(new Date().getMonth());
         raw_data = {labels: raw_data.year, data: raw_data.expense, label: 'R$'}
         this.renderIndividualDonut(raw_data, this.annual_comparison_donut2)
     }
 
     renderExpensiveCategoryDonut() {
-        const RAW_DATA = ReportController.getExpensiveCategoryOfMonth()
+        const RAW_DATA = ReportController.getExpensiveCategoryOfMonth(new Date().getMonth())
         const PROCESSED = {labels: RAW_DATA.year, data: RAW_DATA.category.map(v=>1)}
         this.renderIndividualDonut(PROCESSED, this.annual_comparison_donut3)
         this.annual_comparison_donut3.donut.options.plugins.tooltip = {callbacks: {label: function(context) {const alimento = RAW_DATA.category[context.dataIndex];return ` ${alimento}`;}}};this.annual_comparison_donut3.donut.update()}

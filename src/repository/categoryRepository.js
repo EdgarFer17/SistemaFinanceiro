@@ -1,7 +1,6 @@
-import TransactionController from '../controller/TransactionController.js';
 import CategoryModel from '../model/categoryModel.js'
 import CATEGORY_TYPE_MODEL from '../model/categoryTypeModel.js';
-import TransactionModel from '../model/TransactionModel.js';
+import TransactionRepository from './TransactionRepository.js';
 
 export default class CategoryRepository {
 
@@ -46,7 +45,6 @@ export default class CategoryRepository {
     // recebe o id da categoria que deseja editar e a categoria para modificação
     static editCategory(id, newCategory) {
         const CATEGORIES_LIST = this._getCategoriesList();
-        const TRANSACTION_LIST = TransactionController.getTransactions();
         const NEW_CATEGORY = new CategoryModel(newCategory.categoryName, newCategory.limit, newCategory.type);
         NEW_CATEGORY.id = id;
         let old_category_name = null;
@@ -64,12 +62,7 @@ export default class CategoryRepository {
 
         this._saveCategoriesList(CATEGORIES_LIST);
 
-        TRANSACTION_LIST.forEach(t => {
-            if (t.category.categoryName === old_category_name) {
-                t.category = NEW_CATEGORY;
-                TransactionController.editTransaction(t.id, t); // criar um editByCategory ou linguagem semelhante ao sql, atualmente realiza um save e um delete para cada transação modificada
-            }
-        })
+        TransactionRepository.updateCategory(old_category_name, NEW_CATEGORY);
     }
     
     // recebe um id da categoria e apaga a categoria do localStorage
