@@ -69,11 +69,11 @@ export default class SideNav extends BaseComponent {
     // Alterna entre sidenav expandido e colapsado
     collapse() {
         if (this.is_collapsed) {
-            this.main.classList.remove("navbarCollapsed")
+            this.main.classList.remove(...["navbarCollapsed", "justify-content-start", "w-15", "w-sm-15", "w-md-8"])
             this.disable_page(true);
             this.is_collapsed = false;
         } else {
-            this.main.classList.add("navbarCollapsed")
+            this.main.classList.add(...["navbarCollapsed", "justify-content-start", "w-15", "w-sm-15", "w-md-8"])
             this.disable_page(false);
             this.is_collapsed = true;
         }

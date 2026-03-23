@@ -19,6 +19,8 @@ $utilities: map-merge(
       class: w,
       responsive: true,
       values: (
+        8: 8%,
+        10: 10%,
         15: 15%,
         25: 25%,
         33: 33%,
@@ -36,6 +38,8 @@ $utilities: map-merge(
 
 
 $sizes: (
+    8: 8%,
+    10: 10%,
     15: 15%,
     25: 25%,
     33: 33%,

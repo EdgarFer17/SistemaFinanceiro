@@ -10,6 +10,7 @@ import CreateCategoriesDefault from '../db/createDefaultCategories.js';
 import CategoryModal from './ui/modal/categoryModal.js';
 import TransactionModal from './ui/modal/TransactionModal.js';
 import { getMockTransaction } from '../config/mock.js';
+import ReportModal from './ui/modal/reportModal.js';
 
 CreateCategoriesDefault.create();
 
@@ -99,7 +100,7 @@ class App {
         
         // bootstrap do sidenav
         this.sidenav_style_config = {
-            main: ["navbar", "d-flex", "flex-column", "p-0", "bg-primary", "flex-shrink-0", "col-12", "col-md-3"],
+            main: ["navbar", "d-flex", "flex-column", "p-0", "bg-primary", "flex-shrink-0", "col-12", "col-md-2"],
             toggle_wrapper: ["toggleWrapper", "btn", "border-0", "align-self-end", "w-15", "w-md-25", "p-2"],
             toggle_icon: ["img-fluid"], 
             tab_wrapper: ["nav", "flex-column", "w-100", "px-1", "px-md-3", "gap-1"],
@@ -143,7 +144,7 @@ class App {
             donut_2_div: ["d-flex", "flex-column", "align-items-center", "w-75", "w-md-100"],
             donut_2_title: ["fs-5", "mb-3"],
 
-            bar_section: ["d-flex", "flex-column", "align-items-center", "w-75", "w-md-100", "px-1", "px-md-5"],
+            bar_section: ["d-flex", "flex-column", "align-items-center", "w-100", "w-md-100", "px-1", "px-md-5"],
             bar_title: [],
             
             transaction_section: ["d-flex", "flex-column", "align-items-center", "w-75", "w-md-100", "px-1", "px-md-5"],
@@ -169,6 +170,7 @@ class App {
             Transaction: new Transaction(),
         }
         this.modals = {
+            Report: new ReportModal({toggleModal: ()=>{this.toggleModal()}}),
             Transaction: new TransactionModal({toggleModal: ()=>{this.toggleModal()}}),
             Category: new CategoryModal({toggleModal: ()=>{this.toggleModal()}})
         }
@@ -277,8 +279,8 @@ class App {
         // BOOTSTRAP
         this.body.classList.add(...["overflow-x-hidden"]);
         this.html.classList.add(...["vw-100"]);
-        this.wrapper.classList.add(...["d-flex", "min-vh-100", "h-auto"]);
-        this.page.classList.add(...["d-flex", "flex-grow-1", "w-100"]);
+        this.wrapper.classList.add(...["d-flex", "min-vh-100", "w-100"]);
+        this.page.classList.add(...["flex-grow-1"]);
         this.modal_wrapper.classList.add(...["modal-1"]);
     }
 }

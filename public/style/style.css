@@ -23,20 +23,16 @@ html, body {
 }
 
 .navbar.navbarCollapsed {
-    width: 60px;
     justify-content: start;
-}
-
-.navbar.navbarCollapsed .toggleWrapper {
-    align-self: center !important;
-    width: 90% !important;
-    max-width: 50px;
-    text-align: center !important;
 }
 
 .navbar.navbarCollapsed .tabText,
 .navbar.navbarCollapsed .navbarFooter {
     display: none !important;
+}
+
+.navbar.navbarCollapsed .toggleWrapper {
+    align-self: center !important;
 }
 
 .navbar.navbarCollapsed * {

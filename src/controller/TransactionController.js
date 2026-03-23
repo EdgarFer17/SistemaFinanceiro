@@ -57,7 +57,6 @@ export default class TransactionController {
         CategoryRepository.getCategories().forEach(c => CATEGORIES_FROM_DB.push(c.id));
 
         if (!CATEGORIES_FROM_DB.includes(newTransaction.category.id)) {
-            console.log(CATEGORIES_FROM_DB)
             throw new Error("A categoria da transação não existe!");
         }
 

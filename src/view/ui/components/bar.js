@@ -47,6 +47,25 @@ export default class ComponentBar extends BaseComponent {
             data: {
                 labels: LABELS,
                 datasets: DATASETS
+            },
+            options: {
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        ticks: {
+                            font: {
+                                size: 12, 
+                            }
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            font: {
+                                size: 8 
+                            }
+                        }
+                    }
+                },
             }
         });
     }

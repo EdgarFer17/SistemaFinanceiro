@@ -63,7 +63,6 @@ export default class CategoryRepository {
         })
 
         this._saveCategoriesList(CATEGORIES_LIST);
-        console.log()
 
         TRANSACTION_LIST.forEach(t => {
             if (t.category.categoryName === old_category_name) {

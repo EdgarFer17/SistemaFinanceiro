@@ -84,7 +84,6 @@ export default class CategoryModal extends BaseComponent {
             this.toggleModal();
             
         } catch (error) {
-            console.log('1')
             alert(error.message);
         }
     }

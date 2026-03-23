@@ -32,12 +32,15 @@ export default class ComponentDonut extends BaseComponent {
                 datasets: DATASETS
             }
         });
+
+        window.addEventListener('resize', () => {
+            this.donut.resize();
+        });
     }
 
     // Aplica estilos Bootstrap ao container
-    style(style_config = { main: [], chart: [] }) {
+    style(style_config = { main: ["d-flex", "w-75", "align-self-center", "justify-content-center"], chart: [] }) {
         this.main.classList.add(...[
-            "d-flex", "w-75", "align-self-center", "justify-content-center"
         ], ...style_config.main);
         this.chart.classList.add(...[
         ], ...style_config.chart);
