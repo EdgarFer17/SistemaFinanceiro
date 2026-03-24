@@ -17,6 +17,10 @@ export default class TransactionModal extends BaseComponent {
         this.close_btn = document.createElement('button');
         this.form = document.createElement('form');
         this.form.id = "transaction-form";
+        
+        // NOVO: Grupo do campo de Data
+        this.date_group = this.createFormGroup("Data da Transação", "date", "date-input", "", null, true);
+        
         this.value_group = this.createFormGroup("Valor", "number", "valor-input", "Digite o valor da transação", "any");
         this.type_group = this.createSelectGroup("Tipo", "type-select", [
             { value: "RECEITA", text: "Receita" },
@@ -25,6 +29,7 @@ export default class TransactionModal extends BaseComponent {
         this.category_group = this.createCategorySelectGroup();
         this.desc_group = this.createFormGroup("", "text", "desc-input", "Descrição (opcional)", null, false);
         this.desc_group.querySelector('label').remove(); 
+        
         this.submit_btn = document.createElement('button');
         this.submit_btn.type = "submit";
         this.submit_btn.textContent = "Adicionar Transação";
@@ -98,10 +103,29 @@ export default class TransactionModal extends BaseComponent {
     prepareModal(dadosDaLinha) {
         this.editingData = dadosDaLinha;
 
+        // Função auxiliar para pegar data de hoje no formato YYYY-MM-DD
+        const getHojeFormatado = () => {
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`;
+        };
+
+        const dataHoje = getHojeFormatado();
+        const inputDeData = this.date_group.querySelector('input');
+
+        // REGRA DE NEGÓCIO: Impede selecionar datas futuras
+        inputDeData.max = dataHoje;
+
         if (dadosDaLinha) {
             this.title.textContent = "Editar Transação";
             this.submit_btn.textContent = "Salvar Alterações";
             
+            const d = new Date(dadosDaLinha.date);
+            const dataEditFormatada = `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`;
+            inputDeData.value = dataEditFormatada;
+
             this.value_group.querySelector('input').value = Math.abs(dadosDaLinha.value);
   
             const IS_EXPENSE = dadosDaLinha.type === TRANSACTION_TYPE_MODEL.EXPENSE;
@@ -116,6 +140,10 @@ export default class TransactionModal extends BaseComponent {
             this.title.textContent = "Fazer Transação";
             this.submit_btn.textContent = "Adicionar Transação";
             this.form.reset();
+            
+            // Preenche com a data de hoje por padrão
+            inputDeData.value = dataHoje;
+            
             this.type_group.querySelector('select').value = "";
             this.category_group.querySelector('select').value = "";
         }
@@ -127,15 +155,36 @@ export default class TransactionModal extends BaseComponent {
         
         this.close_btn.onclick = config.toggleModal;
 
+        this.setFunction('categories_updated', () => {
+            // 1. Pega as categorias novas do banco
+            const CATEGORY_LIST = CategoryController.getCategories();
+            const OPTIONS = CATEGORY_LIST.map(cat => ({
+                value: cat.categoryName,
+                text: cat.categoryName
+            }));
+            
+            // 2. Cria o select atualizado e substitui o antigo na tela
+            const novoCategoryGroup = this.createSelectGroup("Categoria", "category-select", OPTIONS);
+            this.form.replaceChild(novoCategoryGroup, this.category_group);
+            this.category_group = novoCategoryGroup; // Salva a referência atualizada
+            
+            const label = this.category_group.querySelector('label');
+            if(label) label.classList.add("text-primary");
+        }, document);
+
         this.setFunction('submit', (event) => {
             event.preventDefault();
             try {
+                // Captura a data digitada no formato YYYY-MM-DD
+                const DATE_STR = this.date_group.querySelector('input').value;
+                // Hack de Timezone: Forçamos a data para o meio-dia UTC para não voltar um dia no fuso brasileiro
+                const DATA_ATUAL = new Date(DATE_STR + "T12:00:00Z");
+
                 let value = parseFloat(this.value_group.querySelector('input').value);
                 const TYPE_STR = this.type_group.querySelector('select').value;
                 const CATEGORY_NAME = this.category_group.querySelector('select').value;
                 const DESC = this.desc_group.querySelector('input').value;
 
-                const DATA_ATUAL = this.editingData ? new Date(this.editingData.date) : new Date();
                 const TYPE_ENUM = TYPE_STR === "DESPESA" ? TRANSACTION_TYPE_MODEL.EXPENSE : TRANSACTION_TYPE_MODEL.INCOME;
 
                 if (TYPE_ENUM === TRANSACTION_TYPE_MODEL.EXPENSE && value > 0) value = -value;
@@ -169,16 +218,20 @@ export default class TransactionModal extends BaseComponent {
         this.title.classList.add("h2", "fw-bold", "m-0","text-primary");
         this.close_btn.classList.add("btn", "border-0", "p-0", "lh-1", "display-4","text-primary","fs-2");
         this.form.classList.add("d-flex", "flex-column", "gap-2");
-        [this.value_group, this.type_group, this.category_group, this.desc_group].forEach(group => {
+        
+        // NOVO: Adicionei o date_group no array de estilização
+        [this.date_group, this.value_group, this.type_group, this.category_group, this.desc_group].forEach(group => {
             const label = group.querySelector('label');
-            if(label) label.classList.add("text-primary")
+            if(label) label.classList.add("text-primary");
         });
+        
         this.submit_btn.classList.add("btn", "btn-lg", "text-white", "mt-4", "py-3", "fw-bold", "bg-primary");
     }
 
     build() {
         this.header.replaceChildren(this.title, this.close_btn);
         this.form.replaceChildren(
+            this.date_group, // Coloquei a data como primeiro item no formulário
             this.value_group,
             this.type_group,
             this.category_group,

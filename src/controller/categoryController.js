@@ -14,7 +14,11 @@ export default class CategoryController {
         if (CATEGORIES_NAMES.includes(category.categoryName)) {
             throw new Error("Nome da categoria já está cadastrado!");
         }
+        
         CategoryRepository.createCategory(category);
+        
+        // NOVO: Avisa o resto do sistema que uma categoria foi criada
+        document.dispatchEvent(new CustomEvent('categories_updated'));
     }
 
     static getCategories() {
@@ -65,7 +69,11 @@ export default class CategoryController {
         if (CATEGORIES_NAMES.includes(newCategory.categoryName)) {
             throw new Error("Nome da categoria já está cadastrado!");
         }
+        
         CategoryRepository.editCategory(id, newCategory);
+
+        // NOVO: Avisa o resto do sistema que uma categoria mudou de nome/limite
+        document.dispatchEvent(new CustomEvent('categories_updated'));
     }
     
     static deleteCategory(id) {
@@ -79,7 +87,11 @@ export default class CategoryController {
         if (CATEGORY_TO_DELETE.type === CATEGORY_TYPE_MODEL.DEFAULT) {
             throw new Error("Não pode editar uma categoria padrão!");
         }
+        
         CategoryRepository.deleteCategory(id);
+
+        // NOVO: Avisa o resto do sistema que uma categoria foi apagada
+        document.dispatchEvent(new CustomEvent('categories_updated'));
     }
     
     static getCategoryById(id) {
